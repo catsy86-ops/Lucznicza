@@ -15,6 +15,7 @@ const state = {
   searchQuery: '',
   sortBy: 'default',      // default | rating | distance | name
   showFavoritesOnly: false,
+  showOpenOnly: false,
   userMarker: null,
   userCircle: null
 };
@@ -666,6 +667,36 @@ function initUI() {
     state.searchQuery = e.target.value.toLowerCase();
     renderPlaces(state.searchQuery);
   });
+  // Enter → fly map to matching results
+  document.getElementById('searchInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const q = state.searchQuery.trim();
+      if (!q) return;
+      const matches = APP_DATA.places.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        (p.addr && p.addr.toLowerCase().includes(q)) ||
+        p.cat.toLowerCase().includes(q)
+      );
+      if (matches.length && state.map) {
+        navigateTo('map');
+        document.getElementById('searchBar').classList.add('hidden');
+        if (matches.length === 1) {
+          const m = matches[0];
+          state.map.flyTo([m.coords[1], m.coords[0]], 17, { animate: true, duration: 1.2 });
+          setTimeout(() => {
+            const marker = state.markers.find(mk => mk.placeData.id === m.id);
+            if (marker) marker.openPopup();
+          }, 1300);
+        } else {
+          const bounds = L.latLngBounds(matches.map(m => [m.coords[1], m.coords[0]]));
+          state.map.fitBounds(bounds, { padding: [60, 60], maxZoom: 17 });
+        }
+        showToast(`🔍 Znaleziono ${matches.length} ${matches.length === 1 ? 'miejsce' : 'miejsc'}`);
+      } else {
+        showToast('❌ Brak wyników na mapie');
+      }
+    }
+  });
 
   // Theme toggle
   document.getElementById('themeBtn').addEventListener('click', () => {
@@ -727,6 +758,16 @@ function initPlacesToolbar() {
       favToggleBtn.classList.toggle('active', state.showFavoritesOnly);
       favToggleBtn.innerHTML = state.showFavoritesOnly ? '❤️ Ulubione' : '🤍 Ulubione';
       renderPlaces(state.searchQuery);
+    });
+  }
+
+  const openNowBtn = document.getElementById('openNowBtn');
+  if (openNowBtn) {
+    openNowBtn.addEventListener('click', () => {
+      state.showOpenOnly = !state.showOpenOnly;
+      openNowBtn.classList.toggle('active', state.showOpenOnly);
+      renderPlaces(state.searchQuery);
+      showToast(state.showOpenOnly ? '🕐 Pokazuję tylko otwarte miejsca' : '🕐 Pokazuję wszystkie miejsca');
     });
   }
 
@@ -847,6 +888,13 @@ function renderPlaces(query = '') {
   if (state.showFavoritesOnly && PE) {
     places = places.filter(p => PE.isFavorite(p.id));
   }
+  // Filter open now
+  if (state.showOpenOnly && PE) {
+    places = places.filter(p => {
+      const status = PE.getOpenStatus(p);
+      return status && status.open;
+    });
+  }
   // Search
   if (query) {
     places = places.filter(p =>
@@ -915,9 +963,14 @@ function renderPlaces(query = '') {
   }
 
   if (places.length === 0) {
-    const msg = state.showFavoritesOnly
-      ? 'Nie masz jeszcze ulubionych miejsc. Kliknij ❤️ na karcie miejsca.'
-      : `Brak wyników dla "${query}"`;
+    let msg;
+    if (state.showOpenOnly) {
+      msg = 'Brak otwartych miejsc w tej chwili. Spróbuj wyłączyć filtr „Otwarte".';
+    } else if (state.showFavoritesOnly) {
+      msg = 'Nie masz jeszcze ulubionych miejsc. Kliknij ❤️ na karcie miejsca.';
+    } else {
+      msg = `Brak wyników dla "${query}"`;
+    }
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text2)">
       <div style="font-size:48px;margin-bottom:12px">🔍</div>
       <p>${msg}</p>
