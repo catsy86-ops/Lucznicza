@@ -258,62 +258,111 @@ function initMap() {
   }
 }
 
-// ===== CREATE RICH POI MARKER =====
+// ===== CREATE RICH POI MARKER (IMPROVED) =====
 function createPoiMarker(place) {
   const PE = window.placesEnhanced;
   const status = PE ? PE.getOpenStatus(place) : null;
-  const statusDot = status
-    ? `<span class="mk-status ${status.open ? 'open' : 'closed'}"></span>`
-    : '';
+  
+  // Better status indicator - always show
+  const statusDot = `<span class="mk-status ${status?.open ? 'open' : 'closed'}" title="${status?.open ? 'Otwarte' : 'Zamknięte'}"></span>`;
+  
+  // Category badge for better visibility
+  const categoryBadge = {
+    sport: '⚽',
+    food: '🍽️',
+    shop: '🛒',
+    park: '🌳',
+    service: '🔧',
+    edu: '📚'
+  }[place.cat] || place.emoji;
 
   const iconHtml = `
     <div class="mk-wrap" data-cat="${place.cat}">
-      <div class="mk-pin" style="background:${CAT_COLORS[place.cat]}">
+      <div class="mk-pin mk-pin-${place.cat}" style="background:${CAT_COLORS[place.cat]}; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
         <span class="mk-emoji">${place.emoji}</span>
+        <span class="mk-badge">${place.rating ? '⭐' : ''}</span>
       </div>
       ${statusDot}
       <div class="mk-pulse" style="border-color:${CAT_COLORS[place.cat]}"></div>
     </div>
   `;
+  
   const icon = L.divIcon({
     html: iconHtml,
-    iconSize: [44, 44],
-    iconAnchor: [22, 44],
-    popupAnchor: [0, -44],
+    iconSize: [44, 54],
+    iconAnchor: [22, 54],
+    popupAnchor: [0, -54],
     className: 'leaflet-marker-custom'
   });
 
   const marker = L.marker([place.coords[1], place.coords[0]], {
     icon: icon,
-    riseOnHover: true
+    riseOnHover: true,
+    zIndexOffset: place.rating ? 100 : 0  // Rated places on top
   });
+  
   marker.placeData = place;
 
+  // Enhanced popup with better layout
   const stars = PE ? PE.renderStars(place.rating || 0) : '';
   const statusBadge = status
     ? `<span class="pp-status ${status.open ? 'open' : 'closed'}">${status.open ? '🟢 Otwarte' : '🔴 Zamknięte'}</span>`
     : '';
 
-  marker.bindPopup(`
+  const popupContent = `
     <div class="map-popup">
-      <div class="pp-head" style="background:${place.gradient || CAT_COLORS[place.cat]}">
-        <span class="pp-emoji">${place.emoji}</span>
-        ${statusBadge}
+      <div class="pp-head" style="background:linear-gradient(135deg, ${CAT_COLORS[place.cat]}, ${CAT_COLORS[place.cat]}dd)">
+        <div class="pp-head-inner">
+          <span class="pp-emoji">${place.emoji}</span>
+          <div class="pp-head-text">
+            <div class="pp-name">${place.name}</div>
+            ${statusBadge}
+          </div>
+        </div>
       </div>
       <div class="pp-body">
-        <div class="pp-cat" style="color:${CAT_COLORS[place.cat]}">${place.cat.toUpperCase()}</div>
-        <div class="pp-name">${place.name}</div>
-        <div class="pp-rating"><span class="pp-stars">${stars}</span> <b>${place.rating || '–'}</b></div>
+        <div class="pp-meta">
+          <span class="pp-cat" style="color:${CAT_COLORS[place.cat]}; background:${CAT_COLORS[place.cat]}22; padding:2px 8px; border-radius:12px; font-size:12px; font-weight:600;">
+            ${place.cat.toUpperCase()}
+          </span>
+          ${place.rating ? `<span class="pp-rating">⭐ ${place.rating}</span>` : ''}
+        </div>
         <div class="pp-addr">📍 ${place.addr}</div>
+        ${place.phone ? `<div class="pp-phone">📞 <a href="tel:${place.phone}" class="pp-link">${place.phone}</a></div>` : ''}
+        ${place.hours ? `<div class="pp-hours">🕐 ${place.hours}</div>` : ''}
         <div class="pp-actions">
           <button class="pp-btn primary" onclick="openPlaceModal(${place.id})">Szczegóły</button>
-          <button class="pp-btn" onclick="openGoogleMaps(${place.coords[1]},${place.coords[0]})">🧭</button>
+          <button class="pp-btn secondary" onclick="openGoogleMaps(${place.coords[1]},${place.coords[0]})">🧭 Nawigacja</button>
+          <button class="pp-btn secondary" onclick="togglePlaceFav(${place.id}, this)">❤️</button>
         </div>
       </div>
     </div>
-  `, { maxWidth: 260, minWidth: 220, closeButton: true, className: 'map-popup-wrapper' });
+  `;
+
+  marker.bindPopup(popupContent, { 
+    maxWidth: 300, 
+    minWidth: 240, 
+    closeButton: true, 
+    className: 'map-popup-wrapper',
+    autoPan: true
+  });
+
+  // Add click event for better UX
+  marker.on('click', function() {
+    setTimeout(() => {
+      marker.openPopup();
+    }, 100);
+  });
 
   return marker;
+}
+
+// Helper function for favorite toggle in popup
+function togglePlaceFav(placeId, btn) {
+  if (window.placesEnhanced && window.placesEnhanced.toggleFav) {
+    window.placesEnhanced.toggleFav(placeId, btn);
+    btn.textContent = btn.textContent === '❤️' ? '🤍' : '❤️';
+  }
 }
 
 // ===== FILTER MARKERS (Leaflet, cluster-aware) =====
