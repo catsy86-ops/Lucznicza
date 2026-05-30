@@ -338,7 +338,7 @@ function createPoiMarker(place) {
         <div class="pp-actions">
           <button class="pp-btn primary" onclick="openPlaceModal(${place.id})">Szczegóły</button>
           <button class="pp-btn secondary" onclick="openGoogleMaps(${place.coords[1]},${place.coords[0]})">🧭 Nawigacja</button>
-          <button class="pp-btn secondary" onclick="togglePlaceFav(${place.id}, this)">❤️</button>
+          <button class="pp-btn secondary" onclick="togglePlaceFav(${place.id}, this)">${PE && PE.isFavorite(place.id) ? '❤️' : '🤍'}</button>
         </div>
       </div>
     </div>
@@ -364,9 +364,17 @@ function createPoiMarker(place) {
 
 // Helper function for favorite toggle in popup
 function togglePlaceFav(placeId, btn) {
-  if (window.placesEnhanced && window.placesEnhanced.toggleFav) {
-    window.placesEnhanced.toggleFav(placeId, btn);
-    btn.textContent = btn.textContent === '❤️' ? '🤍' : '❤️';
+  if (window.placesEnhanced && window.placesEnhanced.toggleFavorite) {
+    window.placesEnhanced.toggleFavorite(placeId);
+    const isFav = window.placesEnhanced.isFavorite(placeId);
+    btn.textContent = isFav ? '❤️' : '🤍';
+    if (typeof showToast === 'function') {
+      showToast(isFav ? '❤️ Dodano do ulubionych' : '🤍 Usunięto z ulubionych');
+    }
+    // Sync the places grid if visible
+    if (typeof renderPlaces === 'function' && state.currentSection === 'places') {
+      renderPlaces(state.searchQuery || '');
+    }
   }
 }
 
@@ -1374,10 +1382,10 @@ function renderInfo() {
 
     <!-- Quick nav pills -->
     <div class="info-nav-pills">
-      <button class="inp-btn active" onclick="scrollToInfoSection('info-cards-section')">📋 Informacje</button>
-      <button class="inp-btn" onclick="scrollToInfoSection('info-timeline-section')">📅 Historia</button>
-      <button class="inp-btn" onclick="scrollToInfoSection('info-facts-section')">💡 Ciekawostki</button>
-      <button class="inp-btn" onclick="scrollToInfoSection('info-contact-section')">📞 Kontakt</button>
+      <button class="inp-btn active" onclick="scrollToInfoSection('info-cards-section', event)">📋 Informacje</button>
+      <button class="inp-btn" onclick="scrollToInfoSection('info-timeline-section', event)">📅 Historia</button>
+      <button class="inp-btn" onclick="scrollToInfoSection('info-facts-section', event)">💡 Ciekawostki</button>
+      <button class="inp-btn" onclick="scrollToInfoSection('info-contact-section', event)">📞 Kontakt</button>
     </div>
 
     <!-- Info cards -->
@@ -1505,12 +1513,13 @@ function toggleInfoCard(id) {
   if (btn) btn.textContent = isOpen ? '›' : '⌄';
 }
 
-function scrollToInfoSection(id) {
+function scrollToInfoSection(id, ev) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   // Update active pill
   document.querySelectorAll('.inp-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  const target = (ev && ev.target) || (typeof event !== 'undefined' && event.target);
+  if (target) target.classList.add('active');
 }
 
 // Animate number counters in the hero
