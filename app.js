@@ -450,10 +450,12 @@ function filterMarkers(cat) {
     ? window.mapEnhancements.getClusterGroup()
     : null;
 
+  let visibleCount = 0;
   state.markers.forEach(marker => {
     const place = marker.placeData;
     if (!place) return;
     const show = (cat === 'all' || place.cat === cat);
+    if (show) visibleCount++;
 
     if (clusterGroup) {
       // Cluster mode: add/remove from the cluster group
@@ -471,6 +473,26 @@ function filterMarkers(cat) {
       }
     }
   });
+
+  if (clusterGroup && clusterGroup.refreshClusters) clusterGroup.refreshClusters();
+
+  // Keep the Places section filter in sync with the map filter
+  state.currentFilter = cat;
+  syncPlacesFilterUI(cat);
+
+  // Feedback when no markers match
+  if (visibleCount === 0 && cat !== 'all') {
+    showToast('📍 Brak miejsc w tej kategorii w okolicy');
+  }
+}
+
+// Sync the Places-section filter tabs UI with a given category
+function syncPlacesFilterUI(cat) {
+  document.querySelectorAll('#placesFilter .filter-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.filter === cat);
+  });
+  // Re-render places grid if the section exists
+  if (typeof renderPlaces === 'function') renderPlaces(state.searchQuery || '');
 }
 
 // ===== MAP CONTROLS (Leaflet-compatible) =====
@@ -1059,6 +1081,31 @@ function renderPlaces(query = '') {
       tab.classList.add('active');
       state.currentFilter = tab.dataset.filter;
       renderPlaces(state.searchQuery);
+
+      // Sync map markers + map category buttons
+      state.currentCat = tab.dataset.filter;
+      document.querySelectorAll('.cat-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.cat === tab.dataset.filter);
+      });
+      if (state.map) {
+        // Update markers without re-triggering syncPlacesFilterUI loop
+        const cat = tab.dataset.filter;
+        const clusterGroup = (window.mapEnhancements && window.mapEnhancements.getClusterGroup)
+          ? window.mapEnhancements.getClusterGroup() : null;
+        state.markers.forEach(marker => {
+          const place = marker.placeData;
+          if (!place) return;
+          const show = (cat === 'all' || place.cat === cat);
+          if (clusterGroup) {
+            if (show) { if (!clusterGroup.hasLayer(marker)) clusterGroup.addLayer(marker); }
+            else { if (clusterGroup.hasLayer(marker)) clusterGroup.removeLayer(marker); }
+          } else {
+            if (show) { if (!state.map.hasLayer(marker)) marker.addTo(state.map); }
+            else { if (state.map.hasLayer(marker)) state.map.removeLayer(marker); }
+          }
+        });
+        if (clusterGroup && clusterGroup.refreshClusters) clusterGroup.refreshClusters();
+      }
     };
   });
 }
