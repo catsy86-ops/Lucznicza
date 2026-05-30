@@ -619,7 +619,7 @@
 
     </main>
 
-    <!-- BOTTOM NAV (mobile) -->
+    <!-- BOTTOM NAV (mobile) — 5 items max for usability -->
     <nav class="bottom-nav" aria-label="Nawigacja główna">
       <button class="bnav-btn active" data-section="map">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -640,33 +640,17 @@
         </svg>
         <span>Trasy</span>
       </button>
-      <button class="bnav-btn" data-section="info">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 16v-4m0-4h.01"/>
-        </svg>
-        <span>Info</span>
-      </button>
-      <button class="bnav-btn" data-section="transport">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="1" y="3" width="15" height="13" rx="2"/>
-          <path d="M16 8h4l3 3v5h-7V8z"/>
-          <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-        </svg>
-        <span>Transport</span>
-      </button>
       <button class="bnav-btn" data-section="live">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
         </svg>
         <span class="bnav-live">Na żywo</span>
       </button>
-      <button class="bnav-btn" data-section="community">
+      <button class="bnav-btn" id="bnavMore" aria-label="Więcej opcji">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/>
+          <circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>
         </svg>
-        <span>Społeczność</span>
+        <span>Więcej</span>
       </button>
     </nav>
 

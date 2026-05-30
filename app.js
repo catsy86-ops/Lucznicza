@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         handleDeepLink();
       });
     }, 500);
-  }, 2200);
+  }, 1000);
 });
 
 // ===== DEEP LINK (#miejsce-X opens that place) =====
@@ -636,8 +636,19 @@ function initUI() {
 
   // Bottom nav
   document.querySelectorAll('.bnav-btn').forEach(btn => {
-    btn.addEventListener('click', () => navigateTo(btn.dataset.section));
+    btn.addEventListener('click', () => {
+      if (btn.dataset.section) navigateTo(btn.dataset.section);
+    });
   });
+
+  // "Więcej" button — opens sidebar with all sections
+  const bnavMore = document.getElementById('bnavMore');
+  if (bnavMore) {
+    bnavMore.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('sidebarOverlay').classList.remove('hidden');
+    });
+  }
 
   // Search
   document.getElementById('searchBtn').addEventListener('click', () => {
@@ -776,6 +787,13 @@ function navigateTo(section) {
   document.querySelectorAll('.bnav-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.section === section);
   });
+
+  // Sections not in the bottom nav (transport, community, info) → highlight "Więcej"
+  const bnavSections = ['map', 'places', 'routes', 'live'];
+  const bnavMore = document.getElementById('bnavMore');
+  if (bnavMore) {
+    bnavMore.classList.toggle('active', !bnavSections.includes(section));
+  }
 
   // If map section, invalidate size so Leaflet redraws tiles
   if (section === 'map' && state.map) {
