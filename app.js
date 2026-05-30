@@ -1900,22 +1900,91 @@ function syncModalFav(id) {
 function addReviewPrompt(id) {
   const place = APP_DATA.places.find(p => p.id === id);
   if (!place) return;
-  const text = prompt('Twoja opinia o "' + place.name + '":');
-  if (!text || !text.trim()) return;
-  const ratingStr = prompt('Ocena 1–5:', '5');
-  const rating = Math.max(1, Math.min(5, parseInt(ratingStr) || 5));
-  if (!place.reviews) place.reviews = [];
-  place.reviews.unshift({ name: 'Ty', rating, text: text.trim(), date: 'przed chwilą' });
-  place.reviewCount = place.reviews.length;
-  // persist user reviews
-  try {
-    const key = 'lucznicza_reviews_' + id;
-    const stored = JSON.parse(localStorage.getItem(key) || '[]');
-    stored.unshift({ name: 'Ty', rating, text: text.trim(), date: new Date().toLocaleDateString('pl') });
-    localStorage.setItem(key, JSON.stringify(stored));
-  } catch {}
-  showToast('✅ Dziękujemy za opinię!');
-  openPlaceModal(id); // refresh modal
+
+  // Build review modal
+  let overlay = document.getElementById('reviewModalOverlay');
+  if (overlay) overlay.remove();
+
+  overlay = document.createElement('div');
+  overlay.id = 'reviewModalOverlay';
+  overlay.className = 'review-modal-overlay';
+  overlay.innerHTML = `
+    <div class="review-modal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+      <button class="review-modal-close" id="reviewModalClose" aria-label="Zamknij">✕</button>
+      <h3 id="reviewModalTitle" class="review-modal-title">✍️ Twoja opinia</h3>
+      <p class="review-modal-place">${place.emoji || '📍'} ${place.name}</p>
+
+      <div class="review-stars" id="reviewStars" role="radiogroup" aria-label="Ocena">
+        ${[1,2,3,4,5].map(n => `<button class="rev-star" data-val="${n}" aria-label="${n} gwiazdek">★</button>`).join('')}
+      </div>
+      <div class="review-rating-label" id="reviewRatingLabel">Wybierz ocenę</div>
+
+      <textarea id="reviewText" class="review-textarea" rows="4"
+        placeholder="Napisz co sądzisz o tym miejscu..." maxlength="500"></textarea>
+      <div class="review-char-count"><span id="reviewCharCount">0</span>/500</div>
+
+      <div class="review-modal-actions">
+        <button class="rev-btn cancel" id="reviewCancel">Anuluj</button>
+        <button class="rev-btn submit" id="reviewSubmit">Wyślij opinię</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  let selectedRating = 0;
+  const labels = { 1:'😞 Słabo', 2:'😐 Może być', 3:'🙂 Dobrze', 4:'😀 Bardzo dobrze', 5:'🤩 Rewelacja!' };
+  const starBtns = overlay.querySelectorAll('.rev-star');
+  const ratingLabel = overlay.querySelector('#reviewRatingLabel');
+
+  function paintStars(val) {
+    starBtns.forEach((s, i) => s.classList.toggle('filled', i < val));
+  }
+
+  starBtns.forEach(btn => {
+    const val = parseInt(btn.dataset.val);
+    btn.addEventListener('mouseenter', () => paintStars(val));
+    btn.addEventListener('click', () => {
+      selectedRating = val;
+      paintStars(val);
+      ratingLabel.textContent = labels[val];
+    });
+  });
+  overlay.querySelector('#reviewStars').addEventListener('mouseleave', () => paintStars(selectedRating));
+
+  // Char counter
+  const textArea = overlay.querySelector('#reviewText');
+  const charCount = overlay.querySelector('#reviewCharCount');
+  textArea.addEventListener('input', () => { charCount.textContent = textArea.value.length; });
+
+  function close() { overlay.remove(); }
+  overlay.querySelector('#reviewModalClose').addEventListener('click', close);
+  overlay.querySelector('#reviewCancel').addEventListener('click', close);
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+
+  overlay.querySelector('#reviewSubmit').addEventListener('click', () => {
+    const text = textArea.value.trim();
+    if (selectedRating === 0) { showToast('⭐ Wybierz ocenę (1–5 gwiazdek)'); return; }
+    if (!text) { showToast('✍️ Napisz kilka słów opinii'); return; }
+
+    if (!place.reviews) place.reviews = [];
+    place.reviews.unshift({ name: 'Ty', rating: selectedRating, text, date: 'przed chwilą' });
+    place.reviewCount = place.reviews.length;
+
+    // Persist
+    try {
+      const key = 'lucznicza_reviews_' + id;
+      const stored = JSON.parse(localStorage.getItem(key) || '[]');
+      stored.unshift({ name: 'Ty', rating: selectedRating, text, date: new Date().toLocaleDateString('pl') });
+      localStorage.setItem(key, JSON.stringify(stored));
+    } catch {}
+
+    close();
+    showToast('✅ Dziękujemy za opinię!');
+    openPlaceModal(id); // refresh modal
+  });
+
+  // Focus textarea
+  setTimeout(() => textArea.focus(), 100);
 }
 
 // Share place
@@ -1949,13 +2018,15 @@ function showQRCode(id) {
     return;
   }
 
-  // Google Maps navigation link encoded in QR
-  const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.coords[1]},${place.coords[0]}`;
-  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(navUrl)}`;
+  // Deep link to this place in the app — scanning opens the app directly to the place
+  const appUrl = window.location.href.split('#')[0] + '#miejsce-' + id;
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(appUrl)}`;
   container.innerHTML = `
     <div class="qr-inner">
-      <img src="${qrSrc}" alt="Kod QR — nawigacja do ${place.name}" width="180" height="180" />
-      <p>📱 Zeskanuj telefonem, aby nawigować do<br><strong>${place.name}</strong></p>
+      <img src="${qrSrc}" alt="Kod QR — ${place.name}" width="220" height="220"
+        onerror="this.style.display='none';this.nextElementSibling.textContent='⚠️ Nie udało się wygenerować kodu QR';" />
+      <p>📱 Zeskanuj telefonem, aby otworzyć<br><strong>${place.name}</strong><br>w przewodniku</p>
+      <button class="qr-nav-btn" onclick="openGoogleMaps(${place.coords[1]},${place.coords[0]})">🧭 Nawiguj zamiast tego</button>
     </div>
   `;
   container.classList.remove('hidden');

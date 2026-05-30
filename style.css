@@ -2311,6 +2311,19 @@ body {
 }
 .qr-inner img { display: block; border-radius: 6px; }
 .qr-inner p { color: #333; font-size: 12px; margin-top: 10px; line-height: 1.4; }
+.qr-nav-btn {
+  margin-top: 10px;
+  padding: 8px 14px;
+  border: 1px solid #6c63ff;
+  background: #6c63ff;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.qr-nav-btn:hover { background: #5a52e0; }
 
 /* ===================================================== */
 /* ===== MAP PRO — premium UI/UX ======================= */
@@ -4860,4 +4873,165 @@ body.offline::after {
 @keyframes pulseRt {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
+}
+
+/* ===== REVIEW MODAL ===== */
+.review-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.review-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.3s ease;
+}
+
+.review-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--surface2);
+  color: var(--text2);
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.review-modal-close:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.review-modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+
+.review-modal-place {
+  font-size: 14px;
+  color: var(--text2);
+  margin: 0 0 20px;
+}
+
+.review-stars {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.rev-star {
+  background: none;
+  border: none;
+  font-size: 38px;
+  color: var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1;
+  padding: 0;
+}
+
+.rev-star:hover,
+.rev-star.filled {
+  color: #ffd93d;
+  transform: scale(1.15);
+}
+
+.review-rating-label {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 16px;
+  min-height: 20px;
+}
+
+.review-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.review-textarea:focus {
+  border-color: var(--accent);
+}
+
+.review-char-count {
+  text-align: right;
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+.review-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.rev-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+}
+
+.rev-btn.cancel {
+  background: transparent;
+  color: var(--text2);
+}
+
+.rev-btn.cancel:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.rev-btn.submit {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.rev-btn.submit:hover {
+  background: var(--accent2);
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.4);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
