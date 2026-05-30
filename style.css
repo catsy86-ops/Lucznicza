@@ -4779,6 +4779,42 @@ body.offline::after {
 .b3d-stats {
   margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border);
   font-size: 11px; color: var(--text3); text-align: center;
+  line-height: 1.6;
+}
+.b3d-hint {
+  font-size: 10px; color: var(--text3); text-align: center;
+  margin-top: 4px; opacity: 0.7;
+}
+
+/* Fly-to buttons */
+.b3d-fly-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.b3d-fly-btn {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  background: rgba(108,99,255,0.08);
+  color: var(--text2);
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+.b3d-fly-btn:hover {
+  background: rgba(108,99,255,0.18);
+  color: var(--text);
+  border-color: var(--accent);
+}
+.b3d-fly-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
 }
 
 /* Building tooltip */

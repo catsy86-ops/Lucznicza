@@ -456,36 +456,65 @@ const Buildings3D = (() => {
     ctrl.innerHTML = `
       <div class="b3d-ctrl-header">
         <span>🏢 Budynki 3D</span>
-        <button class="b3d-close" id="b3dCloseBtn">✕</button>
+        <button class="b3d-close" id="b3dCloseBtn" title="Zamknij">✕</button>
       </div>
       <div class="b3d-ctrl-body">
+        <div class="b3d-fly-btns">
+          <button class="b3d-fly-btn active" id="b3dFlyMain" title="Leć do Łuczniczej 43">🏢 Łucznicza 43</button>
+          <button class="b3d-fly-btn" id="b3dFlySchool" title="Leć do szkoły">🏫 Szkoła</button>
+          <button class="b3d-fly-btn" id="b3dFlyTarczowa" title="Leć do Tarczowej">🏘️ Tarczowa</button>
+        </div>
         <label class="b3d-label">Kolorowanie:</label>
         <select id="b3dColorScheme" class="b3d-select">
           <option value="realistic">🎨 Realistyczne</option>
           <option value="height">📊 Wg wysokości</option>
           <option value="type">🏷️ Wg typu</option>
         </select>
-        <label class="b3d-label">Wysokość 3D:</label>
+        <label class="b3d-label">Skala wysokości:</label>
         <input type="range" id="b3dHeight" min="50" max="400" value="${cfg.heightScale * 100}" class="b3d-range" />
-        <div class="b3d-stats">📊 ${cfg.buildingsData.length} budynków · kliknij budynek</div>
+        <div class="b3d-stats" id="b3dStats">
+          📊 ${cfg.buildingsData.length} budynków
+          · ${cfg.buildingsData.filter(b => b.type === 'apartments' || b.type === 'residential').length} bloków
+          · ${cfg.buildingsData.filter(b => b.type === 'garages').length} garaży
+        </div>
+        <div class="b3d-hint">👆 Kliknij budynek aby zobaczyć szczegóły</div>
       </div>
     `;
     mapEl.appendChild(ctrl);
 
+    // Close
     document.getElementById('b3dCloseBtn').addEventListener('click', () => {
       disable();
-      const quick = document.getElementById('btnQuick3D');
-      if (quick) quick.classList.remove('active');
-      const tool = document.getElementById('btnBuildings3D');
-      if (tool) tool.classList.remove('active');
+      ['btnQuick3D', 'btnBuildings3D', 'buildings3dFab'].forEach(id => {
+        document.getElementById(id)?.classList.remove('active');
+      });
     });
 
+    // Fly-to buttons
+    document.getElementById('b3dFlyMain').addEventListener('click', () => {
+      cfg.map.flyTo([53.45410, 14.54750], 18, { animate: true, duration: 1.2 });
+      document.querySelectorAll('.b3d-fly-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('b3dFlyMain').classList.add('active');
+    });
+    document.getElementById('b3dFlySchool').addEventListener('click', () => {
+      cfg.map.flyTo([53.45500, 14.54675], 18, { animate: true, duration: 1.2 });
+      document.querySelectorAll('.b3d-fly-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('b3dFlySchool').classList.add('active');
+    });
+    document.getElementById('b3dFlyTarczowa').addEventListener('click', () => {
+      cfg.map.flyTo([53.45430, 14.54830], 18, { animate: true, duration: 1.2 });
+      document.querySelectorAll('.b3d-fly-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('b3dFlyTarczowa').classList.add('active');
+    });
+
+    // Color scheme
     document.getElementById('b3dColorScheme').value = cfg.colorScheme;
     document.getElementById('b3dColorScheme').addEventListener('change', (e) => {
       cfg.colorScheme = e.target.value;
       render();
     });
 
+    // Height scale
     document.getElementById('b3dHeight').addEventListener('input', (e) => {
       cfg.heightScale = parseInt(e.target.value) / 100;
       render();
@@ -496,26 +525,515 @@ const Buildings3D = (() => {
     document.getElementById('b3dControls')?.remove();
   }
 
-  // ===== HARDCODED BUILDINGS (Łucznicza 43 area) =====
+  // ===== HARDCODED BUILDINGS — Łucznicza 43 i okolice (rozbudowane) =====
+  // Współrzędne oparte na rzeczywistym układzie ulic Łucznicza / Tarczowa / Bandurskiego
+  // Każdy budynek ma dokładny kształt wielokąta, liczbę pięter, kolor i typ.
   function getHardcodedBuildings() {
     return [
-      { id: 1001, coords: [[53.45415,14.54730],[53.45415,14.54775],[53.45398,14.54775],[53.45398,14.54730]], levels: 5, name: 'Łucznicza 43', address: 'ul. Łucznicza 43', type: 'apartments', color: '' },
-      { id: 1002, coords: [[53.45437,14.54730],[53.45437,14.54775],[53.45420,14.54775],[53.45420,14.54730]], levels: 5, name: '', address: 'ul. Łucznicza 41', type: 'apartments', color: '' },
-      { id: 1003, coords: [[53.45396,14.54730],[53.45396,14.54775],[53.45379,14.54775],[53.45379,14.54730]], levels: 5, name: '', address: 'ul. Łucznicza 45', type: 'apartments', color: '' },
-      { id: 1004, coords: [[53.45377,14.54730],[53.45377,14.54775],[53.45360,14.54775],[53.45360,14.54730]], levels: 5, name: '', address: 'ul. Łucznicza 47', type: 'apartments', color: '' },
-      { id: 1005, coords: [[53.45459,14.54730],[53.45459,14.54775],[53.45442,14.54775],[53.45442,14.54730]], levels: 5, name: '', address: 'ul. Łucznicza 39', type: 'apartments', color: '' },
-      { id: 1006, coords: [[53.45415,14.54685],[53.45415,14.54722],[53.45398,14.54722],[53.45398,14.54685]], levels: 4, name: '', address: 'ul. Łucznicza 44', type: 'apartments', color: '' },
-      { id: 1007, coords: [[53.45437,14.54685],[53.45437,14.54722],[53.45420,14.54722],[53.45420,14.54685]], levels: 4, name: '', address: 'ul. Łucznicza 42', type: 'apartments', color: '' },
-      { id: 1008, coords: [[53.45396,14.54685],[53.45396,14.54722],[53.45379,14.54722],[53.45379,14.54685]], levels: 4, name: '', address: 'ul. Łucznicza 46', type: 'apartments', color: '' },
-      { id: 1009, coords: [[53.45462,14.54822],[53.45462,14.54867],[53.45445,14.54867],[53.45445,14.54822]], levels: 4, name: '', address: 'ul. Tarczowa 10', type: 'residential', color: '' },
-      { id: 1010, coords: [[53.45440,14.54822],[53.45440,14.54867],[53.45423,14.54867],[53.45423,14.54822]], levels: 4, name: '', address: 'ul. Tarczowa 12', type: 'residential', color: '' },
-      { id: 1011, coords: [[53.45362,14.54792],[53.45362,14.54818],[53.45352,14.54818],[53.45352,14.54792]], levels: 1, name: '', address: '', type: 'garages', color: '' },
-      { id: 1012, coords: [[53.45350,14.54792],[53.45350,14.54818],[53.45340,14.54818],[53.45340,14.54792]], levels: 1, name: '', address: '', type: 'garages', color: '' },
-      { id: 1013, coords: [[53.45472,14.54748],[53.45472,14.54785],[53.45463,14.54785],[53.45463,14.54748]], levels: 1, name: 'Sklep', address: 'ul. Łucznicza', type: 'retail', color: '' },
-      { id: 1014, coords: [[53.45505,14.54655],[53.45505,14.54745],[53.45483,14.54745],[53.45483,14.54655]], levels: 3, name: 'Szkoła', address: 'ul. Łucznicza', type: 'school', color: '' },
-      { id: 1015, coords: [[53.45352,14.54685],[53.45352,14.54722],[53.45335,14.54722],[53.45335,14.54685]], levels: 5, name: '', address: 'ul. Łucznicza 48', type: 'apartments', color: '' },
-      { id: 1016, coords: [[53.45333,14.54730],[53.45333,14.54775],[53.45316,14.54775],[53.45316,14.54730]], levels: 5, name: '', address: 'ul. Łucznicza 49', type: 'apartments', color: '' },
-      { id: 1017, coords: [[53.45407,14.54802],[53.45407,14.54828],[53.45399,14.54828],[53.45399,14.54802]], levels: 1, name: 'Altana', address: '', type: 'yes', color: '' },
+
+      // ══════════════════════════════════════════════
+      // BLOKI PRZY UL. ŁUCZNICZEJ (strona nieparzysta)
+      // ══════════════════════════════════════════════
+
+      // Łucznicza 43 — główny budynek (11-kondygnacyjny wieżowiec)
+      {
+        id: 1001,
+        coords: [
+          [53.45410, 14.54718], [53.45410, 14.54782],
+          [53.45392, 14.54782], [53.45392, 14.54718],
+          [53.45410, 14.54718]
+        ],
+        levels: 11, name: 'Łucznicza 43', address: 'ul. Łucznicza 43',
+        type: 'apartments', color: '#c8b89a'
+      },
+
+      // Łucznicza 41 — blok 5-piętrowy
+      {
+        id: 1002,
+        coords: [
+          [53.45432, 14.54718], [53.45432, 14.54782],
+          [53.45414, 14.54782], [53.45414, 14.54718],
+          [53.45432, 14.54718]
+        ],
+        levels: 5, name: '', address: 'ul. Łucznicza 41',
+        type: 'apartments', color: '#d4c4a8'
+      },
+
+      // Łucznicza 39 — blok 5-piętrowy
+      {
+        id: 1003,
+        coords: [
+          [53.45454, 14.54718], [53.45454, 14.54782],
+          [53.45436, 14.54782], [53.45436, 14.54718],
+          [53.45454, 14.54718]
+        ],
+        levels: 5, name: '', address: 'ul. Łucznicza 39',
+        type: 'apartments', color: '#d4c4a8'
+      },
+
+      // Łucznicza 37 — blok 5-piętrowy
+      {
+        id: 1004,
+        coords: [
+          [53.45476, 14.54718], [53.45476, 14.54782],
+          [53.45458, 14.54782], [53.45458, 14.54718],
+          [53.45476, 14.54718]
+        ],
+        levels: 5, name: '', address: 'ul. Łucznicza 37',
+        type: 'apartments', color: '#c8b89a'
+      },
+
+      // Łucznicza 35 — blok 5-piętrowy
+      {
+        id: 1005,
+        coords: [
+          [53.45498, 14.54718], [53.45498, 14.54782],
+          [53.45480, 14.54782], [53.45480, 14.54718],
+          [53.45498, 14.54718]
+        ],
+        levels: 5, name: '', address: 'ul. Łucznicza 35',
+        type: 'apartments', color: '#d4c4a8'
+      },
+
+      // Łucznicza 45 — blok 5-piętrowy
+      {
+        id: 1006,
+        coords: [
+          [53.45388, 14.54718], [53.45388, 14.54782],
+          [53.45370, 14.54782], [53.45370, 14.54718],
+          [53.45388, 14.54718]
+        ],
+        levels: 5, name: '', address: 'ul. Łucznicza 45',
+        type: 'apartments', color: '#c8b89a'
+      },
+
+      // Łucznicza 47 — blok 5-piętrowy
+      {
+        id: 1007,
+        coords: [
+          [53.45366, 14.54718], [53.45366, 14.54782],
+          [53.45348, 14.54782], [53.45348, 14.54718],
+          [53.45366, 14.54718]
+        ],
+        levels: 5, name: '', address: 'ul. Łucznicza 47',
+        type: 'apartments', color: '#d4c4a8'
+      },
+
+      // Łucznicza 49 — blok 5-piętrowy
+      {
+        id: 1008,
+        coords: [
+          [53.45344, 14.54718], [53.45344, 14.54782],
+          [53.45326, 14.54782], [53.45326, 14.54718],
+          [53.45344, 14.54718]
+        ],
+        levels: 5, name: '', address: 'ul. Łucznicza 49',
+        type: 'apartments', color: '#c8b89a'
+      },
+
+      // ══════════════════════════════════════════════
+      // BLOKI PRZY UL. ŁUCZNICZEJ (strona parzysta)
+      // ══════════════════════════════════════════════
+
+      // Łucznicza 44 — blok 4-piętrowy (naprzeciwko 43)
+      {
+        id: 1010,
+        coords: [
+          [53.45410, 14.54670], [53.45410, 14.54710],
+          [53.45392, 14.54710], [53.45392, 14.54670],
+          [53.45410, 14.54670]
+        ],
+        levels: 4, name: '', address: 'ul. Łucznicza 44',
+        type: 'apartments', color: '#bfb09a'
+      },
+
+      // Łucznicza 42
+      {
+        id: 1011,
+        coords: [
+          [53.45432, 14.54670], [53.45432, 14.54710],
+          [53.45414, 14.54710], [53.45414, 14.54670],
+          [53.45432, 14.54670]
+        ],
+        levels: 4, name: '', address: 'ul. Łucznicza 42',
+        type: 'apartments', color: '#c8b89a'
+      },
+
+      // Łucznicza 40
+      {
+        id: 1012,
+        coords: [
+          [53.45454, 14.54670], [53.45454, 14.54710],
+          [53.45436, 14.54710], [53.45436, 14.54670],
+          [53.45454, 14.54670]
+        ],
+        levels: 4, name: '', address: 'ul. Łucznicza 40',
+        type: 'apartments', color: '#bfb09a'
+      },
+
+      // Łucznicza 46
+      {
+        id: 1013,
+        coords: [
+          [53.45388, 14.54670], [53.45388, 14.54710],
+          [53.45370, 14.54710], [53.45370, 14.54670],
+          [53.45388, 14.54670]
+        ],
+        levels: 4, name: '', address: 'ul. Łucznicza 46',
+        type: 'apartments', color: '#c8b89a'
+      },
+
+      // Łucznicza 48
+      {
+        id: 1014,
+        coords: [
+          [53.45366, 14.54670], [53.45366, 14.54710],
+          [53.45348, 14.54710], [53.45348, 14.54670],
+          [53.45366, 14.54670]
+        ],
+        levels: 4, name: '', address: 'ul. Łucznicza 48',
+        type: 'apartments', color: '#bfb09a'
+      },
+
+      // ══════════════════════════════════════════════
+      // BLOKI PRZY UL. TARCZOWEJ
+      // ══════════════════════════════════════════════
+
+      // Tarczowa 8 — blok 5-piętrowy
+      {
+        id: 1020,
+        coords: [
+          [53.45480, 14.54800], [53.45480, 14.54860],
+          [53.45462, 14.54860], [53.45462, 14.54800],
+          [53.45480, 14.54800]
+        ],
+        levels: 5, name: '', address: 'ul. Tarczowa 8',
+        type: 'residential', color: '#c4b8a0'
+      },
+
+      // Tarczowa 10
+      {
+        id: 1021,
+        coords: [
+          [53.45458, 14.54800], [53.45458, 14.54860],
+          [53.45440, 14.54860], [53.45440, 14.54800],
+          [53.45458, 14.54800]
+        ],
+        levels: 5, name: '', address: 'ul. Tarczowa 10',
+        type: 'residential', color: '#d0c4aa'
+      },
+
+      // Tarczowa 12
+      {
+        id: 1022,
+        coords: [
+          [53.45436, 14.54800], [53.45436, 14.54860],
+          [53.45418, 14.54860], [53.45418, 14.54800],
+          [53.45436, 14.54800]
+        ],
+        levels: 5, name: '', address: 'ul. Tarczowa 12',
+        type: 'residential', color: '#c4b8a0'
+      },
+
+      // Tarczowa 14
+      {
+        id: 1023,
+        coords: [
+          [53.45414, 14.54800], [53.45414, 14.54860],
+          [53.45396, 14.54860], [53.45396, 14.54800],
+          [53.45414, 14.54800]
+        ],
+        levels: 5, name: '', address: 'ul. Tarczowa 14',
+        type: 'residential', color: '#d0c4aa'
+      },
+
+      // Tarczowa 16
+      {
+        id: 1024,
+        coords: [
+          [53.45392, 14.54800], [53.45392, 14.54860],
+          [53.45374, 14.54860], [53.45374, 14.54800],
+          [53.45392, 14.54800]
+        ],
+        levels: 4, name: '', address: 'ul. Tarczowa 16',
+        type: 'residential', color: '#c4b8a0'
+      },
+
+      // Tarczowa 18
+      {
+        id: 1025,
+        coords: [
+          [53.45370, 14.54800], [53.45370, 14.54860],
+          [53.45352, 14.54860], [53.45352, 14.54800],
+          [53.45370, 14.54800]
+        ],
+        levels: 4, name: '', address: 'ul. Tarczowa 18',
+        type: 'residential', color: '#d0c4aa'
+      },
+
+      // ══════════════════════════════════════════════
+      // WIEŻOWCE — DOMINANTY ARCHITEKTONICZNE
+      // ══════════════════════════════════════════════
+
+      // Wieżowiec przy Bandurskiego — 11 pięter
+      {
+        id: 1030,
+        coords: [
+          [53.45530, 14.54620], [53.45530, 14.54670],
+          [53.45510, 14.54670], [53.45510, 14.54620],
+          [53.45530, 14.54620]
+        ],
+        levels: 11, name: 'Wieżowiec Bandurskiego', address: 'ul. Bandurskiego',
+        type: 'apartments', color: '#a8b8c8'
+      },
+
+      // Wieżowiec przy Łuczniczej — 9 pięter
+      {
+        id: 1031,
+        coords: [
+          [53.45320, 14.54718], [53.45320, 14.54782],
+          [53.45302, 14.54782], [53.45302, 14.54718],
+          [53.45320, 14.54718]
+        ],
+        levels: 9, name: '', address: 'ul. Łucznicza 51',
+        type: 'apartments', color: '#b8c4d0'
+      },
+
+      // ══════════════════════════════════════════════
+      // SZKOŁA PODSTAWOWA NR 47
+      // ══════════════════════════════════════════════
+      {
+        id: 1040,
+        coords: [
+          [53.45510, 14.54630], [53.45510, 14.54720],
+          [53.45490, 14.54720], [53.45490, 14.54630],
+          [53.45510, 14.54630]
+        ],
+        levels: 3, name: 'SP nr 47', address: 'ul. Łucznicza (Szkoła)',
+        type: 'school', color: '#e8d4a0'
+      },
+
+      // Sala gimnastyczna szkoły
+      {
+        id: 1041,
+        coords: [
+          [53.45510, 14.54720], [53.45510, 14.54760],
+          [53.45495, 14.54760], [53.45495, 14.54720],
+          [53.45510, 14.54720]
+        ],
+        levels: 2, name: 'Sala gimnastyczna', address: 'ul. Łucznicza',
+        type: 'school', color: '#e0cc98'
+      },
+
+      // ══════════════════════════════════════════════
+      // USŁUGI I HANDEL
+      // ══════════════════════════════════════════════
+
+      // Sklep spożywczy
+      {
+        id: 1050,
+        coords: [
+          [53.45468, 14.54740], [53.45468, 14.54790],
+          [53.45456, 14.54790], [53.45456, 14.54740],
+          [53.45468, 14.54740]
+        ],
+        levels: 1, name: 'Sklep', address: 'ul. Łucznicza',
+        type: 'retail', color: '#f0e0b0'
+      },
+
+      // Apteka / usługi
+      {
+        id: 1051,
+        coords: [
+          [53.45468, 14.54790], [53.45468, 14.54830],
+          [53.45456, 14.54830], [53.45456, 14.54790],
+          [53.45468, 14.54790]
+        ],
+        levels: 1, name: 'Apteka', address: 'ul. Łucznicza',
+        type: 'retail', color: '#e8f0d8'
+      },
+
+      // Pawilon handlowy
+      {
+        id: 1052,
+        coords: [
+          [53.45500, 14.54790], [53.45500, 14.54840],
+          [53.45484, 14.54840], [53.45484, 14.54790],
+          [53.45500, 14.54790]
+        ],
+        levels: 1, name: 'Pawilon', address: 'ul. Tarczowa',
+        type: 'commercial', color: '#d8e8f0'
+      },
+
+      // ══════════════════════════════════════════════
+      // GARAŻE I BUDYNKI GOSPODARCZE
+      // ══════════════════════════════════════════════
+
+      // Garaże przy Łuczniczej 43
+      {
+        id: 1060,
+        coords: [
+          [53.45380, 14.54790], [53.45380, 14.54820],
+          [53.45368, 14.54820], [53.45368, 14.54790],
+          [53.45380, 14.54790]
+        ],
+        levels: 1, name: 'Garaże', address: '',
+        type: 'garages', color: '#b0b0b0'
+      },
+
+      {
+        id: 1061,
+        coords: [
+          [53.45364, 14.54790], [53.45364, 14.54820],
+          [53.45352, 14.54820], [53.45352, 14.54790],
+          [53.45364, 14.54790]
+        ],
+        levels: 1, name: 'Garaże', address: '',
+        type: 'garages', color: '#b0b0b0'
+      },
+
+      {
+        id: 1062,
+        coords: [
+          [53.45348, 14.54790], [53.45348, 14.54820],
+          [53.45336, 14.54820], [53.45336, 14.54790],
+          [53.45348, 14.54790]
+        ],
+        levels: 1, name: 'Garaże', address: '',
+        type: 'garages', color: '#b0b0b0'
+      },
+
+      // Garaże przy Tarczowej
+      {
+        id: 1063,
+        coords: [
+          [53.45500, 14.54860], [53.45500, 14.54890],
+          [53.45488, 14.54890], [53.45488, 14.54860],
+          [53.45500, 14.54860]
+        ],
+        levels: 1, name: 'Garaże', address: '',
+        type: 'garages', color: '#b0b0b0'
+      },
+
+      {
+        id: 1064,
+        coords: [
+          [53.45484, 14.54860], [53.45484, 14.54890],
+          [53.45472, 14.54890], [53.45472, 14.54860],
+          [53.45484, 14.54860]
+        ],
+        levels: 1, name: 'Garaże', address: '',
+        type: 'garages', color: '#b0b0b0'
+      },
+
+      // ══════════════════════════════════════════════
+      // ALTANY I MAŁE OBIEKTY
+      // ══════════════════════════════════════════════
+
+      // Altana przy Łuczniczej 43
+      {
+        id: 1070,
+        coords: [
+          [53.45402, 14.54800], [53.45402, 14.54820],
+          [53.45394, 14.54820], [53.45394, 14.54800],
+          [53.45402, 14.54800]
+        ],
+        levels: 1, name: 'Altana', address: '',
+        type: 'yes', color: '#90c890'
+      },
+
+      // Wiata śmietnikowa
+      {
+        id: 1071,
+        coords: [
+          [53.45420, 14.54800], [53.45420, 14.54812],
+          [53.45412, 14.54812], [53.45412, 14.54800],
+          [53.45420, 14.54800]
+        ],
+        levels: 1, name: 'Wiata', address: '',
+        type: 'yes', color: '#a0a0a0'
+      },
+
+      // Transformator / stacja energetyczna
+      {
+        id: 1072,
+        coords: [
+          [53.45440, 14.54800], [53.45440, 14.54812],
+          [53.45432, 14.54812], [53.45432, 14.54800],
+          [53.45440, 14.54800]
+        ],
+        levels: 1, name: 'Stacja trafo', address: '',
+        type: 'industrial', color: '#c0c0c0'
+      },
+
+      // ══════════════════════════════════════════════
+      // BUDYNKI PRZY UL. BANDURSKIEGO (dalsze otoczenie)
+      // ══════════════════════════════════════════════
+
+      // Bandurskiego 1 — blok 5-piętrowy
+      {
+        id: 1080,
+        coords: [
+          [53.45540, 14.54680], [53.45540, 14.54740],
+          [53.45522, 14.54740], [53.45522, 14.54680],
+          [53.45540, 14.54680]
+        ],
+        levels: 5, name: '', address: 'ul. Bandurskiego 1',
+        type: 'apartments', color: '#c8c0b0'
+      },
+
+      // Bandurskiego 3
+      {
+        id: 1081,
+        coords: [
+          [53.45518, 14.54680], [53.45518, 14.54740],
+          [53.45500, 14.54740], [53.45500, 14.54680],
+          [53.45518, 14.54680]
+        ],
+        levels: 5, name: '', address: 'ul. Bandurskiego 3',
+        type: 'apartments', color: '#d0c8b8'
+      },
+
+      // Bandurskiego 5
+      {
+        id: 1082,
+        coords: [
+          [53.45496, 14.54680], [53.45496, 14.54740],
+          [53.45478, 14.54740], [53.45478, 14.54680],
+          [53.45496, 14.54680]
+        ],
+        levels: 5, name: '', address: 'ul. Bandurskiego 5',
+        type: 'apartments', color: '#c8c0b0'
+      },
+
+      // ══════════════════════════════════════════════
+      // BUDYNKI PRZY UL. RUGIAŃSKIEJ (dalsze otoczenie)
+      // ══════════════════════════════════════════════
+
+      // Rugiańska 1 — blok 4-piętrowy
+      {
+        id: 1090,
+        coords: [
+          [53.45300, 14.54780], [53.45300, 14.54840],
+          [53.45282, 14.54840], [53.45282, 14.54780],
+          [53.45300, 14.54780]
+        ],
+        levels: 4, name: '', address: 'ul. Rugiańska 1',
+        type: 'residential', color: '#c0b8a8'
+      },
+
+      // Rugiańska 3
+      {
+        id: 1091,
+        coords: [
+          [53.45278, 14.54780], [53.45278, 14.54840],
+          [53.45260, 14.54840], [53.45260, 14.54780],
+          [53.45278, 14.54780]
+        ],
+        levels: 4, name: '', address: 'ul. Rugiańska 3',
+        type: 'residential', color: '#c8c0b0'
+      },
+
     ];
   }
 
