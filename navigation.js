@@ -10,6 +10,7 @@ const NAV_STATE = {
   routeLayer: null,
   startMarker: null,
   endMarker: null,
+  posMarker: null,
   steps: [],
   currentStep: 0,
   watchId: null,
@@ -185,6 +186,23 @@ function updatePosition(lat, lon) {
   if (!NAV_STATE.active || !NAV_STATE.destination) return;
   const map = window.state?.map;
 
+  // Live position marker (follows the user along the route)
+  if (map) {
+    if (!NAV_STATE.posMarker) {
+      NAV_STATE.posMarker = L.marker([lat, lon], {
+        icon: L.divIcon({
+          html: '<div class="nav-pos-marker"><div class="nav-pos-core"></div><div class="nav-pos-pulse"></div></div>',
+          iconSize: [28, 28], iconAnchor: [14, 14], className: 'nav-pos-icon'
+        }),
+        zIndexOffset: 2000
+      }).addTo(map);
+    } else {
+      NAV_STATE.posMarker.setLatLng([lat, lon]);
+    }
+    // Keep the user roughly centered while navigating
+    map.panTo([lat, lon], { animate: true, duration: 0.5 });
+  }
+
   // Check if arrived
   const dist = calcNavDist(lat, lon, NAV_STATE.destination.lat, NAV_STATE.destination.lon);
   if (dist < 0.03) { // 30m
@@ -214,6 +232,7 @@ function stopNavigation(showMsg = true) {
   if (NAV_STATE.routeLayer && map) map.removeLayer(NAV_STATE.routeLayer);
   if (NAV_STATE.startMarker && map) map.removeLayer(NAV_STATE.startMarker);
   if (NAV_STATE.endMarker && map) map.removeLayer(NAV_STATE.endMarker);
+  if (NAV_STATE.posMarker && map) map.removeLayer(NAV_STATE.posMarker);
   if (NAV_STATE.watchId) navigator.geolocation.clearWatch(NAV_STATE.watchId);
   if (NAV_STATE.panel) NAV_STATE.panel.remove();
 
@@ -221,6 +240,7 @@ function stopNavigation(showMsg = true) {
   NAV_STATE.routeLayer = null;
   NAV_STATE.startMarker = null;
   NAV_STATE.endMarker = null;
+  NAV_STATE.posMarker = null;
   NAV_STATE.watchId = null;
   NAV_STATE.panel = null;
   NAV_STATE.steps = [];

@@ -97,6 +97,7 @@ function buildFloatingControls() {
   fc.className = 'map-fab-group';
   fc.innerHTML = `
     <button class="map-fab" id="fabLocate"     title="Moja lokalizacja (L)">🎯</button>
+    <button class="map-fab" id="fabNearest"    title="Najbliższe miejsca">📍</button>
     <button class="map-fab" id="fabFitAll"     title="Pokaż wszystkie miejsca">🗺️</button>
     <button class="map-fab" id="fabFullscreen" title="Pełny ekran (F)">⛶</button>
     <button class="map-fab" id="fabReset"      title="Wyśrodkuj (R)">🏹</button>
@@ -105,6 +106,9 @@ function buildFloatingControls() {
   container.appendChild(fc);
 
   document.getElementById('fabLocate').addEventListener('click', locateUser);
+  document.getElementById('fabNearest').addEventListener('click', () => {
+    if (typeof window.showNearestPlaces === 'function') window.showNearestPlaces();
+  });
   document.getElementById('fabFitAll').addEventListener('click', fitAllPlaces);
   document.getElementById('fabFullscreen').addEventListener('click', toggleFullscreen);
   document.getElementById('fabReset').addEventListener('click', resetView);

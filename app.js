@@ -942,6 +942,56 @@ function showUserOnMap(lat, lng, accuracy = 50) {
   }).addTo(state.map);
 }
 
+// ===== NEAREST PLACES — quick panel of closest POIs =====
+function showNearestPlaces() {
+  const PE = window.placesEnhanced;
+  if (!PE) return;
+
+  const render = () => {
+    const withDist = APP_DATA.places
+      .map(p => ({ p, dist: PE.distanceToPlace(p) }))
+      .filter(x => x.dist != null)
+      .sort((a, b) => a.dist - b.dist)
+      .slice(0, 6);
+
+    let panel = document.getElementById('nearestPanel');
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.id = 'nearestPanel';
+      panel.className = 'nearest-panel';
+      document.getElementById('map')?.appendChild(panel);
+    }
+
+    panel.innerHTML = `
+      <div class="np2-header">
+        <span>📍 Najbliżej Ciebie</span>
+        <button class="np2-close" onclick="document.getElementById('nearestPanel').remove()">✕</button>
+      </div>
+      <div class="np2-list">
+        ${withDist.map(({ p, dist }) => `
+          <button class="np2-item" onclick="flyToPlace(${p.id});document.getElementById('nearestPanel')?.remove()">
+            <span class="np2-emoji">${p.emoji}</span>
+            <span class="np2-info">
+              <span class="np2-name">${p.name}</span>
+              <span class="np2-cat">${p.cat}</span>
+            </span>
+            <span class="np2-dist">${PE.formatDistance(dist)}</span>
+          </button>
+        `).join('')}
+      </div>
+    `;
+  };
+
+  // Need user location first
+  const hasLoc = PE.distanceToPlace(APP_DATA.places[0]) != null;
+  if (hasLoc) {
+    render();
+  } else {
+    requestUserLocation(() => render());
+  }
+}
+window.showNearestPlaces = showNearestPlaces;
+
 // ===== NAVIGATION =====
 function navigateTo(section) {
   state.currentSection = section;
