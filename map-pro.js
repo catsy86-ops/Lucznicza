@@ -97,6 +97,7 @@ function buildFloatingControls() {
   fc.className = 'map-fab-group';
   fc.innerHTML = `
     <button class="map-fab" id="fabLocate"     title="Moja lokalizacja (L)">🎯</button>
+    <button class="map-fab" id="fabFitAll"     title="Pokaż wszystkie miejsca">🗺️</button>
     <button class="map-fab" id="fabFullscreen" title="Pełny ekran (F)">⛶</button>
     <button class="map-fab" id="fabReset"      title="Wyśrodkuj (R)">🏹</button>
     <button class="map-fab" id="fabBack"       title="Cofnij widok (←)" style="font-size:14px">◀</button>
@@ -104,6 +105,7 @@ function buildFloatingControls() {
   container.appendChild(fc);
 
   document.getElementById('fabLocate').addEventListener('click', locateUser);
+  document.getElementById('fabFitAll').addEventListener('click', fitAllPlaces);
   document.getElementById('fabFullscreen').addEventListener('click', toggleFullscreen);
   document.getElementById('fabReset').addEventListener('click', resetView);
   document.getElementById('fabBack').addEventListener('click', viewHistoryBack);
@@ -451,6 +453,22 @@ function resetView() {
   showToast('🏹 Powrót do centrum dzielnicy');
 }
 
+// Fit map to show all visible POI markers
+function fitAllPlaces() {
+  const map = MAP_PRO.map;
+  const st = window.state;
+  if (!map || !st || !st.markers || !st.markers.length) return;
+  const visible = st.markers.filter(m => map.hasLayer(m));
+  const toFit = visible.length ? visible : st.markers;
+  try {
+    const bounds = L.latLngBounds(toFit.map(m => m.getLatLng()));
+    map.flyToBounds(bounds, { padding: [60, 60], maxZoom: 17, duration: 1 });
+    showToast(`🗺️ Pokazuję ${toFit.length} miejsc`);
+  } catch (e) {
+    resetView();
+  }
+}
+
 // ===== VIEW HISTORY (back/forward) =====
 function initViewHistory() {
   const map = MAP_PRO.map;
@@ -524,5 +542,6 @@ window.mapPro = {
   locate: locateUser,
   fullscreen: toggleFullscreen,
   reset: resetView,
+  fitAll: fitAllPlaces,
   search: searchOnMap
 };
