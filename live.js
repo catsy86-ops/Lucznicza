@@ -672,7 +672,12 @@ function updateTicker() {
   const allItems = [...items, ...items];
   const track = document.getElementById('tickerTrack');
   if (track) {
-    track.innerHTML = allItems.map(i => `<span class="ticker-item">${i}</span>`).join('');
+    const html = allItems.map(i => `<span class="ticker-item">${i}</span>`).join('');
+    // Only touch the DOM if content changed (avoids layout thrashing + animation restart)
+    if (track._lastHtml !== html) {
+      track.innerHTML = html;
+      track._lastHtml = html;
+    }
   }
 }
 

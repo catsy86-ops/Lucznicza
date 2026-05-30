@@ -865,6 +865,12 @@ function navigateTo(section) {
     setTimeout(() => state.map.invalidateSize(), 100);
   }
 
+  // Hide search bar when leaving places/map (keeps UI clean)
+  if (section !== 'places' && section !== 'map') {
+    const searchBar = document.getElementById('searchBar');
+    if (searchBar) searchBar.classList.add('hidden');
+  }
+
   // Update URL hash for deep linking (without triggering hashchange)
   if (history.replaceState) {
     history.replaceState(null, '', `#${section}`);
@@ -1869,7 +1875,12 @@ function openPlaceModal(id) {
 
   document.getElementById('modalOverlay').classList.remove('hidden');
   document.getElementById('modalOverlay').style.display = 'flex';
-  
+
+  // Reset scroll to top (so reopening a modal doesn't show mid-scroll)
+  const modalEl = document.getElementById('placeModal') || content;
+  if (modalEl) modalEl.scrollTop = 0;
+  content.scrollTop = 0;
+
   // Accessibility: trap focus in modal
   state._lastFocusedElement = document.activeElement;
   document.addEventListener('keydown', trapModalFocus);
