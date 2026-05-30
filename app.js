@@ -198,7 +198,27 @@ function initMap() {
         map.removeLayer(voyagerLayer);
         osmLayer.addTo(map);
         state.currentBaseLayer = 'osm';
+        if (typeof showToast === 'function') showToast('🗺️ Przełączono na OpenStreetMap (kafelki CARTO niedostępne)');
       }
+    });
+
+    // Tile loading indicator — subtle progress feedback
+    let tilesLoading = 0;
+    function onTileLoadStart() {
+      tilesLoading++;
+      const el = document.getElementById('mapLoadingBar');
+      if (el) el.classList.add('active');
+    }
+    function onTileLoadEnd() {
+      tilesLoading = Math.max(0, tilesLoading - 1);
+      if (tilesLoading === 0) {
+        const el = document.getElementById('mapLoadingBar');
+        if (el) el.classList.remove('active');
+      }
+    }
+    [osmLayer, voyagerLayer, darkLayer, lightLayer, satelliteLayer].forEach(layer => {
+      layer.on('loading', onTileLoadStart);
+      layer.on('load', onTileLoadEnd);
     });
 
     // Store layers for switching (keys used by the style switcher UI)
