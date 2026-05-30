@@ -162,6 +162,17 @@ const Buildings3D = (() => {
   }
 
   // ===== RENDER =====
+  // RAF-throttled render for smooth panning
+  let rafPending = false;
+  function renderThrottled() {
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(() => {
+      rafPending = false;
+      render();
+    });
+  }
+
   function render() {
     if (!cfg.enabled || !cfg.ctx || !cfg.map) return;
     const map = cfg.map;
@@ -185,15 +196,32 @@ const Buildings3D = (() => {
     const zoomFactor = Math.pow(2, zoom - 17);
     const hScale = cfg.heightScale * zoomFactor;
 
+    const W = cfg.canvas.width;
+    const H = cfg.canvas.height;
+    const margin = 100; // pixels off-screen still rendered (for tall buildings)
+
     // Build render list with projected points + depth (for painter's algo)
-    const renderList = cfg.buildingsData.map(b => {
+    // Viewport culling: skip buildings entirely off-screen
+    const renderList = [];
+    for (const b of cfg.buildingsData) {
       const pts = b.coords.map(c => {
         const p = map.latLngToContainerPoint([c[0], c[1]]);
         return [p.x, p.y];
       });
+      // Bounding box check
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const p of pts) {
+        if (p[0] < minX) minX = p[0];
+        if (p[0] > maxX) maxX = p[0];
+        if (p[1] < minY) minY = p[1];
+        if (p[1] > maxY) maxY = p[1];
+      }
+      if (maxX < -margin || minX > W + margin || maxY < -margin || minY > H + margin) {
+        continue; // off-screen — skip
+      }
       const centroid = centroidOf(pts);
-      return { b, pts, centroid };
-    });
+      renderList.push({ b, pts, centroid });
+    }
 
     // Painter's algorithm: draw far (top of screen) first, near (bottom) last
     renderList.sort((a, b) => a.centroid[1] - b.centroid[1]);
@@ -363,8 +391,8 @@ const Buildings3D = (() => {
   // ===== MAP EVENTS =====
   function bindMapEvents() {
     const map = cfg.map;
-    map.on('move', render);
-    map.on('zoom', render);
+    map.on('move', renderThrottled);
+    map.on('zoom', renderThrottled);
     map.on('moveend', render);
     map.on('zoomend', render);
     map.on('resize', render);
@@ -373,8 +401,8 @@ const Buildings3D = (() => {
   function unbindMapEvents() {
     const map = cfg.map;
     if (!map) return;
-    map.off('move', render);
-    map.off('zoom', render);
+    map.off('move', renderThrottled);
+    map.off('zoom', renderThrottled);
     map.off('moveend', render);
     map.off('zoomend', render);
     map.off('resize', render);

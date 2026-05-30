@@ -242,10 +242,8 @@ function initMap() {
       });
       ro.observe(mapContainer);
     }
-    setTimeout(() => map.invalidateSize(true), 100);
-    setTimeout(() => map.invalidateSize(true), 500);
-    setTimeout(() => map.invalidateSize(true), 1500);
-    map.whenReady(() => setTimeout(() => map.invalidateSize(true), 50));
+    // One delayed call covers the splash-screen reveal; ResizeObserver handles the rest.
+    map.whenReady(() => setTimeout(() => map.invalidateSize(true), 100));
     window.addEventListener('resize', () => map.invalidateSize());
 
     // Initialize premium map features (style switcher, geolocation, etc.)

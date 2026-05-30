@@ -82,32 +82,43 @@ function initLive() {
   // Auto-refresh intervals (staggered to avoid network spikes)
   live.weatherInterval = setInterval(fetchWeather, 10 * 60 * 1000);   // 10 min
   live.aqiInterval     = setInterval(fetchAqi, 15 * 60 * 1000);       // 15 min
-  live.transportInterval = setInterval(generateTransportDepartures, 60 * 1000); // 1 min
+  // Transport: only refresh when user is on Live or Transport section (saves network/CPU)
+  live.transportInterval = setInterval(() => {
+    const sec = window.state?.currentSection;
+    if (sec === 'live' || sec === 'transport') generateTransportDepartures();
+  }, 60 * 1000); // 1 min
 
   // Update refresh countdown every second
   live.countdownInterval = setInterval(updateRefreshCountdown, 1000);
 
-  // Live transport panel
-  document.getElementById('liveTransportBtn').addEventListener('click', () => {
-    const panel = document.getElementById('liveTransportPanel');
-    panel.classList.toggle('hidden');
-    if (!panel.classList.contains('hidden')) generateTransportDepartures();
-  });
-  document.getElementById('ltpClose').addEventListener('click', () => {
-    document.getElementById('liveTransportPanel').classList.add('hidden');
-  });
-  document.getElementById('ltpRefresh').addEventListener('click', generateTransportDepartures);
+  // Live transport panel (null-safe — elements may not exist)
+  const liveTransportBtn = document.getElementById('liveTransportBtn');
+  if (liveTransportBtn) {
+    liveTransportBtn.addEventListener('click', () => {
+      const panel = document.getElementById('liveTransportPanel');
+      if (!panel) return;
+      panel.classList.toggle('hidden');
+      if (!panel.classList.contains('hidden')) generateTransportDepartures();
+    });
+  }
+  const ltpClose = document.getElementById('ltpClose');
+  if (ltpClose) {
+    ltpClose.addEventListener('click', () => {
+      document.getElementById('liveTransportPanel')?.classList.add('hidden');
+    });
+  }
+  document.getElementById('ltpRefresh')?.addEventListener('click', generateTransportDepartures);
 
   // Live section refresh buttons
-  document.getElementById('refreshWeather').addEventListener('click', () => {
+  document.getElementById('refreshWeather')?.addEventListener('click', () => {
     live.lastWeatherFetch = 0;
     fetchWeather();
   });
-  document.getElementById('refreshAqi').addEventListener('click', () => {
+  document.getElementById('refreshAqi')?.addEventListener('click', () => {
     live.lastAqiFetch = 0;
     fetchAqi();
   });
-  document.getElementById('refreshTransport').addEventListener('click', generateTransportDepartures);
+  document.getElementById('refreshTransport')?.addEventListener('click', generateTransportDepartures);
 }
 
 // ===== CLOCK =====
