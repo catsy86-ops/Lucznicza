@@ -1643,6 +1643,45 @@ function animateInfoCounters() {
 function renderTransport() {
   const container = document.getElementById('transportGrid');
   if (!container) return;
+
+  // Live departures panel at the top (fed by live.js)
+  let livePanel = document.getElementById('transportLivePanel');
+  if (!livePanel) {
+    const section = document.getElementById('section-transport');
+    const hero = section?.querySelector('.section-hero');
+    if (hero) {
+      livePanel = document.createElement('div');
+      livePanel.id = 'transportLivePanel';
+      livePanel.className = 'transport-live-panel';
+      livePanel.innerHTML = `
+        <div class="tlp-header">
+          <span class="tlp-icon">📡</span>
+          <div>
+            <div class="tlp-title">Odjazdy na żywo — Łucznicza</div>
+            <div class="tlp-sub"><span class="live-dot"></span> ZDiTM Szczecin · aktualizacja co minutę</div>
+          </div>
+          <button class="tlp-refresh" id="transportLiveRefresh" title="Odśwież">🔄</button>
+        </div>
+        <div id="transportLiveList" class="tlp-list">
+          <div class="live-skeleton"></div>
+        </div>
+      `;
+      hero.after(livePanel);
+
+      const refreshBtn = document.getElementById('transportLiveRefresh');
+      if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+          if (typeof generateTransportDepartures === 'function') generateTransportDepartures();
+        });
+      }
+    }
+  }
+
+  // Trigger a live departures fetch when viewing transport
+  if (typeof generateTransportDepartures === 'function') {
+    setTimeout(generateTransportDepartures, 100);
+  }
+
   container.innerHTML = APP_DATA.transport.map(t => `
     <div class="transport-card">
       <div class="transport-header">

@@ -476,6 +476,7 @@ async function generateTransportDepartures() {
         live.nextDepartures = departures;
         renderTransportPanel(departures);
         renderTransportFull(departures, true);
+        renderTransportSectionLive(departures, true);
         updateTicker();
         return;
       }
@@ -489,6 +490,7 @@ async function generateTransportDepartures() {
           live.nextDepartures = cached;
           renderTransportPanel(cached);
           renderTransportFull(cached, true);
+          renderTransportSectionLive(cached, true);
           showToast('📵 Odjazdy z cache (offline)');
           return;
         }
@@ -501,6 +503,30 @@ async function generateTransportDepartures() {
   live.nextDepartures = departures;
   renderTransportPanel(departures);
   renderTransportFull(departures, false);
+  renderTransportSectionLive(departures, false);
+}
+
+// Render live departures into the Transport section panel (unifies Transport + Live)
+function renderTransportSectionLive(deps, isRealtime) {
+  const list = document.getElementById('transportLiveList');
+  if (!list) return;
+  if (!deps || !deps.length) {
+    list.innerHTML = `<div class="tlp-empty">🚌 Brak odjazdów w tej chwili</div>`;
+    return;
+  }
+  list.innerHTML = deps.slice(0, 8).map(d => `
+    <div class="tlp-row">
+      <div class="tlp-line" style="background:${d.color}">${d.line}</div>
+      <div class="tlp-dest">
+        <div>${d.dest}</div>
+        <div class="tlp-stop">🚏 ${d.stop}${d.realtime ? ' 📡' : ''}</div>
+      </div>
+      <div class="tlp-time ${d.minsLeft <= 2 ? 'soon' : ''}">
+        ${d.minsLeft <= 0 ? 'Teraz' : d.minsLeft + ' min'}
+        <div class="tlp-clock">${d.time}</div>
+      </div>
+    </div>
+  `).join('');
 }
 
 function generateSimulatedTransportDepartures() {
