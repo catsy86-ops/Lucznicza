@@ -15,15 +15,13 @@ const Buildings3D = (() => {
     map: null,
     buildingsData: [],
     metersPerPixelCache: 1,
-    // Ekstruzja: ile pikseli na 1 metr wysokości (zależne od zoomu, skalowane)
-    heightScale: 1.6,
-    // Kierunek ekstruzji (w którą stronę "rosną" budynki na ekranie)
-    extrudeX: 0,      // przesunięcie poziome wierzchołka (perspektywa)
-    extrudeY: -1,     // budynki rosną w górę ekranu
-    zoomThreshold: 15,
+    heightScale: 1.8,
+    extrudeX: 0,
+    extrudeY: -1,
+    zoomThreshold: 14,   // niższy próg — budynki widoczne już od zoom 14
     colorScheme: 'realistic',
     selectedBuilding: null,
-    center: { lat: 53.4540, lon: 14.5477 },
+    center: { lat: 53.4525, lon: 14.5490 },  // centrum Łucznicza 43
   };
 
   // Kolory budynków wg typu (ściana jasna, ściana ciemna, dach)
@@ -106,7 +104,7 @@ const Buildings3D = (() => {
     updateSunPosition();
 
     // Fly to Łucznicza 43 area at a good 3D zoom
-    map.flyTo([cfg.center.lat, cfg.center.lon], 18, { animate: true, duration: 1.5 });
+    map.flyTo([cfg.center.lat, cfg.center.lon], 16, { animate: true, duration: 1.5 });
     map.once('moveend', render);
     setTimeout(render, 200);
 
@@ -492,17 +490,17 @@ const Buildings3D = (() => {
 
     // Fly-to buttons
     document.getElementById('b3dFlyMain').addEventListener('click', () => {
-      cfg.map.flyTo([53.45410, 14.54750], 18, { animate: true, duration: 1.2 });
+      cfg.map.flyTo([53.4525, 14.5490], 17, { animate: true, duration: 1.2 });
       document.querySelectorAll('.b3d-fly-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('b3dFlyMain').classList.add('active');
     });
     document.getElementById('b3dFlySchool').addEventListener('click', () => {
-      cfg.map.flyTo([53.45500, 14.54675], 18, { animate: true, duration: 1.2 });
+      cfg.map.flyTo([53.4530, 14.5510], 17, { animate: true, duration: 1.2 });
       document.querySelectorAll('.b3d-fly-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('b3dFlySchool').classList.add('active');
     });
     document.getElementById('b3dFlyTarczowa').addEventListener('click', () => {
-      cfg.map.flyTo([53.45430, 14.54830], 18, { animate: true, duration: 1.2 });
+      cfg.map.flyTo([53.4515, 14.5500], 17, { animate: true, duration: 1.2 });
       document.querySelectorAll('.b3d-fly-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('b3dFlyTarczowa').classList.add('active');
     });
