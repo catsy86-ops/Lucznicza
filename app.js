@@ -14,7 +14,9 @@ const state = {
   flyInterval: null,
   searchQuery: '',
   sortBy: 'default',      // default | rating | distance | name
-  showFavoritesOnly: false
+  showFavoritesOnly: false,
+  userMarker: null,
+  userCircle: null
 };
 
 // ===== CATEGORY COLORS =====
@@ -754,6 +756,7 @@ function requestUserLocation(callback) {
   navigator.geolocation.getCurrentPosition(
     pos => {
       PE.setUserLocation(pos.coords.latitude, pos.coords.longitude);
+      showUserOnMap(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
       if (callback) callback();
     },
     () => {
@@ -761,8 +764,31 @@ function requestUserLocation(callback) {
       PE.setUserLocation(53.4530, 14.5520);
       showToast('📍 Używam centrum dzielnicy jako punktu odniesienia');
       if (callback) callback();
-    }
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }  // 10s timeout — nie wisi w nieskończoność
   );
+}
+
+// Show "You are here" marker on the map
+function showUserOnMap(lat, lng, accuracy = 50) {
+  if (!state.map || typeof L === 'undefined') return;
+
+  // Remove previous marker/circle
+  if (state.userMarker) state.map.removeLayer(state.userMarker);
+  if (state.userCircle) state.map.removeLayer(state.userCircle);
+
+  const userIcon = L.divIcon({
+    html: '<div class="user-dot"><div class="user-dot-core"></div><div class="user-dot-pulse"></div></div>',
+    iconSize: [24, 24], iconAnchor: [12, 12], className: 'user-location-icon'
+  });
+
+  state.userMarker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 1000 }).addTo(state.map);
+  state.userMarker.bindPopup(`<b>📍 Twoja lokalizacja</b><br>Dokładność: ±${Math.round(accuracy)}m`);
+
+  state.userCircle = L.circle([lat, lng], {
+    radius: accuracy, color: '#4285f4', weight: 1,
+    fillColor: '#4285f4', fillOpacity: 0.12
+  }).addTo(state.map);
 }
 
 // ===== NAVIGATION =====
