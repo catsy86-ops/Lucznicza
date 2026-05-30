@@ -250,6 +250,11 @@ function initMap() {
       window.mapPro.init(map);
     }
 
+    // Initialize advanced map features (zones, heatmap, search)
+    if (window.mapAdvanced && window.mapAdvanced.init) {
+      window.mapAdvanced.init(map);
+    }
+
     console.log('✨ Mapa Leaflet gotowa! Wysokość kontenera:', mapContainer.clientHeight);
 
   } catch (err) {
@@ -474,6 +479,41 @@ function initMapControls() {
       filterMarkers(btn.dataset.cat);
     });
   });
+
+  // Advanced map layer controls
+  const mapContainer = document.getElementById('map');
+  if (mapContainer && !document.getElementById('layerControl')) {
+    const layerCtrl = document.createElement('div');
+    layerCtrl.id = 'layerControl';
+    layerCtrl.className = 'map-layer-control';
+    layerCtrl.innerHTML = `
+      <button class="mlc-toggle" id="lcToggle" title="Przełącznik warstw" onclick="toggleLayerPanel()">🎨</button>
+      <div id="lcPanel" class="mlc-options" style="display: none;">
+        <button class="mlc-option" onclick="window.mapAdvanced.toggleLayer('geofence')" title="Strefy zainteresowania">
+          <span class="mlc-icon">🎯</span> Strefy
+        </button>
+        <button class="mlc-option" onclick="window.mapAdvanced.toggleLayer('heat')" title="Mapa ciepła aktywności">
+          <span class="mlc-icon">🔥</span> Heatmapa
+        </button>
+        <button class="mlc-option" onclick="window.printMap()" title="Drukuj mapę">
+          <span class="mlc-icon">🖨️</span> Drukuj
+        </button>
+      </div>
+    `;
+    mapContainer.appendChild(layerCtrl);
+    
+    window.toggleLayerPanel = function() {
+      const panel = document.getElementById('lcPanel');
+      const toggle = document.getElementById('lcToggle');
+      if (panel.style.display === 'none') {
+        panel.style.display = 'flex';
+        toggle.classList.add('active');
+      } else {
+        panel.style.display = 'none';
+        toggle.classList.remove('active');
+      }
+    };
+  }
 }
 
 // ===== UI INIT =====
