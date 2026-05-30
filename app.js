@@ -238,15 +238,34 @@ function initMap() {
     // Area highlight rectangle — Niebuszewo
     L.rectangle(
       [[53.4472, 14.5431], [53.4623, 14.5710]],
-      { color: '#6c63ff', weight: 2, opacity: 0.4, fill: true, fillColor: '#6c63ff', fillOpacity: 0.04, dashArray: '4, 2' }
+      { color: '#6c63ff', weight: 2, opacity: 0.4, fill: true, fillColor: '#6c63ff', fillOpacity: 0.04, dashArray: '4, 2', interactive: false }
     ).addTo(map);
 
-    // Add POI markers
+    // Central landmark — Łucznicza 43 (subtle, non-intrusive)
+    const landmarkIcon = L.divIcon({
+      html: '<div class="map-landmark"><span class="ml-pin">🏹</span><span class="ml-label">Łucznicza 43</span></div>',
+      iconSize: null,
+      className: 'map-landmark-icon'
+    });
+    L.marker([53.4541, 14.5475], { icon: landmarkIcon, interactive: false, zIndexOffset: -500 }).addTo(map);
+
+    // Add POI markers — with subtle staggered drop-in
     if (APP_DATA && APP_DATA.places) {
-      APP_DATA.places.forEach(place => {
+      APP_DATA.places.forEach((place, i) => {
         const marker = createPoiMarker(place);
         marker.addTo(map);
         state.markers.push(marker);
+        // Staggered fade-in via marker element
+        const el = marker.getElement && marker.getElement();
+        if (el) {
+          el.style.opacity = '0';
+          el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          el.style.transform = 'translateY(-12px)';
+          setTimeout(() => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, 200 + i * 40);
+        }
       });
     }
 
