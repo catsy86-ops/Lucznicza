@@ -5156,3 +5156,64 @@ body.offline::after {
   color: var(--text2);
   font-size: 14px;
 }
+
+/* ===== ROUTE MAP POPUP ===== */
+.route-popup-wrapper .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0;
+}
+.route-popup-wrapper .leaflet-popup-content {
+  margin: 0;
+  width: auto !important;
+}
+.route-map-popup {
+  width: 240px;
+  background: var(--surface);
+}
+.rmp-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(108, 99, 255, 0.08);
+}
+.rmp-emoji { font-size: 28px; }
+.rmp-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.rmp-meta {
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 2px;
+}
+.rmp-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+}
+.rmp-stat {
+  font-size: 12px;
+  color: var(--text2);
+  background: var(--surface2);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.rmp-btn {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 0 12px 12px;
+  padding: 9px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.rmp-btn:hover { background: var(--accent2); }

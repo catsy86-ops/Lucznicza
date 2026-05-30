@@ -140,41 +140,53 @@ function initMap() {
 
     // Initialize Leaflet map centered on Niebuszewo, Szczecin
     const map = L.map('map', {
-      zoomControl: false
+      zoomControl: false,
+      zoomSnap: 0.5,            // płynniejszy zoom (półstopnie)
+      zoomDelta: 0.5,
+      wheelPxPerZoomLevel: 100, // łagodniejszy zoom kółkiem
+      maxBoundsViscosity: 0.7,  // "miękkie" odbicie od granic
+      minZoom: 12,
+      maxZoom: 20,
+      tap: true,
+      inertia: true,
     }).setView([53.4530, 14.5520], 15);
+
+    // Ogranicz przewijanie do okolic Szczecina (z marginesem)
+    map.setMaxBounds([[53.30, 14.35], [53.60, 14.75]]);
 
     // Base tile layers — NO crossOrigin (it breaks tile display if the
     // tile server doesn't send CORS headers → tiles load but show blank/gray).
+    // detectRetina = ostrzejsze kafelki na ekranach HiDPI/Retina.
     const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
-      maxZoom: 19
+      maxZoom: 19, detectRetina: true
     });
 
     // CARTO Voyager — colourful, modern default
     const voyagerLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap © CARTO',
       subdomains: 'abcd',
-      maxZoom: 20
+      maxZoom: 20, detectRetina: true
     }).addTo(map);
 
     // CARTO Dark — for night / dark theme
     const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap © CARTO',
       subdomains: 'abcd',
-      maxZoom: 20
+      maxZoom: 20, detectRetina: true
     });
 
     // CARTO Light — clean, minimal
     const lightLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap © CARTO',
       subdomains: 'abcd',
-      maxZoom: 20
+      maxZoom: 20, detectRetina: true
     });
 
     // Esri satellite imagery
     const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: '© Esri',
-      maxZoom: 18
+      maxZoom: 18, detectRetina: true
     });
 
     // If Voyager fails to load tiles, fall back to OSM
@@ -218,14 +230,44 @@ function initMap() {
       });
     }
 
-    // Add routes
+    // Add routes — interactive with hover + popups
     if (APP_DATA && APP_DATA.routes) {
+      const typeEmoji = { walk: '🚶', bike: '🚴', run: '🏃' };
       APP_DATA.routes.forEach(route => {
-        const polyline = L.polyline(
-          route.coords.map(coord => [coord[1], coord[0]]),
-          { color: route.color, weight: 4, opacity: 0.8, dashArray: '8, 4', lineCap: 'round', lineJoin: 'round' }
-        );
+        const latlngs = route.coords.map(coord => [coord[1], coord[0]]);
+        const polyline = L.polyline(latlngs, {
+          color: route.color, weight: 5, opacity: 0.75,
+          dashArray: '10, 6', lineCap: 'round', lineJoin: 'round'
+        });
         polyline.routeId = route.id;
+
+        // Popup z informacjami o trasie
+        polyline.bindPopup(`
+          <div class="route-map-popup">
+            <div class="rmp-head" style="border-left:4px solid ${route.color}">
+              <span class="rmp-emoji">${route.emoji || typeEmoji[route.type] || '🚶'}</span>
+              <div>
+                <div class="rmp-name">${route.name}</div>
+                <div class="rmp-meta">${route.distance} · ${route.time} · ${route.difficulty}</div>
+              </div>
+            </div>
+            <div class="rmp-body">
+              <div class="rmp-stat">🔥 ${route.calories} kcal</div>
+              <div class="rmp-stat">🛤️ ${route.terrain}</div>
+              <div class="rmp-stat">⏰ Najlepiej: ${route.bestTime}</div>
+            </div>
+            <button class="rmp-btn" onclick="showRouteOnMap(${route.id})">Pokaż szczegóły trasy</button>
+          </div>
+        `, { maxWidth: 260, className: 'route-popup-wrapper' });
+
+        // Hover — podświetl trasę
+        polyline.on('mouseover', function() {
+          this.setStyle({ weight: 8, opacity: 1, dashArray: null });
+        });
+        polyline.on('mouseout', function() {
+          this.setStyle({ weight: 5, opacity: 0.75, dashArray: '10, 6' });
+        });
+
         polyline.addTo(map);
         state.routePolylines.push(polyline);
       });
@@ -702,6 +744,15 @@ function initUI() {
     document.documentElement.setAttribute('data-theme', state.isDark ? 'dark' : 'light');
     localStorage.setItem('lucznicza_theme', state.isDark ? 'dark' : 'light');
     showToast(state.isDark ? '🌙 Tryb ciemny' : '☀️ Tryb jasny');
+
+    // Zsynchronizuj styl mapy z motywem (tylko gdy używamy podstawowych stylów,
+    // nie zmieniaj jeśli użytkownik wybrał satelitę).
+    if (state.map && state.baseLayers && state.currentBaseLayer !== 'satellite') {
+      const targetStyle = state.isDark ? 'dark' : 'voyager';
+      if (window.mapPro && window.mapPro.setStyle) {
+        window.mapPro.setStyle(targetStyle);
+      }
+    }
   });
 
   // Keyboard shortcuts
