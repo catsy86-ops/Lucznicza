@@ -456,18 +456,8 @@ function initMapControls() {
     });
   }
 
-  // Quick 3D Buildings button (in tools panel)
-  const btnQuick3D = document.getElementById('btnQuick3D');
-  if (btnQuick3D) {
-    btnQuick3D.addEventListener('click', () => {
-      if (window.Buildings3D) {
-        window.Buildings3D.toggle();
-        btnQuick3D.classList.toggle('active', window.Buildings3D.isEnabled());
-        const fab = document.getElementById('buildings3dFab');
-        if (fab) fab.classList.toggle('active', window.Buildings3D.isEnabled());
-      }
-    });
-  }
+  // Quick 3D Buildings button — handled by delegation in buildings-3d.js
+  // (no listener here to avoid double-toggle)
 
   // FAB button is wired in buildings-3d.js directly (with L.DomEvent.disableClickPropagation)
 
@@ -565,14 +555,8 @@ function initUI() {
     });
   }
 
-  // Buildings 3D
-  const btnBuildings3D = document.getElementById('btnBuildings3D');
-  if (btnBuildings3D) {
-    btnBuildings3D.addEventListener('click', () => {
-      if (window.Buildings3D) window.Buildings3D.toggle();
-      btnBuildings3D.classList.toggle('active');
-    });
-  }
+  // Buildings 3D button — handled by delegation in buildings-3d.js
+  // (no listener here to avoid double-toggle)
 
   // Routing
   const btnCalculateRoute = document.getElementById('btnCalculateRoute');

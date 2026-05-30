@@ -77,7 +77,12 @@ const Buildings3D = (() => {
 
   async function enable() {
     const map = window.state?.map;
-    if (!map || cfg.loading) return;
+    if (!map) {
+      if (typeof showToast === 'function') showToast('⚠️ Mapa jeszcze się ładuje, spróbuj za chwilę...');
+      console.warn('Buildings3D: map not ready yet (window.state.map is undefined)');
+      return;
+    }
+    if (cfg.loading) return;
     cfg.map = map;
     cfg.loading = true;
 
@@ -525,45 +530,53 @@ const Buildings3D = (() => {
 
 window.Buildings3D = Buildings3D;
 
-// ===== AUTO-WIRE FAB BUTTON =====
-// Musi być po DOMContentLoaded i po załadowaniu Leaflet, żeby L.DomEvent działał.
-document.addEventListener('DOMContentLoaded', () => {
-  // Czekaj aż mapa będzie gotowa (Leaflet załadowany)
-  const wireUp = () => {
-    const fab = document.getElementById('buildings3dFab');
-    if (!fab) return;
+// ===== AUTO-WIRE 3D BUTTONS (robust event delegation) =====
+// Używamy delegacji zdarzeń na document, więc działa niezależnie od tego,
+// kiedy przyciski pojawią się w DOM (np. po splash screen).
 
-    // Zapobiegaj przechwyceniu kliknięcia przez Leaflet
-    if (typeof L !== 'undefined' && L.DomEvent) {
+function handle3DToggle() {
+  console.log('🏢 3D toggle clicked');
+  if (!window.Buildings3D) {
+    if (typeof showToast === 'function') showToast('⚠️ Moduł 3D jeszcze się ładuje...');
+    return;
+  }
+  window.Buildings3D.toggle();
+  const isOn = window.Buildings3D.isEnabled();
+  // Synchronizuj wszystkie przyciski 3D
+  ['buildings3dFab', 'btnQuick3D', 'btnBuildings3D'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.classList.toggle('active', isOn);
+  });
+}
+
+// Delegacja: łapie kliknięcia na dowolnym przycisku 3D, nawet jeśli dodany później
+document.addEventListener('click', (e) => {
+  const target = e.target.closest('#buildings3dFab, #btnQuick3D, #btnBuildings3D');
+  if (target) {
+    e.stopPropagation();
+    e.preventDefault();
+    handle3DToggle();
+  }
+}, true); // capture phase — uruchamia się przed Leaflet
+
+// Dodatkowo wyłącz propagację kliknięć Leaflet na FAB gdy się pojawi
+document.addEventListener('DOMContentLoaded', () => {
+  const tryDisableProp = () => {
+    const fab = document.getElementById('buildings3dFab');
+    if (fab && typeof L !== 'undefined' && L.DomEvent) {
       L.DomEvent.disableClickPropagation(fab);
       L.DomEvent.disableScrollPropagation(fab);
+      return true;
     }
-
-    fab.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      console.log('🏢 3D FAB clicked');
-      if (window.Buildings3D) {
-        window.Buildings3D.toggle();
-        const isOn = window.Buildings3D.isEnabled();
-        fab.classList.toggle('active', isOn);
-        // Sync other buttons
-        const quick = document.getElementById('btnQuick3D');
-        if (quick) quick.classList.toggle('active', isOn);
-        const tool = document.getElementById('btnBuildings3D');
-        if (tool) tool.classList.toggle('active', isOn);
-      } else {
-        if (typeof showToast === 'function') showToast('⚠️ Moduł 3D jeszcze się ładuje...');
-      }
-    });
+    return false;
   };
-
-  // Leaflet może nie być jeszcze gotowy — poczekaj
-  if (typeof L !== 'undefined') {
-    wireUp();
-  } else {
+  // Próbuj kilka razy, bo FAB pojawia się po splash screen
+  if (!tryDisableProp()) {
+    let tries = 0;
     const wait = setInterval(() => {
-      if (typeof L !== 'undefined') { clearInterval(wait); wireUp(); }
-    }, 200);
+      tries++;
+      if (tryDisableProp() || tries > 30) clearInterval(wait);
+    }, 300);
   }
 });
+

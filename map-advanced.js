@@ -90,7 +90,7 @@ const MAP_ADVANCED = (() => {
       const label = L.marker(zone.center, {
         icon: L.divIcon({
           html: `<div class="zone-label"><span class="zone-icon">${zone.icon}</span><span class="zone-name">${zone.name}</span></div>`,
-          iconSize: [auto, auto],
+          iconSize: null,
           className: 'zone-marker'
         })
       }).addTo(geofenceLayer);
