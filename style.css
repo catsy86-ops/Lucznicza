@@ -6545,3 +6545,299 @@ textarea:focus-visible {
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
+
+
+/* ===== BOTTOM SHEET — MOBILE UI ===== */
+/* Mobile-first bottom sheet for map enhancements on touch devices */
+
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: rgba(15, 15, 26, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  border-radius: 24px 24px 0 0;
+  display: none;
+  flex-direction: column;
+  max-height: 85vh;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+  touch-action: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Show on mobile/tablet */
+@media (max-width: 1023px) {
+  .bottom-sheet {
+    display: flex;
+  }
+
+  /* Hide desktop toolbar on mobile */
+  #mapEnhancementsToolbar {
+    display: none !important;
+  }
+}
+
+/* Handle bar (drag indicator) */
+.bs-handle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0;
+  cursor: grab;
+  user-select: none;
+}
+
+.bs-handle:active {
+  cursor: grabbing;
+}
+
+.bs-handle-bar {
+  width: 40px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.bottom-sheet.dragging .bs-handle-bar {
+  background: var(--accent);
+  width: 60px;
+  height: 6px;
+}
+
+/* Content area */
+.bs-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 60px;
+  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Header */
+.bs-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.bs-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.bs-close-hint {
+  font-size: 12px;
+  color: var(--text2);
+  display: block;
+}
+
+/* Buttons container in bottom sheet */
+.bs-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  padding: 16px 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Adapt button styling for bottom sheet */
+.bs-buttons .enh-btn {
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 8px;
+  min-height: 80px;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  border-radius: 12px;
+}
+
+.bs-buttons .enh-btn-icon {
+  font-size: 24px;
+}
+
+.bs-buttons .enh-btn-label {
+  text-align: center;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.bs-buttons .enh-btn-status {
+  font-size: 16px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .bottom-sheet {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="light"] .bs-handle-bar {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Scrollbar for bottom sheet */
+.bs-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.bs-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bs-content::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.bs-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text3);
+}
+
+/* Firefox scrollbar */
+.bs-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Desktop toolbar horizontal layout variant */
+#enhancements-buttons.horizontal {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-height: none;
+  background: transparent;
+  border: none;
+  gap: 8px;
+  padding: 0;
+}
+
+#enhancements-buttons.horizontal .enh-btn {
+  flex: 0 1 auto;
+  min-width: 120px;
+}
+
+/* Desktop optimization class */
+#mapEnhancementsToolbar.desktop-optimized {
+  gap: 4px;
+}
+
+#mapEnhancementsToolbar.desktop-optimized .enh-toggle-btn {
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+}
+
+/* Prevent bounce on iOS */
+.bottom-sheet {
+  overscroll-behavior: contain;
+}
+
+/* Tablet adjustments */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .bs-buttons {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .bs-buttons .enh-btn {
+    min-height: 90px;
+    padding: 14px 10px;
+  }
+}
+
+/* Mobile phone adjustments */
+@media (max-width: 767px) {
+  .bs-buttons {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .bs-buttons .enh-btn {
+    min-height: 75px;
+    padding: 10px 6px;
+    font-size: 10px;
+  }
+
+  .bs-buttons .enh-btn-icon {
+    font-size: 20px;
+  }
+
+  .bs-handle {
+    padding: 10px 0;
+  }
+
+  .bs-header {
+    padding: 14px 16px;
+  }
+
+  .bs-header h3 {
+    font-size: 16px;
+  }
+
+  .bs-close-hint {
+    font-size: 11px;
+  }
+}
+
+/* Small phone adjustments */
+@media (max-width: 480px) {
+  .bs-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bs-buttons .enh-btn {
+    min-height: 70px;
+    font-size: 9px;
+  }
+
+  .bs-buttons .enh-btn-icon {
+    font-size: 18px;
+  }
+
+  .bottom-sheet {
+    max-height: 80vh;
+  }
+
+  .bs-content {
+    height: 50px;
+  }
+}
+
+/* Animation for bottom sheet appearance */
+@keyframes slideUpBottomSheet {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bottom-sheet {
+  animation: slideUpBottomSheet 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .bottom-sheet,
+  .bs-content,
+  .bs-handle-bar {
+    transition: none;
+    animation: none;
+  }
+}
