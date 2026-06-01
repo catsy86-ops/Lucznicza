@@ -11,7 +11,8 @@ const VEHICLES = {
   enabled: false,
   interval: null,
   lineFilter: null,     // filtr po numerze linii (null = wszystkie)
-  lastData: []
+  lastData: [],
+  lastTotal: 0          // cached city-wide count for badge tooltip
 };
 
 const VEH_REFRESH_MS = 15000;
@@ -48,6 +49,9 @@ async function fetchVehicles() {
 function renderVehicles(vehicles, totalCity) {
   const map = window.state?.map;
   if (!map || !VEHICLES.layer) return;
+
+  // Cache total for use in setVehicleLineFilter
+  if (totalCity != null) VEHICLES.lastTotal = totalCity;
 
   // Apply line filter
   let filtered = vehicles;
@@ -194,7 +198,8 @@ function toggleVehicles() {
 // ===== LINE FILTER =====
 function setVehicleLineFilter(line) {
   VEHICLES.lineFilter = line || null;
-  renderVehicles(VEHICLES.lastData);
+  // Pass the cached total so the badge tooltip stays accurate
+  renderVehicles(VEHICLES.lastData, VEHICLES.lastTotal || 0);
   showToast(line ? `🚌 Pokazuję tylko linię ${line}` : '🚌 Pokazuję wszystkie pojazdy');
 }
 

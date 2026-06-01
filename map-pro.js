@@ -285,13 +285,13 @@ window.mapProReverseGeocode = async function(lat, lng) {
 
 window.mapProMeasureFrom = function(lat, lng) {
   MAP_PRO.contextMenu?.classList.add('hidden');
-  if (window.mapEnhancements) {
-    // Enable measurement mode and add first point
-    if (!window.mapEnhancements.isMeasuring?.()) {
-      window.mapEnhancements.measurement();
-    }
-    MAP_PRO.map.fire('click', { latlng: L.latLng(parseFloat(lat), parseFloat(lng)) });
+  if (!window.mapEnhancements) return;
+  // Only enable measurement if not already active — don't toggle it off
+  if (!window.mapEnhancements.isMeasuring()) {
+    window.mapEnhancements.measurement();
   }
+  // Simulate a click at the given coordinates to add the first point
+  MAP_PRO.map.fire('click', { latlng: L.latLng(parseFloat(lat), parseFloat(lng)) });
 };
 
 window.mapProResetView = function() {
@@ -458,7 +458,9 @@ function buildWeatherOverlay() {
   overlay.innerHTML = `<div class="mwo-loading">⏳</div>`;
   container.appendChild(overlay);
 
-  // Populate from live.js data when available
+  let attempts = 0;
+  const MAX_ATTEMPTS = 15; // max 30 seconds (15 × 2s)
+
   function tryPopulate() {
     const wData = document.getElementById('wTemp');
     const wIcon = document.getElementById('wIcon');
@@ -468,14 +470,18 @@ function buildWeatherOverlay() {
         <span class="mwo-icon">${wIcon?.textContent || '🌡️'}</span>
         <span class="mwo-temp">${wData.textContent}</span>
         <span class="mwo-desc">${wDesc?.textContent || ''}</span>`;
-    } else {
+    } else if (attempts < MAX_ATTEMPTS) {
+      attempts++;
       setTimeout(tryPopulate, 2000);
+    } else {
+      // Give up gracefully — hide the loading spinner
+      overlay.innerHTML = '';
     }
   }
   setTimeout(tryPopulate, 1500);
 
-  // Refresh every 5 min
-  setInterval(tryPopulate, 5 * 60 * 1000);
+  // Refresh every 5 min (only if data is available)
+  setInterval(() => { attempts = 0; tryPopulate(); }, 5 * 60 * 1000);
 }
 
 // ===== LEGEND WITH POI COUNTS =====

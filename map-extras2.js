@@ -291,19 +291,27 @@ async function toggle3DBuildings() {
   showToast('🏢 Ładowanie budynków 3D...');
 
   try {
-    // Fetch building footprints from Overpass for Niebuszewo
-    const bbox = '53.448,14.543,14.462,14.571'; // will fix below
-    const query = `[out:json][timeout:25];(way["building"](53.448,14.543,53.462,14.571););out geom;`;
-    const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+    // Correct bbox for Niebuszewo/Łucznicza: south,west,north,east
+    const bboxQuery = '53.448,14.543,53.462,14.571';
+    const query = `[out:json][timeout:25];(way["building"](${bboxQuery}););out geom;`;
 
     let data = null;
-    // Try our own proxy first (avoids CORS/blocking), then direct
+    // Try our own proxy first (avoids CORS/blocking), then direct Overpass
     try {
       const res = await fetch('/api/buildings');
       if (res.ok) data = await res.json();
-    } catch {}
+    } catch { /* proxy unavailable — fall through to direct */ }
 
     if (!data || !data.elements) {
+      // Direct Overpass fallback
+      try {
+        const overpassUrl = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+        const res = await fetch(overpassUrl, { signal: AbortSignal.timeout(20000) });
+        if (res.ok) data = await res.json();
+      } catch { /* Overpass also failed */ }
+    }
+
+    if (!data || !data.elements || !data.elements.length) {
       BUILDINGS.loading = false;
       showToast('🏢 Budynki 3D — używam uproszczonej wizualizacji');
       drawSimplifiedBuildings();

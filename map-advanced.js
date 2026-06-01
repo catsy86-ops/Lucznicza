@@ -171,8 +171,6 @@ const MAP_ADVANCED = (() => {
 
   // ===== MAP SEARCH =====
   function initMapSearch(map) {
-    // This will be triggered by the search bar in app.js
-    // Just ensure map can handle searches
     window.searchMap = function(query) {
       if (!query || !APP_DATA || !APP_DATA.places) return;
       
@@ -186,35 +184,60 @@ const MAP_ADVANCED = (() => {
         return;
       }
       
-      // Fit map to results
       const bounds = L.latLngBounds(
         results.map(p => [p.coords[1], p.coords[0]])
       );
       map.fitBounds(bounds, { padding: [60, 60], maxZoom: 17 });
-      
       showToast(`🔍 Znaleziono ${results.length} wyników`);
       
-      // Highlight markers
-      state.markers.forEach(marker => {
-        const isResult = results.some(r => r.id === marker.placeData.id);
-        marker.setOpacity(isResult ? 1 : 0.3);
+      // Highlight markers — use CSS class on the icon element (DivIcon doesn't support setOpacity)
+      const resultIds = new Set(results.map(r => r.id));
+      (window.state?.markers || []).forEach(marker => {
+        const isResult = resultIds.has(marker.placeData?.id);
+        const el = marker.getElement?.();
+        if (el) {
+          el.style.opacity = isResult ? '1' : '0.25';
+          el.style.transition = 'opacity 0.3s';
+        }
       });
+
+      // Restore opacity after 5 seconds
+      setTimeout(() => {
+        (window.state?.markers || []).forEach(marker => {
+          const el = marker.getElement?.();
+          if (el) el.style.opacity = '';
+        });
+      }, 5000);
     };
   }
 
   // ===== LAYER CONTROL (Smart Toggle) =====
   function initLayerControl(map) {
+    // Store stable references to toggleable layers
+    const layerRefs = {};
+
     window.toggleMapLayer = function(layerId) {
-      const layers = {
-        'geofence': map.geofenceLayer,
-        'heat': map.heatLayer,
-        'routes': state.routePolylines ? L.featureGroup(state.routePolylines) : null,
-        'markers': state.markers ? L.featureGroup(state.markers) : null
-      };
-      
-      const layer = layers[layerId];
+      // Build layer refs lazily (after map is fully loaded)
+      if (!layerRefs.geofence) layerRefs.geofence = map.geofenceLayer;
+      if (!layerRefs.heat)     layerRefs.heat     = map.heatLayer;
+      // routes and markers are managed by app.js — toggle their visibility via opacity
+      if (layerId === 'routes') {
+        const polylines = window.state?.routePolylines || [];
+        const visible = polylines.some(p => map.hasLayer(p));
+        polylines.forEach(p => visible ? map.removeLayer(p) : p.addTo(map));
+        showToast(`👁️ Trasy ${visible ? 'ukryte' : 'widoczne'}`);
+        return;
+      }
+      if (layerId === 'markers') {
+        const markers = window.state?.markers || [];
+        const visible = markers.some(m => map.hasLayer(m));
+        markers.forEach(m => visible ? map.removeLayer(m) : m.addTo(map));
+        showToast(`👁️ Markery ${visible ? 'ukryte' : 'widoczne'}`);
+        return;
+      }
+
+      const layer = layerRefs[layerId];
       if (!layer) return;
-      
       if (map.hasLayer(layer)) {
         map.removeLayer(layer);
         showToast(`👁️ ${layerId} ukryty`);
