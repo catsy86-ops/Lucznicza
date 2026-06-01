@@ -239,6 +239,7 @@ function buildContextMenu() {
       <button class="mcm-item" onclick="mapProOpenGoogleMaps('${lat}','${lng}')">🧭 Nawiguj tutaj</button>
       <button class="mcm-item" onclick="mapProReverseGeocode('${lat}','${lng}')">🏠 Jaki to adres?</button>
       <button class="mcm-item" onclick="mapProMeasureFrom('${lat}','${lng}')">📏 Mierz od tego punktu</button>
+      <button class="mcm-item" onclick="mapProSuggestPlace('${lat}','${lng}')">➕ Zgłoś miejsce tutaj</button>
       <div class="mcm-sep"></div>
       <button class="mcm-item" onclick="mapProResetView()">🏹 Wyśrodkuj mapę</button>`;
 
@@ -296,6 +297,83 @@ window.mapProMeasureFrom = function(lat, lng) {
 window.mapProResetView = function() {
   MAP_PRO.contextMenu?.classList.add('hidden');
   resetView();
+};
+
+window.mapProSuggestPlace = function(lat, lng) {
+  MAP_PRO.contextMenu?.classList.add('hidden');
+
+  // Remove any existing suggest modal
+  document.getElementById('suggestPlaceModal')?.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'suggestPlaceModal';
+  modal.className = 'suggest-modal-overlay';
+  modal.innerHTML = `
+    <div class="suggest-modal" role="dialog" aria-modal="true">
+      <button class="suggest-close" onclick="document.getElementById('suggestPlaceModal').remove()">✕</button>
+      <h3 class="suggest-title">➕ Zgłoś nowe miejsce</h3>
+      <p class="suggest-coords">📍 ${parseFloat(lat).toFixed(4)}, ${parseFloat(lng).toFixed(4)}</p>
+
+      <input id="suggestName" class="suggest-input" type="text" placeholder="Nazwa miejsca *" maxlength="80" />
+      <select id="suggestCat" class="suggest-input">
+        <option value="">Kategoria *</option>
+        <option value="food">🍽️ Jedzenie</option>
+        <option value="shop">🛒 Sklep</option>
+        <option value="sport">⚽ Sport</option>
+        <option value="park">🌳 Park / Zieleń</option>
+        <option value="service">🔧 Usługi</option>
+        <option value="edu">📚 Edukacja</option>
+      </select>
+      <input id="suggestAddr" class="suggest-input" type="text" placeholder="Adres (opcjonalnie)" maxlength="100" />
+      <textarea id="suggestDesc" class="suggest-textarea" rows="3" placeholder="Opis (opcjonalnie)" maxlength="300"></textarea>
+
+      <div class="suggest-actions">
+        <button class="suggest-btn cancel" onclick="document.getElementById('suggestPlaceModal').remove()">Anuluj</button>
+        <button class="suggest-btn submit" id="suggestSubmit">Wyślij zgłoszenie</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+
+  document.getElementById('suggestSubmit').addEventListener('click', () => {
+    const name = document.getElementById('suggestName').value.trim();
+    const cat  = document.getElementById('suggestCat').value;
+    const addr = document.getElementById('suggestAddr').value.trim();
+    const desc = document.getElementById('suggestDesc').value.trim();
+
+    if (!name) { showToast('⚠️ Podaj nazwę miejsca'); return; }
+    if (!cat)  { showToast('⚠️ Wybierz kategorię'); return; }
+
+    // Save to localStorage (community suggestions)
+    const suggestions = JSON.parse(localStorage.getItem('lucznicza_suggestions') || '[]');
+    suggestions.push({
+      id: Date.now(),
+      name, cat, addr, desc,
+      lat: parseFloat(lat), lng: parseFloat(lng),
+      date: new Date().toLocaleDateString('pl'),
+      status: 'pending'
+    });
+    localStorage.setItem('lucznicza_suggestions', JSON.stringify(suggestions));
+
+    // Show a temporary marker on the map
+    if (MAP_PRO.map) {
+      L.marker([parseFloat(lat), parseFloat(lng)], {
+        icon: L.divIcon({
+          html: `<div class="suggest-marker">➕</div>`,
+          iconSize: [32, 32], iconAnchor: [16, 32], className: ''
+        })
+      }).addTo(MAP_PRO.map)
+        .bindPopup(`<b>➕ ${name}</b><br><small>Zgłoszone przez Ciebie</small>`)
+        .openPopup();
+    }
+
+    modal.remove();
+    showToast(`✅ Dziękujemy! "${name}" zostało zgłoszone.`);
+  });
+
+  setTimeout(() => document.getElementById('suggestName')?.focus(), 100);
 };
 
 // ===== COMPASS =====

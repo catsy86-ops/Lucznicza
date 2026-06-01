@@ -5364,3 +5364,50 @@ body.offline::after {
   color: var(--accent);
   flex-shrink: 0;
 }
+
+/* ===== SUGGEST PLACE MODAL ===== */
+.suggest-modal-overlay {
+  position: fixed; inset: 0; z-index: 3500;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; animation: fadeIn 0.2s ease;
+}
+.suggest-modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px; width: 100%; max-width: 400px;
+  position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  animation: slideUp 0.3s ease;
+}
+.suggest-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 32px; height: 32px; border: none;
+  background: var(--surface2); color: var(--text2);
+  border-radius: 50%; font-size: 16px; cursor: pointer;
+  transition: all 0.2s;
+}
+.suggest-close:hover { background: var(--accent); color: #fff; }
+.suggest-title { font-size: 20px; font-weight: 700; margin: 0 0 4px; color: var(--text); }
+.suggest-coords { font-size: 12px; color: var(--text3); margin: 0 0 16px; }
+.suggest-input, .suggest-textarea {
+  width: 100%; padding: 10px 12px; margin-bottom: 10px;
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text); border-radius: 8px; font-size: 14px;
+  font-family: inherit; outline: none; box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.suggest-input:focus, .suggest-textarea:focus { border-color: var(--accent); }
+.suggest-textarea { resize: vertical; }
+.suggest-actions { display: flex; gap: 10px; margin-top: 4px; }
+.suggest-btn {
+  flex: 1; padding: 11px; border-radius: 10px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--border); transition: all 0.2s;
+}
+.suggest-btn.cancel { background: transparent; color: var(--text2); }
+.suggest-btn.cancel:hover { background: var(--surface2); }
+.suggest-btn.submit { background: var(--accent); color: #fff; border-color: var(--accent); }
+.suggest-btn.submit:hover { background: var(--accent2); box-shadow: 0 4px 12px rgba(108,99,255,0.4); }
+.suggest-marker {
+  font-size: 24px; line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
