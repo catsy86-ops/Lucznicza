@@ -5771,3 +5771,170 @@ textarea:focus-visible {
     font-size: 11px;
   }
 }
+
+
+/* ===== HEALTH DASHBOARD ===== */
+.health-dashboard {
+  background: var(--bg2);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.hd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--surface2), var(--accent)22);
+  border-bottom: 1px solid var(--border);
+}
+
+.hd-title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.hd-status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.hd-status.healthy {
+  background: #4ade8022;
+  color: #22c55e;
+}
+
+.hd-status.unhealthy {
+  background: #ef444422;
+  color: #ef4444;
+}
+
+.hd-section {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hd-section:last-child {
+  border-bottom: none;
+}
+
+.hd-section h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hd-apis {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hd-api-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: var(--surface2);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.hd-status-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.hd-status-icon.ok {
+  background: #4ade80;
+  color: white;
+}
+
+.hd-status-icon.error {
+  background: #ef4444;
+  color: white;
+}
+
+.hd-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.hd-time {
+  color: var(--text2);
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+}
+
+.hd-perf, .hd-data {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hd-perf-item, .hd-data-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  background: var(--surface2);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.hd-perf-item span:last-child,
+.hd-data-item span:last-child {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.hd-errors {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid #ef4444;
+}
+
+.hd-error-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hd-error-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.hd-error-item small {
+  font-size: 11px;
+  color: var(--text);
+}
+
+.hd-error-item tiny {
+  font-size: 10px;
+  color: var(--text2);
+  font-family: 'Courier New', monospace;
+}
+
+.hd-footer {
+  padding: 10px 16px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--text2);
+}
