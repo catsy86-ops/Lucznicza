@@ -390,14 +390,34 @@ function buildCompass() {
 
   compass.addEventListener('click', resetView);
 
-  // Update compass on device orientation (if available)
-  if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation', e => {
-      if (e.alpha != null) {
-        const needle = compass.querySelector('.compass-needle');
-        if (needle) needle.style.transform = `rotate(${-e.alpha}deg)`;
-      }
-    });
+  // Update compass on device orientation (if available and permitted)
+  // Using the new DeviceOrientationEvent with permission API
+  if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent !== 'undefined') {
+    // For iOS 13+, need to request permission first
+    if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
+      compass.style.cursor = 'pointer';
+      compass.title += ' — kliknij aby włączyć kompas';
+      compass.addEventListener('click', async () => {
+        try {
+          const permission = await DeviceOrientationEvent.requestPermission();
+          if (permission === 'granted') {
+            window.addEventListener('deviceorientation', handleDeviceOrientation, true);
+          }
+        } catch (err) {
+          console.warn('Permisja do orientacji urządzenia odrzucona:', err);
+        }
+      });
+    } else {
+      // For other browsers, just listen
+      window.addEventListener('deviceorientation', handleDeviceOrientation, true);
+    }
+  }
+
+  function handleDeviceOrientation(e) {
+    if (e.alpha != null) {
+      const needle = compass.querySelector('.compass-needle');
+      if (needle) needle.style.transform = `rotate(${-e.alpha}deg)`;
+    }
   }
 }
 
