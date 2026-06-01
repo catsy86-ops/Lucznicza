@@ -368,24 +368,53 @@ const Buildings3D = (() => {
       yes: 'Budynek'
     }[b.type] || 'Budynek';
 
+    // Estimate energy efficiency based on construction year
+    const estimatedYear = b.year || getEstimatedYear(b.type);
+    const energyLabel = getEnergyLabel(estimatedYear);
+
     const label = b.address?.trim() || b.name || 'Budynek';
+    const height = Math.round(b.levels * 3);
 
     const content = `
       <div class="b3d-popup">
         <div class="b3d-popup-header">🏢 ${label}</div>
         <div class="b3d-popup-body">
           <div class="b3d-info-row"><span>📋</span> ${typeLabel}</div>
-          <div class="b3d-info-row"><span>🏗️</span> ${b.levels} pięter (~${b.levels * 3}m)</div>
+          <div class="b3d-info-row"><span>🏗️</span> ${b.levels} pięter (~${height}m)</div>
+          ${estimatedYear ? `<div class="b3d-info-row"><span>📅</span> ok. ${estimatedYear} roku</div>` : ''}
+          <div class="b3d-info-row energy-info">
+            <span>${energyLabel.emoji}</span>
+            <span style="font-weight:500">${energyLabel.label}</span>
+          </div>
           ${b.name ? `<div class="b3d-info-row"><span>🏷️</span> ${b.name}</div>` : ''}
-          ${b.id < 100000 ? '' : `<div class="b3d-info-row"><span>🗺️</span> <a href="https://www.openstreetmap.org/way/${b.id}" target="_blank" rel="noopener">OpenStreetMap</a></div>`}
+          ${b.id < 100000 ? '' : `<div class="b3d-info-row"><span>🔗</span> <a href="https://www.openstreetmap.org/way/${b.id}" target="_blank" rel="noopener" style="color:#2980b9">OpenStreetMap</a></div>`}
+          <div class="b3d-info-tip">💡 Dane ze zbiorów OpenStreetMap</div>
         </div>
       </div>
     `;
 
-    L.popup({ className: 'building-3d-popup', maxWidth: 240 })
+    L.popup({ className: 'building-3d-popup', maxWidth: 260 })
       .setLatLng(latlng)
       .setContent(content)
       .openOn(cfg.map);
+  }
+
+  function getEstimatedYear(buildingType) {
+    const typeYears = {
+      apartments: 1973, residential: 1975, house: 1980,
+      commercial: 1990, retail: 1995, industrial: 1970,
+      school: 1975, office: 2000
+    };
+    return typeYears[buildingType] || null;
+  }
+
+  function getEnergyLabel(year) {
+    if (!year) return { emoji: '🔋', label: 'Brak danych' };
+    if (year < 1960) return { emoji: '🔴', label: 'Niska efektywność' };
+    if (year < 1980) return { emoji: '🟠', label: 'Średnia efektywność' };
+    if (year < 2000) return { emoji: '🟡', label: 'Dobra efektywność' };
+    if (year < 2010) return { emoji: '🟢', label: 'Wysoka efektywność' };
+    return { emoji: '🟢', label: 'Nowoczesna' };
   }
 
   // ===== MAP EVENTS =====

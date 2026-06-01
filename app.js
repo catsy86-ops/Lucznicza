@@ -1092,6 +1092,12 @@ function renderPlaces(query = '') {
     });
   }
 
+  // Update toolbar button states
+  const favBtn = document.getElementById('favToggleBtn');
+  const openBtn = document.getElementById('openNowBtn');
+  if (favBtn) favBtn.classList.toggle('active', state.showFavoritesOnly);
+  if (openBtn) openBtn.classList.toggle('active', state.showOpenOnly);
+
   // Lazy render — show first 12 immediately, load rest on scroll
   const INITIAL_BATCH = 12;
   const firstBatch = places.slice(0, INITIAL_BATCH);
