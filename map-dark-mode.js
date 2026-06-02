@@ -20,56 +20,27 @@ const MapDarkMode = (() => {
     map: null
   };
 
-  // Tile layer configurations
-  const mapLayers = {
-    // DARK MODE LAYERS
-    darkMode: {
-      name: 'Ciemny',
-      layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap © CARTO',
-        subdomains: 'abcd',
-        maxZoom: 20,
-        detectRetina: true
-      })
-    },
-    
-    // LIGHT MODE LAYERS
-    lightMode: {
-      name: 'Jasny',
-      layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap © CARTO',
-        subdomains: 'abcd',
-        maxZoom: 20,
-        detectRetina: true
-      })
-    },
-
-    // SOFT DARK (eye-friendly for night)
-    softDark: {
-      name: 'Miękki ciemny (noc)',
-      layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap © CARTO',
-        subdomains: 'abcd',
-        maxZoom: 20,
-        detectRetina: true
-      })
-    },
-
-    // SOFT LIGHT (eye-friendly for day)
-    softLight: {
-      name: 'Miękki jasny (dzień)',
-      layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap © CARTO',
-        subdomains: 'abcd',
-        maxZoom: 20,
-        detectRetina: true
-      })
-    }
+  // Tile layer URL configs — layers are created lazily inside init()
+  // to avoid calling L.tileLayer before the map exists
+  const LAYER_URLS = {
+    darkMode:  { name: 'Ciemny',               url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' },
+    lightMode: { name: 'Jasny',                url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png' },
+    softDark:  { name: 'Miękki ciemny (noc)',  url: 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png' },
+    softLight: { name: 'Miękki jasny (dzień)', url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png' }
   };
+
+  // Actual L.tileLayer instances — populated in init()
+  let mapLayers = {};
 
   function init(map) {
     cfg.map = map;
     console.log('🌙 Inicjalizacja trybu ciemnego...');
+
+    // Create tile layers now that the map exists (lazy init)
+    const tileOpts = { attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 20, detectRetina: true };
+    Object.entries(LAYER_URLS).forEach(([key, val]) => {
+      mapLayers[key] = { name: val.name, layer: L.tileLayer(val.url, tileOpts) };
+    });
 
     // Listen to app theme changes
     observeAppThemeChange();
@@ -219,28 +190,25 @@ const MapDarkMode = (() => {
     showToast(`🌅 Czasy słoneczne zmienione: ${sunrise}-${sunset}`);
   }
 
+  function useCustomLayer(layerId) {
+    const entry = mapLayers[layerId];
+    if (!entry) {
+      showToast('⚠️ Warstwa nie znaleziona');
+      return;
+    }
+    const map = cfg.map;
+    if (!map) return;
+    if (cfg.currentActiveLayer) map.removeLayer(cfg.currentActiveLayer);
+    map.addLayer(entry.layer);
+    cfg.currentActiveLayer = entry.layer;
+    showToast(`🎨 Zmieniono na: ${entry.name}`);
+  }
+
   function getLayerOptions() {
     return Object.entries(mapLayers).map(([key, value]) => ({
       id: key,
       name: value.name
     }));
-  }
-
-  function useCustomLayer(layerId) {
-    const layer = mapLayers[layerId];
-    if (!layer) {
-      showToast('⚠️ Warstwa nie znaleziona');
-      return;
-    }
-
-    const map = cfg.map;
-    if (cfg.currentActiveLayer) {
-      map.removeLayer(cfg.currentActiveLayer);
-    }
-
-    map.addLayer(layer.layer);
-    cfg.currentActiveLayer = layer.layer;
-    showToast(`🎨 Zmieniono na: ${layer.name}`);
   }
 
   // Public API
