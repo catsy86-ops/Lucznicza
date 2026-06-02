@@ -20,6 +20,9 @@ const state = {
   userCircle: null
 };
 
+// Expose state globally so other modules (map-advanced, map-improvements, etc.) can access it
+window.state = state;
+
 // ===== CATEGORY COLORS =====
 const CAT_COLORS = {
   sport: '#ff6b6b',
@@ -336,6 +339,10 @@ function initMap() {
     if (window.mapAdvanced && window.mapAdvanced.init) {
       window.mapAdvanced.init(map);
     }
+
+    // Expose map globally and dispatch map-ready event for other modules
+    window.map = map;
+    window.dispatchEvent(new CustomEvent('map-ready', { detail: { map } }));
 
     console.log('✨ Mapa Leaflet gotowa! Wysokość kontenera:', mapContainer.clientHeight);
 
