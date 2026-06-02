@@ -1,695 +1,740 @@
-# 👨‍💻 DEVELOPER GUIDE — Extending the App
+# 👨‍💻 Developer Guide — Advanced Implementation
 
-**For**: Developers extending the application  
-**Date**: June 2, 2026  
-**Version**: 1.0  
+**For**: Developers extending the app  
+**Level**: Intermediate to Advanced  
+**Updated**: June 2, 2026
 
 ---
 
 ## 🏗️ Architecture Overview
 
+### Module Dependencies
+
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    HTML (index.html)                    │
-└─────────────────────────────────────────────────────────┘
-                           │
-        ┌──────────────────┼──────────────────┐
-        │                  │                  │
-        ▼                  ▼                  ▼
-    ┌────────────┐   ┌───────────┐   ┌──────────────┐
-    │ CSS/Assets │   │ Libraries │   │ App Scripts  │
-    │ (style.css)│   │ (Leaflet) │   │ (data.js...) │
-    └────────────┘   └───────────┘   └──────────────┘
-                           │
-        ┌──────────────────┴──────────────────┐
-        │                                     │
-        ▼                                     ▼
-    ┌──────────────────┐        ┌────────────────────┐
-    │ NEW 4 MODULES    │        │ EXISTING MODULES   │
-    ├──────────────────┤        ├────────────────────┤
-    │ UX Animations    │        │ Map Features       │
-    │ New Features     │        │ Live Data          │
-    │ Optimization     │        │ Community          │
-    │ Tests            │        │ ... (40+ files)    │
-    └──────────────────┘        └────────────────────┘
-                │
-                └────────────────────┬──────────────────┐
-                                     │                  │
-                                     ▼                  ▼
-                                 ┌────────┐      ┌──────────────┐
-                                 │ Mascot │      │ App (app.js) │
-                                 │  (🦆)  │      └──────────────┘
-                                 └────────┘
+App Initialization
+│
+├─ performance.js (Core metrics)
+├─ error-handler.js (Global error handling)
+│
+├─ ux-animations.js (UX layer)
+│  ├─ Animations
+│  ├─ Toasts
+│  └─ Keyboard shortcuts
+│
+├─ features-new.js (Features layer)
+│  ├─ Offline cache (IndexedDB)
+│  ├─ Favorites system
+│  ├─ Route sharing
+│  └─ PWA support
+│
+├─ optimization.js (Performance layer)
+│  ├─ Code splitting
+│  ├─ Lazy loading
+│  ├─ Compression
+│  └─ Monitoring
+│
+├─ tests.js (Testing layer)
+│  ├─ Unit tests
+│  ├─ E2E tests
+│  ├─ Performance tests
+│  └─ Accessibility tests
+│
+├─ pogon-mascot.js (UI enhancement)
+│  └─ Interactive mascot
+│
+└─ app.js (Main app logic)
+   └─ Core functionality
 ```
+
+### Load Order (from index.html):
+1. Performance monitoring
+2. Error handler
+3. Offline store
+4. Core app modules
+5. **ux-animations.js** ← NEW
+6. **features-new.js** ← NEW
+7. **optimization.js** ← NEW
+8. **tests.js** ← NEW
+9. Mascot & App
 
 ---
 
-## 📂 FILE STRUCTURE
+## 🔧 Extending UX Animations
 
-### Core New Modules
-
-```
-szn/
-├── ux-animations.js          (351 LOC) — UX enhancements
-├── features-new.js           (420 LOC) — Offline, sharing, favorites
-├── optimization.js           (380 LOC) — Performance, caching
-├── tests.js                  (480 LOC) — Testing framework
-├── INTEGRATION_SESSION_SUMMARY.md
-├── QUICK_START_NEW_FEATURES.md
-└── DEVELOPER_GUIDE.md (this file)
-```
-
-### Existing Modules (Brief)
-
-```
-szn/
-├── app.js                    — Main app init
-├── map-*.js                  — Map features (30+ files)
-├── live.js                   — Real-time data
-├── community-*.js            — Social features
-├── pogon-mascot.js           — Interactive mascot (356 LOC)
-└── ... (40+ other modules)
-```
-
----
-
-## 🔌 HOW TO EXTEND
-
-### 1. Add New UX Animation
-
-**File**: `ux-animations.js`
+### Add Custom Animation:
 
 ```javascript
-// Add to setupTransitionAnimations()
-const animStyle = document.getElementById('uxAnimStyle');
-animStyle.textContent += `
-  @keyframes slideInUpFade {
-    from { transform: translateY(40px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+// Extend UXAnimations with your animation
+const customAnimation = {
+  fadeBlur: 0.4,
+  
+  playCustom(element) {
+    element.style.animation = `fadeBlur ${this.fadeBlur}s ease-out`;
   }
-`;
+};
+
+// Use it
+customAnimation.playCustom(myElement);
 ```
 
-**Or create new shortcut**:
+### Add Custom Keyboard Shortcut:
 
 ```javascript
-// Add to keyboard shortcuts object
-'d': () => toggleDarkMode(),
-'n': () => navigateNext(),  // NEW
+// Inside ux-animations.js, add to shortcuts object:
+const shortcuts = {
+  // ... existing shortcuts
+  'Enter': (e) => {
+    if (document.activeElement === searchInput) {
+      performSearch();
+    }
+  }
+};
 ```
 
-### 2. Add New Feature (Offline Cache)
-
-**File**: `features-new.js`
+### Create Custom Toast Type:
 
 ```javascript
-// Add to NewFeatures object
-const UserPreferences = {
-  async save(key, value) {
-    await OfflineCache.save('preferences', {
-      id: key,
-      value: value
+// Add to showToastEnhanced function
+const icons = {
+  'custom': '🎨',
+  'success': '✅',
+  // ... etc
+};
+
+// Usage:
+showToastEnhanced('Custom message', 'custom', 3000);
+```
+
+---
+
+## 💾 Extending Offline Cache
+
+### Use Different Store:
+
+```javascript
+// Add new store name in STORE_NAMES
+const STORE_NAMES = ['places', 'routes', 'weather', 'api-cache', 'custom-data'];
+
+// Use it
+await NewFeatures.OfflineCache.save('custom-data', {
+  id: 'custom-1',
+  data: { /* your data */ },
+  timestamp: Date.now()
+});
+```
+
+### Query Multiple Stores:
+
+```javascript
+async function getallCachedData() {
+  const places = await NewFeatures.OfflineCache.getAll('places');
+  const routes = await NewFeatures.OfflineCache.getAll('routes');
+  const custom = await NewFeatures.OfflineCache.getAll('custom-data');
+  
+  return { places, routes, custom };
+}
+```
+
+### Implement Cache Strategies:
+
+```javascript
+// Cache-first strategy
+async function getCacheFirst(url, storeName) {
+  // Try cache first
+  const cached = await NewFeatures.OfflineCache.get(storeName, url);
+  if (cached) return cached.data;
+  
+  // Fall back to network
+  const response = await fetch(url);
+  const data = await response.json();
+  
+  // Save to cache
+  await NewFeatures.OfflineCache.save(storeName, {
+    id: url,
+    data: data
+  });
+  
+  return data;
+}
+```
+
+### Clear Cache on Demand:
+
+```javascript
+// Clear specific store
+await NewFeatures.OfflineCache.clear('places');
+
+// Clear all
+await NewFeatures.OfflineCache.clear('routes');
+await NewFeatures.OfflineCache.clear('weather');
+
+// Or use utility
+async function clearAllCache() {
+  const stores = ['places', 'routes', 'weather', 'api-cache'];
+  for (const store of stores) {
+    await NewFeatures.OfflineCache.clear(store);
+  }
+}
+```
+
+---
+
+## ⭐ Extending Favorites System
+
+### Custom Favorite Type:
+
+```javascript
+// Define custom type
+const FAVORITE_TYPES = {
+  'place': 'places',
+  'route': 'routes',
+  'stop': 'stops',
+  'custom-item': 'custom-items'  // ← New type
+};
+
+// Use it
+await NewFeatures.Favorites.addFavorite('custom-item', {
+  id: 'custom-123',
+  name: 'My Custom Item',
+  data: { /* ... */ }
+});
+```
+
+### Batch Favorite Operations:
+
+```javascript
+async function addManyFavorites(items) {
+  const results = [];
+  
+  for (const item of items) {
+    const fav = await NewFeatures.Favorites.addFavorite(
+      item.type,
+      item
+    );
+    results.push(fav);
+  }
+  
+  console.log(`Added ${results.length} favorites`);
+  return results;
+}
+```
+
+### Export Favorites:
+
+```javascript
+async function exportFavoritesAsJSON() {
+  const places = await NewFeatures.Favorites.getFavorites('place');
+  const routes = await NewFeatures.Favorites.getFavorites('route');
+  
+  const data = {
+    version: '1.0',
+    exported: new Date().toISOString(),
+    places: places,
+    routes: routes
+  };
+  
+  // Download JSON
+  const blob = new Blob([JSON.stringify(data, null, 2)]);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'favorites.json';
+  a.click();
+}
+```
+
+---
+
+## 🔗 Advanced Route Sharing
+
+### Custom Share Handler:
+
+```javascript
+async function shareCustom(route) {
+  const share = NewFeatures.RouteSharing.generateShareCode(route);
+  
+  // Custom endpoint
+  const response = await fetch('/api/share', {
+    method: 'POST',
+    body: JSON.stringify({
+      route: route,
+      shareCode: share.shortCode,
+      url: share.url
+    })
+  });
+  
+  const result = await response.json();
+  
+  if (result.success) {
+    showToastEnhanced('Route shared!', 'success');
+    return result.shortUrl; // Use shortened URL
+  }
+}
+```
+
+### QR Code Integration:
+
+```javascript
+async function generateQRCode(route) {
+  const share = NewFeatures.RouteSharing.generateShareCode(route);
+  
+  // Use QR code library
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(share.url)}`;
+  
+  return qrCodeUrl;
+}
+```
+
+---
+
+## 🚀 Performance Optimization Advanced
+
+### Implement Cache Strategies:
+
+```javascript
+// Stale-while-revalidate pattern
+async function fetchWithCache(url, options = {}) {
+  const cacheKey = `api:${url}`;
+  const cached = window.cacheManager.get(cacheKey);
+  
+  if (cached) {
+    // Return cached immediately
+    showToastEnhanced('📦 From cache', 'info', 1000);
+    
+    // But fetch fresh in background
+    fetch(url)
+      .then(r => r.json())
+      .then(fresh => {
+        window.cacheManager.set(cacheKey, fresh);
+        showToastEnhanced('✅ Updated', 'info', 1000);
+      });
+    
+    return cached;
+  }
+  
+  // No cache, fetch new
+  const response = await fetch(url);
+  const fresh = await response.json();
+  window.cacheManager.set(cacheKey, fresh, options.ttl || 3600000);
+  
+  return fresh;
+}
+```
+
+### Progressive Enhancement:
+
+```javascript
+// Load heavy features only when needed
+const features = {
+  '3d-buildings': () => Optimization.CodeSplitting.loadModule('map-3d'),
+  'weather': () => Optimization.CodeSplitting.loadModule('weather-widget'),
+  'live-tracker': () => Optimization.CodeSplitting.loadModule('live-tracker')
+};
+
+// User clicks feature
+document.getElementById('enable3d').addEventListener('click', () => {
+  features['3d-buildings']()
+    .then(() => showToastEnhanced('3D Loaded!', 'success'))
+    .catch(() => showToastEnhanced('Failed to load 3D', 'error'));
+});
+```
+
+### Monitor Specific Metrics:
+
+```javascript
+// Custom metric tracking
+const metricsCollector = {
+  async trackUserAction(action, metadata = {}) {
+    const metric = {
+      action: action,
+      timestamp: Date.now(),
+      memory: performance.memory?.usedJSHeapSize,
+      ...metadata
+    };
+    
+    // Send to analytics
+    await fetch('/api/metrics', {
+      method: 'POST',
+      body: JSON.stringify(metric)
     });
+  }
+};
+
+// Usage
+metricsCollector.trackUserAction('route-shared', {
+  routeId: '123',
+  platform: 'whatsapp'
+});
+```
+
+---
+
+## ✅ Advanced Testing
+
+### Write Custom Unit Test:
+
+```javascript
+// Add to UnitTests in tests.js
+UnitTests.assert(
+  typeof window.myCustomModule !== 'undefined',
+  'Custom module loaded'
+);
+
+// Or create new test file
+const CustomTests = {
+  async runTests() {
+    console.log('🧪 Running custom tests...');
+    
+    // Test 1
+    const result1 = await myFunction();
+    UnitTests.assert(result1 === expected, 'Test 1');
+    
+    // Test 2
+    const result2 = await anotherFunction();
+    UnitTests.assert(result2.success, 'Test 2');
+    
+    console.log('✅ Custom tests complete');
+  }
+};
+
+// Run it
+CustomTests.runTests();
+```
+
+### E2E Test Helper:
+
+```javascript
+async function testUserFlow() {
+  console.log('🎯 Testing user flow...');
+  
+  // Step 1: Search
+  const search = document.getElementById('searchInput');
+  search.value = 'Pogoń';
+  search.dispatchEvent(new Event('input'));
+  
+  // Wait for results
+  await new Promise(r => setTimeout(r, 1000));
+  
+  // Step 2: Click result
+  const firstResult = document.querySelector('.search-result');
+  firstResult?.click();
+  
+  // Verify modal opened
+  const modal = document.getElementById('placeModal');
+  UnitTests.assert(modal && !modal.classList.contains('hidden'), 'Modal opened');
+  
+  console.log('✅ User flow test passed');
+}
+
+// Run
+testUserFlow();
+```
+
+### Performance Benchmark:
+
+```javascript
+async function benchmarkFeature(featureName, fn, iterations = 100) {
+  console.log(`⚡ Benchmarking ${featureName} (${iterations} iterations)...`);
+  
+  const times = [];
+  
+  for (let i = 0; i < iterations; i++) {
+    const start = performance.now();
+    await fn();
+    const end = performance.now();
+    times.push(end - start);
+  }
+  
+  const avg = times.reduce((a, b) => a + b) / times.length;
+  const min = Math.min(...times);
+  const max = Math.max(...times);
+  
+  console.log(`📊 Results for ${featureName}:`);
+  console.log(`   Average: ${avg.toFixed(2)}ms`);
+  console.log(`   Min: ${min.toFixed(2)}ms`);
+  console.log(`   Max: ${max.toFixed(2)}ms`);
+  
+  return { avg, min, max };
+}
+
+// Usage
+benchmarkFeature('render-places', async () => {
+  // Your render logic
+  renderPlaces(places);
+}, 50);
+```
+
+---
+
+## 🦆 Extending Mascot
+
+### Add Custom Mood:
+
+```javascript
+// In pogon-mascot.js changeMood function
+case 'angry':
+  mouth.setAttribute('d', 'M 55 48 Q 60 45 65 48');
+  glow.setAttribute('fill', '#FF0000');
+  showBubble('Nie podoba mi się! 😠');
+  
+  // Shake animation
+  svg.style.animation = 'shake 0.5s';
+  break;
+
+case 'cool':
+  mouth.setAttribute('d', 'M 55 45 Q 60 48 65 45');
+  glow.setAttribute('fill', '#00FFFF');
+  showBubble('Cool! 😎');
+  break;
+```
+
+### Add Custom Reaction:
+
+```javascript
+// Add new reaction on click
+const reactions = [
+  // ... existing
+  () => showBubble('To jest działa? 🤔'),
+  () => showBubble('Hej! Zwróć mi uwagę! 👀'),
+  () => showBubble('Lecimy! 🚀')
+];
+```
+
+### Programmatic Mascot Control:
+
+```javascript
+// Create mascot controller
+const mascotController = {
+  celebrateGoal() {
+    window.pogonMascot.click(); // Trigger click
+    MASCOT.mood = 'dancing';
+    changeMood(); // Apply dancing animation
+    showBubble('GOOOOOOL! 🎉⚽');
   },
   
-  async load(key) {
-    const item = await OfflineCache.get('preferences', key);
-    return item?.data?.value;
+  sadAnimation() {
+    MASCOT.mood = 'sleepy';
+    changeMood();
+    showBubble('Smutnie mi... 😢');
+  },
+  
+  randomDance() {
+    triggerDance();
+    showBubble('Tańczę! 💃');
   }
 };
-```
 
-### 3. Add Performance Test
-
-**File**: `tests.js`
-
-```javascript
-// Add to PerformanceTests.runTests()
-const fastApiCall = await fetch('/api/data', { 
-  signal: AbortSignal.timeout(1000) 
-});
-const pass = fastApiCall.ok;
-console.log(`${pass ? '✅' : '⚠️'} API Response Time: <1000ms`);
-results.push({
-  test: 'API response time',
-  passed: pass,
-  value: '< 1000ms'
-});
-```
-
-### 4. Add Accessibility Test
-
-**File**: `tests.js`
-
-```javascript
-// Add to AccessibilityTests.runTests()
-const modalBackdrop = document.querySelector('[role="dialog"]');
-const hasAriaModal = modalBackdrop?.getAttribute('aria-modal') === 'true';
-console.log(`${hasAriaModal ? '✅' : '⚠️'} Modal ARIA attributes`);
-results.push({
-  test: 'Modal accessibility',
-  passed: hasAriaModal
-});
-```
-
-### 5. Add Keyboard Shortcut
-
-```javascript
-// In UXAnimations.setupKeyboardShortcuts()
-'t': () => {
-  console.log('🔔 Custom shortcut triggered!');
-  // Your code here
-}
+// Use it
+mascotController.celebrateGoal();
 ```
 
 ---
 
-## 📚 MODULE API DEEP DIVE
+## 🔐 Security Considerations
 
-### UX Animations Module
+### Validate Cache Data:
 
-#### API Methods:
 ```javascript
-UXAnimations.init()                              // Initialize
-UXAnimations.showHelpDialog()                    // Show help
-UXAnimations.closeAllDialogs()                   // Close modals
-UXAnimations.navigateToSection(section)          // Navigate
-```
+// Always validate data from cache
+async function getValidatedCache(storeName, id, validator) {
+  const cached = await NewFeatures.OfflineCache.get(storeName, id);
+  
+  if (!cached) return null;
+  
+  // Validate structure
+  try {
+    validator(cached.data);
+    return cached.data;
+  } catch (e) {
+    console.warn('Invalid cached data:', e);
+    await NewFeatures.OfflineCache.delete(storeName, id);
+    return null;
+  }
+}
 
-#### Global Functions:
-```javascript
-showToastEnhanced(message, type, duration)
-```
-
-#### Internal Functions (use if needed):
-```javascript
-setupTransitionAnimations()    // CSS animations
-setupEnhancedToasts()          // Toast system
-setupKeyboardShortcuts()       // Keyboard handling
-setupResponsiveAnimations()    // Mobile support
-```
-
-#### Keyboard Shortcuts Map:
-```javascript
-const shortcuts = {
-  '?': showHelpDialog,
-  'Escape': closeAllDialogs,
-  '/': focusSearch,
-  '1': navigateToSection('places'),
-  '2': navigateToSection('routes'),
-  '3': navigateToSection('live'),
-  '+': zoomMap(1),
-  '-': zoomMap(-1),
-  's': toggleSettings(),
-  'd': toggleDarkMode()
+// Usage
+const validator = (data) => {
+  if (!data.id || !data.name) throw new Error('Invalid place');
 };
+
+const place = await getValidatedCache('places', 'place-1', validator);
 ```
 
-### New Features Module
+### Sanitize Shared URLs:
 
-#### Offline Cache:
 ```javascript
-// Interface
-NewFeatures.OfflineCache = {
-  async init()           // Initialize DB
-  async save(store, data)       // Save item
-  async get(store, id)          // Get item
-  async getAll(store)           // Get all items
-  async clear(store)            // Clear store
+// Validate before sharing
+function validateShareURL(url) {
+  try {
+    const urlObj = new URL(url);
+    
+    // Only allow same domain
+    if (urlObj.hostname !== window.location.hostname) {
+      throw new Error('Different domain');
+    }
+    
+    // Prevent javascript: protocol
+    if (urlObj.protocol !== 'https:' && urlObj.protocol !== 'http:') {
+      throw new Error('Invalid protocol');
+    }
+    
+    return url;
+  } catch (e) {
+    console.error('Invalid URL:', e);
+    return null;
+  }
 }
 
-// Stores available:
-STORE_NAMES = ['places', 'routes', 'weather', 'api-cache']
-
-// Example:
-const trip = { id: '1', name: 'Trip to Park', location: 'Park' };
-await NewFeatures.OfflineCache.save('routes', trip);
-```
-
-#### Favorites Manager:
-```javascript
-// Interface
-NewFeatures.Favorites = {
-  async addFavorite(type, item)      // Add to favorites
-  async removeFavorite(type, itemId)  // Remove favorite
-  async getFavorites(type)            // Get all favorites
-  async isFavorite(type, itemId)      // Check if favorite
+// Use before sharing
+const validURL = validateShareURL(shareURL);
+if (validURL) {
+  NewFeatures.RouteSharing.copyToClipboard(validURL);
 }
-
-// Types: 'place', 'route', 'stop'
-
-// Example:
-await NewFeatures.Favorites.addFavorite('place', {
-  id: 'place-1',
-  name: 'Park',
-  coords: [53.4, 14.5]
-});
-```
-
-#### Route Sharing:
-```javascript
-// Interface
-NewFeatures.RouteSharing = {
-  generateShareCode(route)           // Create share link
-  copyToClipboard(text)              // Copy to clipboard
-  shareVia(platform, route)          // Share on platform
-  shareNative(route)                 // Use native share API
-}
-
-// Platforms: 'facebook', 'twitter', 'whatsapp', 'email'
-
-// Example:
-const share = NewFeatures.RouteSharing.generateShareCode({
-  name: 'Park Walk',
-  waypoints: [[53.4, 14.5], [53.41, 14.51]],
-  distance: 2.5,
-  duration: 30
-});
-console.log(share.url);  // Full shareable link
-console.log(share.shortCode);  // Short code (e.g., 'ABCD1234')
-```
-
-#### PWA:
-```javascript
-// Interface
-NewFeatures.PWAEnhancements = {
-  async registerServiceWorker()     // Register SW
-  async installPrompt()              // Show install dialog
-  checkAppInstalled()                // Check if installed
-  enableOfflineIndicator()           // Show offline status
-}
-
-// Example:
-await NewFeatures.PWAEnhancements.registerServiceWorker();
-if (!NewFeatures.PWAEnhancements.checkAppInstalled()) {
-  showToastEnhanced('💾 Install app for offline access', 'info');
-}
-```
-
-### Optimization Module
-
-#### Code Splitting:
-```javascript
-// Lazy load modules on demand
-await Optimization.CodeSplitting.loadModule('google-maps');
-await Optimization.CodeSplitting.loadModule('map-3d');
-
-// Available modules:
-lazyModules = {
-  'google-maps': false,
-  'map-3d': false,
-  'weather-widget': false,
-  'live-tracker': false
-}
-```
-
-#### Image Optimization:
-```javascript
-// Auto-load images on scroll
-Optimization.ImageOptimization.setupImageLazyLoading();
-
-// Convert image to WebP
-const webpUrl = await Optimization.ImageOptimization.convertToWebP(jpgUrl);
-```
-
-#### Cache Manager:
-```javascript
-// Interface
-window.cacheManager = {
-  set(key, value, ttl)      // Save with TTL (default 1 hour)
-  get(key)                  // Get (returns null if expired)
-  delete(key)               // Delete item
-  clear()                   // Clear all cache
-  evictOldest()             // Remove oldest when full
-}
-
-// Example:
-cacheManager.set('weather-data', weatherObj, 600000); // 10 min
-const weather = cacheManager.get('weather-data');
-```
-
-#### Performance Monitoring:
-```javascript
-// Track API calls
-Optimization.PerformanceMonitoring.trackAPICall('fetchWeather', 150);
-
-// Get metrics
-const metrics = Optimization.PerformanceMonitoring.getMetrics();
-// Returns: { apiCalls, memoryUsage }
-
-// Bundle analysis
-const analysis = Optimization.BundleAnalysis.analyzePageSize();
-// Returns: { total, breakdown: { scripts, styles, images, other } }
-```
-
-### Tests Module
-
-#### Running Tests:
-```javascript
-// Run all tests (returns full report)
-const report = await TestSuite.runAllTests();
-
-// Run specific test suites
-await TestSuite.UnitTests.runTests();
-await TestSuite.E2ETests.runTests();
-await TestSuite.PerformanceTests.runTests();
-await TestSuite.AccessibilityTests.runTests();
-
-// Get cached results
-const results = TestSuite.getResults();
-// Returns: { unit, e2e, performance, accessibility }
-```
-
-#### Adding Tests:
-```javascript
-// Add unit test
-UnitTests.assert(condition, 'Test description');
-
-// Add custom test
-const customTest = async () => {
-  const result = await someFunction();
-  return {
-    test: 'My test name',
-    passed: result.success,
-    value: result.data
-  };
-};
-```
-
-### Mascot Module
-
-#### API:
-```javascript
-// Toggle visibility
-window.pogonMascot.toggle();
-
-// Change mood (random or specific)
-window.pogonMascot.changeMood();
-
-// Trigger click animation
-window.pogonMascot.click();
-
-// Re-initialize (if removed)
-window.pogonMascot.init();
-```
-
-#### Internals (read-only):
-```javascript
-const MASCOT = {
-  x, y: number,              // Current position
-  targetX, targetY: number,  // Mouse target
-  vx, vy: number,            // Velocity
-  mood: 'happy'|...,         // Current mood
-  animationId: number,       // RAF ID
-  isVisible: boolean,        // Visibility state
-  scale: number,             // Scale (for jumping)
-  rotation: number           // Rotation angle
-};
 ```
 
 ---
 
-## 🔍 DEBUGGING
+## 📊 Monitoring & Analytics
 
-### Browser DevTools (F12)
-
-#### Check Module Loading:
-```javascript
-console.log(typeof UXAnimations);        // ✅ "object"
-console.log(typeof NewFeatures);         // ✅ "object"
-console.log(typeof Optimization);        // ✅ "object"
-console.log(typeof TestSuite);           // ✅ "object"
-console.log(typeof window.pogonMascot);  // ✅ "object"
-```
-
-#### Monitor Performance:
-```javascript
-// Watch real-time metrics
-const monitor = setInterval(() => {
-  const metrics = Optimization.PerformanceMonitoring.getMetrics();
-  console.log('Memory:', metrics.memoryUsage);
-}, 5000);
-```
-
-#### Cache Inspection:
-```javascript
-// List all cached items
-const places = await NewFeatures.OfflineCache.getAll('places');
-console.log('Cached places:', places);
-
-// Check specific cache entry
-const item = await NewFeatures.OfflineCache.get('places', 'place-1');
-console.log('Cached item:', item);
-```
-
-#### Test Report:
-```javascript
-// Get detailed test results
-const results = TestSuite.getResults();
-console.table(results.unit);           // Unit test details
-console.table(results.performance);    // Performance metrics
-```
-
----
-
-## 🚀 BEST PRACTICES
-
-### 1. Module Initialization Order
-
-```
-HTML Load Order:
-1. ux-animations.js       ✨ Must be first (sets up globals)
-2. features-new.js        🎁 Uses animations
-3. optimization.js        🚀 Uses both
-4. tests.js               ✅ Uses all modules
-5. pogon-mascot.js        🦆 Independent
-6. app.js                 ⚙️ Main app (uses all)
-7. live.js                📡 Uses app
-
-❌ DO NOT change this order!
-```
-
-### 2. Error Handling
+### Setup Custom Analytics:
 
 ```javascript
-// ❌ BAD
-const data = NewFeatures.OfflineCache.save(store, item);
-
-// ✅ GOOD
-try {
-  const data = await NewFeatures.OfflineCache.save(store, item);
-  showToastEnhanced('Saved!', 'success');
-} catch (err) {
-  console.error('Cache error:', err);
-  showToastEnhanced('Failed to save', 'error');
-}
-```
-
-### 3. Performance Monitoring
-
-```javascript
-// ✅ Track API calls
-const start = Date.now();
-const result = await fetch('/api/data');
-const duration = Date.now() - start;
-Optimization.PerformanceMonitoring.trackAPICall('fetchData', duration);
-```
-
-### 4. Testing New Features
-
-```javascript
-// Always test:
-1. Browser console errors (F12)
-2. Mobile responsiveness (F12 → Mobile view)
-3. Keyboard navigation (Tab key)
-4. Offline mode (F12 → Network → Offline)
-5. Run TestSuite.runAllTests()
-```
-
-### 5. Caching Strategy
-
-```javascript
-// ✅ Cache API responses
-const cached = cacheManager.get('weather');
-if (cached) {
-  return cached;  // Use cache
-}
-
-// ❌ Not in cache, fetch fresh
-const fresh = await fetchWeather();
-cacheManager.set('weather', fresh, 600000);  // 10 min TTL
-return fresh;
-```
-
----
-
-## 📈 PERFORMANCE TARGETS
-
-| Metric | Target | Current | Status |
-|--------|--------|---------|--------|
-| Page Load | <3s | ~2.5s | ✅ |
-| First Paint | <1.8s | ~1.5s | ✅ |
-| DOM Ready | <2s | ~1.8s | ✅ |
-| Memory | <256MB | ~180MB | ✅ |
-| Bundle | <2MB | ~1.5MB | ✅ |
-| LCP | <2.5s | ~2s | ✅ |
-| FID | <100ms | <50ms | ✅ |
-| CLS | <0.1 | ~0.05 | ✅ |
-
----
-
-## 🔐 SECURITY NOTES
-
-### LocalStorage & IndexedDB:
-```javascript
-// ⚠️ DON'T store sensitive data:
-- Passwords
-- API keys
-- Private tokens
-- Credit cards
-
-// ✅ OK to store:
-- Favorites list
-- User preferences
-- Cached API responses
-- Route history
-```
-
-### XSS Prevention:
-```javascript
-// ❌ BAD
-element.innerHTML = userInput;
-
-// ✅ GOOD
-element.textContent = userInput;
-// OR use trusted HTML builder
-element.appendChild(document.createElement('span')).textContent = userInput;
-```
-
-### CORS Handling:
-```javascript
-// API calls use proper CORS headers
-fetch('/api/data', {
-  headers: {
-    'Content-Type': 'application/json'
+const Analytics = {
+  events: [],
+  
+  track(event, data = {}) {
+    const entry = {
+      event: event,
+      data: data,
+      timestamp: Date.now(),
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    };
+    
+    this.events.push(entry);
+    
+    // Send to server
+    if (this.events.length >= 10) {
+      this.flush();
+    }
   },
-  credentials: 'include'  // If needed
-});
+  
+  async flush() {
+    if (this.events.length === 0) return;
+    
+    const batch = this.events.splice(0, 10);
+    
+    try {
+      await fetch('/api/analytics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ events: batch })
+      });
+    } catch (e) {
+      console.error('Analytics error:', e);
+    }
+  }
+};
+
+// Track events
+Analytics.track('route-shared', { route_id: '123', platform: 'whatsapp' });
+Analytics.track('favorite-added', { item_id: 'place-456' });
+Analytics.track('offline-mode-active', { duration: 300000 });
 ```
 
 ---
 
-## 📝 CODE STYLE
+## 🚀 Deployment Checklist
 
-### Naming Conventions:
-```javascript
-// Variables: camelCase
-const userPreferences = { ... };
+### Before Deploy:
+- [ ] Run all tests: `TestSuite.runAllTests()`
+- [ ] Check performance: `Optimization.PerformanceMonitoring.getMetrics()`
+- [ ] Verify bundle size: `Optimization.BundleAnalysis.analyzePageSize()`
+- [ ] Test offline mode
+- [ ] Test on mobile
+- [ ] Check accessibility: `TestSuite.AccessibilityTests.runTests()`
 
-// Functions: camelCase
-function handleUserClick() { ... }
-
-// Classes: PascalCase (if using classes)
-class MapManager { ... }
-
-// Constants: UPPER_SNAKE_CASE
-const MAX_CACHE_SIZE = 5 * 1024 * 1024;
-
-// Private: leading underscore
-const _internalHelper = () => { ... };
+### Deployment:
+```bash
+git add .
+git commit -m "Your message"
+git push
+# Vercel auto-deploys from main
 ```
 
-### Comments:
-```javascript
-// ✅ GOOD - explains WHY
-// Cache weather for 10 minutes to reduce API calls
-cacheManager.set('weather', data, 600000);
+### Post-Deployment:
+- [ ] Verify all features work in production
+- [ ] Check Console for errors (F12)
+- [ ] Test keyboard shortcuts
+- [ ] Verify mascot loads
+- [ ] Test offline functionality
+- [ ] Monitor analytics
 
-// ❌ BAD - explains WHAT (code already shows that)
-// Set cache manager weather to data for 10 min
-cacheManager.set('weather', data, 600000);
+---
+
+## 📚 File Structure
+
+```
+szn/
+├── ux-animations.js          (351 LOC) UX/Animation
+├── features-new.js           (420 LOC) Offline/Favorites/Share
+├── optimization.js           (380 LOC) Performance
+├── tests.js                  (480 LOC) Testing framework
+├── pogon-mascot.js          (356 LOC) Mascot (existing)
+│
+├── Documentation/
+│   ├── QUICK_START_NEW_FEATURES.md
+│   ├── DEVELOPER_GUIDE.md (this file)
+│   ├── INTEGRATION_SESSION_SUMMARY.md
+│   └── POGON_MASCOT_GUIDE.md
+│
+└── (other app files...)
 ```
 
 ---
 
-## 🐛 COMMON ISSUES
+## 🔗 API Summary
 
-### Issue: "Module not defined"
 ```javascript
-// ❌ Script didn't load
-// ✅ Solution: Check HTML script tag is present
-// ✅ Solution: Check script loaded without errors (F12)
-// ✅ Solution: Check load order correct
-```
+// UX
+showToastEnhanced(msg, type, duration)
+UXAnimations.showHelpDialog()
 
-### Issue: "Cache returns null"
-```javascript
-// ❌ Data expired
-// ✅ Solution: Check TTL not too short
-// ✅ Solution: Check cacheManager.get() called correctly
-```
+// Offline
+NewFeatures.OfflineCache.save(store, data)
+NewFeatures.OfflineCache.get(store, id)
+NewFeatures.OfflineCache.getAll(store)
+NewFeatures.OfflineCache.clear(store)
 
-### Issue: "Toast not showing"
-```javascript
-// ❌ showToastEnhanced not defined
-// ✅ Solution: Make sure ux-animations.js loaded first
-// ✅ Solution: Check for JS errors in console
-```
+// Favorites
+NewFeatures.Favorites.addFavorite(type, item)
+NewFeatures.Favorites.getFavorites(type)
+NewFeatures.Favorites.isFavorite(type, id)
 
-### Issue: "Tests fail"
-```javascript
-// Run one test type at a time
-await TestSuite.UnitTests.runTests();
-// Check which specific test fails
-// Review test code for the failure
+// Sharing
+NewFeatures.RouteSharing.generateShareCode(route)
+NewFeatures.RouteSharing.shareVia(platform, route)
+NewFeatures.RouteSharing.shareNative(route)
+
+// Performance
+Optimization.CodeSplitting.loadModule(name)
+Optimization.PerformanceMonitoring.trackAPICall(name, duration)
+Optimization.PerformanceMonitoring.getMetrics()
+
+// Tests
+TestSuite.runAllTests()
+TestSuite.UnitTests.runTests()
+TestSuite.PerformanceTests.runTests()
+
+// Mascot
+window.pogonMascot.toggle()
+window.pogonMascot.changeMood()
+window.pogonMascot.click()
 ```
 
 ---
 
-## 📞 SUPPORT
+**Next Section**: Check `QUICK_START_NEW_FEATURES.md` for user guide
 
-### For Questions:
-1. Check module docs above
-2. Check `INTEGRATION_SESSION_SUMMARY.md`
-3. Check module code comments
-4. Run tests: `TestSuite.runAllTests()`
-5. Check browser console: `F12`
+**Questions?** Run tests to verify setup: `TestSuite.runAllTests()`
 
-### For Issues:
-1. Enable debug logging
-2. Check network tab (F12)
-3. Check cache state
-4. Clear cache and retry
-5. Check browser compatibility
-
----
-
-## 🎓 LEARNING PATH
-
-**Beginner:**
-1. Read this guide
-2. Run tests
-3. Try keyboard shortcuts
-4. Interact with mascot
-
-**Intermediate:**
-1. Add custom toast
-2. Create new keyboard shortcut
-3. Add custom test
-4. Use cacheManager
-
-**Advanced:**
-1. Extend offline cache
-2. Create new performance test
-3. Add lazy-loaded module
-4. Create new feature module
-
----
-
-**Happy coding! 🚀**
-
----
-
-**Version**: 1.0  
-**Updated**: June 2, 2026  
-**Status**: Production Ready
