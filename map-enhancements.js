@@ -125,6 +125,11 @@ function enableRouting(startPlaceId, endPlaceId) {
   const map = window.state && window.state.map;
   if (!map) return;
 
+  if (!APP_DATA?.places) {
+    showToast('⚠️ Dane miejsc niedostępne');
+    return;
+  }
+
   const startPlace = APP_DATA.places.find(p => p.id === startPlaceId);
   const endPlace = APP_DATA.places.find(p => p.id === endPlaceId);
 

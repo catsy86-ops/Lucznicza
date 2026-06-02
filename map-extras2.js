@@ -24,7 +24,7 @@ function startCinematicTour() {
 
   if (TOUR.active) { stopTour(); return; }
 
-  // Pick highlights — featured + popular places + parks
+  // Pick highlights — featured + popular places; fall back to first 8
   const highlights = APP_DATA.places.filter(p => p.featured || p.popular);
   const tourStops = highlights.length >= 5 ? highlights : APP_DATA.places.slice(0, 8);
 
