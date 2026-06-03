@@ -724,31 +724,253 @@ function initUI() {
 
   // Menu button
   document.getElementById('menuBtn').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.add('open');
-    document.getElementById('sidebarOverlay').classList.remove('hidden');
+    openSidebar();
   });
 
   document.getElementById('closeSidebar').addEventListener('click', closeSidebar);
   document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
 
-  function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.add('hidden');
-    // Ensure bottom nav is visible when sidebar closes
-    const nav = document.querySelector('.bottom-nav');
-    if (nav) {
-      nav.style.transform = 'translateY(0)';
+  // Keyboard support: Escape to close sidebar
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar && sidebar.classList.contains('open')) {
+        closeSidebar();
+      }
     }
+  });
+
+  function openSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.add('open');
+    overlay.classList.remove('hidden');
+    // Add ripple effect to menu button
+    const menuBtn = document.getElementById('menuBtn');
+    if (menuBtn) {
+      menuBtn.style.transform = 'scale(0.95)';
+      setTimeout(() => { menuBtn.style.transform = ''; }, 100);
+    }
+    // Prevent body scroll when sidebar is open
+    document.body.style.overflow = 'hidden';
+    // Sync active nav item with current section
+    document.querySelectorAll('.nav-item').forEach(i => {
+      i.classList.toggle('active', i.dataset.section === state.currentSection);
+    });
+    // Start sidebar clock
+    startSidebarClock();
+    // Populate sidebar weather
+    updateSidebarWeather();
+  }
+
+  function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.remove('open');
+    overlay.classList.add('hidden');
+    stopSidebarClock();
+    // Restore body scroll
+    document.body.style.overflow = '';
+    const nav = document.querySelector('.bottom-nav');
+    if (nav) nav.style.transform = 'translateY(0)';
+  }
+
+  // ── Sidebar clock ──────────────────────────────────────
+  let _sidebarClockInterval = null;
+  function startSidebarClock() {
+    updateSidebarClock();
+    _sidebarClockInterval = setInterval(updateSidebarClock, 1000);
+  }
+  function stopSidebarClock() {
+    clearInterval(_sidebarClockInterval);
+  }
+  function updateSidebarClock() {
+    const now = new Date();
+    const timeEl = document.getElementById('sidebarTime');
+    const dateEl = document.getElementById('sidebarDate');
+    if (timeEl) {
+      timeEl.textContent = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+    }
+    if (dateEl) {
+      dateEl.textContent = now.toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric', month: 'short' });
+    }
+  }
+
+  // ── Sidebar weather ────────────────────────────────────
+  function updateSidebarWeather() {
+    const el = document.getElementById('sidebarWeather');
+    if (!el) return;
+    // Try to reuse existing weather data from weather widget
+    const tempEl = document.getElementById('weatherTemp') || document.querySelector('[data-weather-temp]');
+    const iconEl = document.getElementById('weatherIcon') || document.querySelector('[data-weather-icon]');
+    if (tempEl) {
+      const icon = iconEl ? iconEl.textContent.trim() : '🌡️';
+      const temp = tempEl.textContent.trim();
+      el.textContent = `${icon} ${temp}`;
+    } else {
+      // Light fetch
+      fetch('https://api.open-meteo.com/v1/forecast?latitude=53.43&longitude=14.55&current=temperature_2m,weather_code&timezone=Europe/Warsaw')
+        .then(r => r.json())
+        .then(d => {
+          if (d.current) {
+            const t = Math.round(d.current.temperature_2m);
+            const wmo = d.current.weather_code;
+            const icon = wmo <= 3 ? '☀️' : wmo <= 48 ? '🌤️' : wmo <= 67 ? '🌧️' : wmo <= 77 ? '❄️' : '⛈️';
+            el.textContent = `${icon} ${t}°C`;
+          }
+        })
+        .catch(() => { el.textContent = '🌡️ --°C'; });
+    }
+  }
+
+  // ── Swipe to close sidebar ─────────────────────────────
+  (function setupSidebarSwipe() {
+    const sidebar = document.getElementById('sidebar');
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isDragging = false;
+
+    sidebar.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      isDragging = false;
+    }, { passive: true });
+
+    sidebar.addEventListener('touchmove', e => {
+      const dx = e.touches[0].clientX - touchStartX;
+      const dy = Math.abs(e.touches[0].clientY - touchStartY);
+      // Only treat as horizontal swipe
+      if (dx < -10 && dy < 60) {
+        isDragging = true;
+        const clamp = Math.max(-280, Math.min(0, dx));
+        sidebar.style.transform = `translateX(${clamp}px)`;
+        // Fade overlay with drag
+        const overlay = document.getElementById('sidebarOverlay');
+        if (overlay) overlay.style.opacity = String(1 - Math.abs(clamp) / 280);
+      }
+    }, { passive: true });
+
+    sidebar.addEventListener('touchend', e => {
+      sidebar.style.transform = '';
+      const overlay = document.getElementById('sidebarOverlay');
+      if (overlay) overlay.style.opacity = '';
+      if (!isDragging) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (dx < -60) closeSidebar();
+      isDragging = false;
+    }, { passive: true });
+  })();
+
+  // ── Settings panel (replaces footer tools) ─────────────
+  const settingsBtn = document.getElementById('sidebarSettingsBtn');
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+      closeSidebar();
+      showSettingsPanel();
+    });
+  }
+
+  function showSettingsPanel() {
+    if (document.getElementById('settingsPanel')) return;
+    const panel = document.createElement('div');
+    panel.id = 'settingsPanel';
+    panel.className = 'settings-panel-overlay';
+    panel.innerHTML = `
+      <div class="settings-panel" role="dialog" aria-modal="true" aria-label="Ustawienia">
+        <div class="settings-header">
+          <h3>Ustawienia</h3>
+          <button class="settings-close" aria-label="Zamknij">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div class="settings-body">
+          <div class="settings-section-title">Dane</div>
+          <button class="settings-item" onclick="SyncManager.downloadBackup()">
+            <span class="settings-item-icon">💾</span>
+            <div>
+              <div class="settings-item-name">Pobierz backup</div>
+              <div class="settings-item-desc">Zapisz ulubione i ustawienia</div>
+            </div>
+          </button>
+          <button class="settings-item" onclick="SyncManager.uploadBackup()">
+            <span class="settings-item-icon">📂</span>
+            <div>
+              <div class="settings-item-name">Przywróć backup</div>
+              <div class="settings-item-desc">Wczytaj z pliku</div>
+            </div>
+          </button>
+          <button class="settings-item" onclick="SyncManager.shareViaUrl()">
+            <span class="settings-item-icon">🔗</span>
+            <div>
+              <div class="settings-item-name">Udostępnij ulubione</div>
+              <div class="settings-item-desc">Sync przez URL</div>
+            </div>
+          </button>
+          <div class="settings-section-title" style="margin-top:16px">Wygląd</div>
+          <button class="settings-item" id="settingsThemeToggle">
+            <span class="settings-item-icon">🌙</span>
+            <div>
+              <div class="settings-item-name">Tryb ciemny / jasny</div>
+              <div class="settings-item-desc">Aktualny: ${document.documentElement.getAttribute('data-theme') === 'light' ? 'Jasny' : 'Ciemny'}</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(panel);
+    requestAnimationFrame(() => panel.querySelector('.settings-panel').classList.add('open'));
+
+    const close = () => {
+      panel.querySelector('.settings-panel').classList.remove('open');
+      setTimeout(() => panel.remove(), 300);
+    };
+    panel.querySelector('.settings-close').addEventListener('click', close);
+    panel.addEventListener('click', e => { if (e.target === panel) close(); });
+    panel.querySelector('#settingsThemeToggle').addEventListener('click', () => {
+      document.getElementById('themeBtn').click();
+      close();
+    });
   }
 
   // Sidebar nav
   document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', e => {
       e.preventDefault();
-      navigateTo(item.dataset.section);
-      closeSidebar();
+      // Add ripple effect
+      addRipple(item, e);
+      setTimeout(() => {
+        navigateTo(item.dataset.section);
+        closeSidebar();
+      }, 150);
     });
   });
+
+  // Ripple effect helper
+  function addRipple(element, event) {
+    const rect = element.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = (event.clientX || event.touches?.[0]?.clientX || 0) - rect.left - size / 2;
+    const y = (event.clientY || event.touches?.[0]?.clientY || 0) - rect.top - size / 2;
+    
+    const ripple = document.createElement('div');
+    ripple.style.cssText = `
+      position: absolute;
+      width: ${size}px;
+      height: ${size}px;
+      background: rgba(108, 99, 255, 0.3);
+      border-radius: 50%;
+      top: ${y}px;
+      left: ${x}px;
+      pointer-events: none;
+      animation: rippleEffect 0.6s ease-out;
+      z-index: 1;
+    `;
+    element.style.position = 'relative';
+    element.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  }
 
   // Bottom nav
   document.querySelectorAll('.bnav-btn').forEach(btn => {
@@ -761,8 +983,7 @@ function initUI() {
   const bnavMore = document.getElementById('bnavMore');
   if (bnavMore) {
     bnavMore.addEventListener('click', () => {
-      document.getElementById('sidebar').classList.add('open');
-      document.getElementById('sidebarOverlay').classList.remove('hidden');
+      openSidebar();
     });
   }
 

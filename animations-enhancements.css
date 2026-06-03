@@ -1,0 +1,379 @@
+/**
+ * animations-enhancements.css — Advanced animations and transitions
+ * Provides smooth, performant animations for all interactive elements
+ */
+
+/* ===== KEYFRAME ANIMATIONS ===== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-2deg);
+  }
+  75% {
+    transform: rotate(2deg);
+  }
+}
+
+/* ===== PAGE TRANSITIONS ===== */
+
+.page-enter {
+  animation: fadeIn 300ms ease-out;
+}
+
+.page-exit {
+  animation: fadeIn 300ms ease-out reverse;
+}
+
+/* ===== CARD ANIMATIONS ===== */
+
+.card-animate {
+  animation: slideInUp 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.place-card,
+.route-card,
+.info-card,
+.event-card {
+  will-change: transform, box-shadow;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.place-card:hover,
+.route-card:hover,
+.info-card:hover,
+.event-card:hover {
+  animation: none;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 200ms ease-out;
+}
+
+/* ===== BUTTON ANIMATIONS ===== */
+
+button {
+  will-change: transform, box-shadow;
+  transform: translate3d(0, 0, 0);
+}
+
+button:active {
+  animation: scaleIn 150ms ease-out;
+}
+
+.btn-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.btn-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ===== MODAL ANIMATIONS ===== */
+
+.modal-overlay {
+  animation: fadeIn 300ms ease-out;
+}
+
+.modal-content {
+  animation: slideInUp 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal.exit .modal-overlay {
+  animation: fadeIn 300ms ease-out reverse;
+}
+
+.modal.exit .modal-content {
+  animation: slideInUp 300ms ease-in;
+}
+
+/* ===== SIDEBAR ANIMATIONS ===== */
+
+.sidebar.open {
+  animation: slideInLeft 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sidebar {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ===== NAVIGATION ANIMATIONS ===== */
+
+.nav-item-enter {
+  animation: slideInRight 300ms ease-out;
+}
+
+.nav-active-indicator {
+  animation: scaleIn 200ms ease-out;
+}
+
+.bottom-nav {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* ===== LOADING STATES ===== */
+
+.skeleton-loader {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+.loading-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== NOTIFICATION ANIMATIONS ===== */
+
+.toast-enter {
+  animation: slideInUp 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.toast-exit {
+  animation: slideInUp 300ms cubic-bezier(0.34, 1.56, 0.64, 1) reverse;
+}
+
+.notification-badge {
+  animation: bounce 0.6s ease-out;
+}
+
+/* ===== ATTENTION ANIMATIONS ===== */
+
+.attention-pulse {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.attention-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+.attention-shake {
+  animation: wiggle 0.3s ease-in-out;
+}
+
+/* ===== SCROLL ANIMATIONS ===== */
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+}
+
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== HOVER ANIMATIONS ===== */
+
+.hover-lift {
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.hover-scale {
+  transition: transform 200ms ease-out;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-color {
+  transition: color 200ms ease-out, background-color 200ms ease-out;
+}
+
+/* ===== FOCUS ANIMATIONS ===== */
+
+.focus-ring {
+  outline: 3px solid #6c63ff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ===== MOBILE OPTIMIZATIONS ===== */
+
+@media (max-width: 768px) {
+  /* Reduce animation complexity on mobile */
+  @media (prefers-reduced-motion: no-preference) {
+    * {
+      transition-duration: 150ms;
+    }
+  }
+
+  /* Single-direction slides on mobile */
+  .slide-up {
+    animation: slideInUp 300ms ease-out;
+  }
+
+  .slide-down {
+    animation: slideInDown 300ms ease-out;
+  }
+
+  /* Touch-friendly hover states */
+  button:active,
+  a:active {
+    opacity: 0.8;
+  }
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+/* Use GPU acceleration */
+.gpu-accelerated {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Reduce repaints */
+.no-reflow {
+  contain: layout style paint;
+}
+
+/* Smooth performance-critical animations */
+.smooth-animation {
+  animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ===== ACCESSIBILITY ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===== DARK MODE ANIMATIONS ===== */
+
+[data-theme="dark"] .hover-lift:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] .hover-lift:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}

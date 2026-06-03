@@ -79,6 +79,8 @@
   <link rel="stylesheet" href="style.css" />
   <!-- MAP LAYOUT GRID: eliminates all widget overlaps on the map -->
   <link rel="stylesheet" href="map-layout-grid.css" />
+  <!-- ANIMATIONS: advanced animations and transitions -->
+  <link rel="stylesheet" href="animations-enhancements.css" />
 </head>
 <body>
 
@@ -143,55 +145,129 @@
     </div>
 
     <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar" role="dialog" aria-modal="true" aria-label="Menu nawigacji">
       <div class="sidebar-header">
-        <h2>Nawigacja</h2>
-        <button class="close-sidebar" id="closeSidebar">✕</button>
-      </div>
-      <nav class="sidebar-nav">
-        <a href="#" class="nav-item active" data-section="map">
-          <span class="nav-icon">🗺️</span> Mapa 3D
-        </a>
-        <a href="#" class="nav-item" data-section="places">
-          <span class="nav-icon">📍</span> Miejsca
-        </a>
-        <a href="#" class="nav-item" data-section="routes">
-          <span class="nav-icon">🚶</span> Trasy
-        </a>
-        <a href="#" class="nav-item" data-section="info">
-          <span class="nav-icon">ℹ️</span> O dzielnicy
-        </a>
-        <a href="#" class="nav-item" data-section="transport">
-          <span class="nav-icon">🚌</span> Transport
-        </a>
-        <a href="#" class="nav-item" data-section="events">
-          <span class="nav-icon">🎉</span> Wydarzenia
-        </a>
-        <a href="#" class="nav-item" data-section="live">
-          <span class="nav-icon">📡</span> Na żywo
-          <span class="nav-badge live-badge">LIVE</span>
-        </a>
-        <a href="#" class="nav-item" data-section="community">
-          <span class="nav-icon">👥</span> Społeczność
-          <span class="nav-badge community-badge">LIVE</span>
-        </a>
-        <a href="#" class="nav-item" data-section="pogon">
-          <span class="nav-icon">⚽</span> Pogoń
-        </a>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="sidebar-tools">
-          <button class="sidebar-tool-btn" onclick="SyncManager.downloadBackup()" title="Pobierz backup danych">
-            💾 Backup
-          </button>
-          <button class="sidebar-tool-btn" onclick="SyncManager.uploadBackup()" title="Przywróć z backupu">
-            📂 Przywróć
-          </button>
-          <button class="sidebar-tool-btn" onclick="SyncManager.shareViaUrl()" title="Udostępnij ulubione">
-            🔗 Sync
+        <div class="sidebar-header-top">
+          <div class="sidebar-brand">
+            <span class="sidebar-brand-icon">🏹</span>
+            <div>
+              <div class="sidebar-brand-name">Niebuszewo</div>
+              <div class="sidebar-brand-city">Szczecin</div>
+            </div>
+          </div>
+          <button class="close-sidebar" id="closeSidebar" aria-label="Zamknij menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
           </button>
         </div>
-        <p>Szczecin © 2026</p>
+        <div class="sidebar-context" id="sidebarContext">
+          <span class="sidebar-context-time" id="sidebarTime">--:--</span>
+          <span class="sidebar-context-sep">·</span>
+          <span class="sidebar-context-date" id="sidebarDate">---</span>
+          <span class="sidebar-context-sep">·</span>
+          <span class="sidebar-context-weather" id="sidebarWeather">🌡️ --°C</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebarNav">
+
+        <div class="nav-group">
+          <div class="nav-group-label">Odkrywaj</div>
+          <a href="#" class="nav-item active" data-section="map">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+              </svg>
+            </span>
+            <span class="nav-label">Mapa 3D</span>
+          </a>
+          <a href="#" class="nav-item" data-section="places">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <span class="nav-label">Miejsca</span>
+          </a>
+          <a href="#" class="nav-item" data-section="routes">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 17l6-10 5 7 3-4 4 7"/>
+              </svg>
+            </span>
+            <span class="nav-label">Trasy</span>
+          </a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Informacje</div>
+          <a href="#" class="nav-item" data-section="info">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+              </svg>
+            </span>
+            <span class="nav-label">O dzielnicy</span>
+          </a>
+          <a href="#" class="nav-item" data-section="transport">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+            </span>
+            <span class="nav-label">Transport</span>
+          </a>
+          <a href="#" class="nav-item" data-section="events">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+              </svg>
+            </span>
+            <span class="nav-label">Wydarzenia</span>
+          </a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Na bieżąco</div>
+          <a href="#" class="nav-item" data-section="live">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+              </svg>
+            </span>
+            <span class="nav-label">Na żywo</span>
+            <span class="nav-badge live-badge">LIVE</span>
+          </a>
+          <a href="#" class="nav-item" data-section="community">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </span>
+            <span class="nav-label">Społeczność</span>
+            <span class="nav-badge community-badge">LIVE</span>
+          </a>
+          <a href="#" class="nav-item" data-section="pogon">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><path d="M12 8l2.5 5H9.5L12 8z"/><path d="M12 13v3"/>
+              </svg>
+            </span>
+            <span class="nav-label">Pogoń Szczecin</span>
+          </a>
+        </div>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-settings-btn" id="sidebarSettingsBtn" aria-label="Ustawienia">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          Ustawienia
+        </button>
       </div>
     </aside>
     <div class="sidebar-overlay hidden" id="sidebarOverlay"></div>
@@ -841,7 +917,10 @@
   <script src="pogon-mascot.js" defer></script>
   <script src="pogon-feature.js" defer></script>
   <!-- Mobile Navigation Enhancement — DISABLED DUE TO CONFLICTS -->
-  <!-- <script src="mobile-nav-enhance.js" defer></script> -->
+  <script src="mobile-nav-enhance.js" defer></script>
+  <script src="mobile-optimizations.js" defer></script>
+  <script src="mobile-gestures.js" defer></script>
+  <script src="ui-polish-enhancements.js" defer></script>
   <script src="app.js" defer></script>
   <script src="live.js" defer></script>
   <script src="google-maps.js" defer></script>
