@@ -734,6 +734,11 @@ function initUI() {
   function closeSidebar() {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.add('hidden');
+    // Ensure bottom nav is visible when sidebar closes
+    const nav = document.querySelector('.bottom-nav');
+    if (nav) {
+      nav.style.transform = 'translateY(0)';
+    }
   }
 
   // Sidebar nav

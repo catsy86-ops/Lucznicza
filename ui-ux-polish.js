@@ -214,36 +214,6 @@ const UIUXPolish = (() => {
   }
 
   // ===== CREATE CLEAN INFO CARD =====
-  function createCleanInfoCard() {
-    if (document.getElementById('cleanInfoCard')) return;
-
-    const card = document.createElement('div');
-    card.id = 'cleanInfoCard';
-    card.className = 'clean-info-card';
-    card.setAttribute('role', 'status');
-    card.setAttribute('aria-live', 'polite');
-
-    card.innerHTML = `
-      <div class="info-card-content">
-        <div class="info-card-title">Szczecin</div>
-        <div class="info-card-details">
-          <span class="info-badge">📍 Niebuszewo</span>
-          <span class="info-badge">⚽ Pogoń</span>
-        </div>
-      </div>
-      <button class="info-card-close" aria-label="Zamknij">✕</button>
-    `;
-
-    card.querySelector('.info-card-close').addEventListener('click', () => {
-      card.style.opacity = '0';
-      setTimeout(() => card.remove(), 300);
-    });
-
-    document.body.appendChild(card);
-
-    console.log('📇 Clean info card created');
-  }
-
   // ===== HIDE DESKTOP ELEMENTS ON MOBILE =====
   function setupResponsiveUI() {
     const isMobile = window.innerWidth < 768;
@@ -737,7 +707,6 @@ const UIUXPolish = (() => {
       hideClutteredElements();
       createCleanMapHeader();
       createMinimalMapControls();
-      createCleanInfoCard();
       console.log('✅ UI/UX Polish complete');
     }, 500);
 

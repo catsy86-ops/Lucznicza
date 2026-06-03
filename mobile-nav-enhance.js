@@ -25,7 +25,8 @@ const MobileNavEnhance = (() => {
     console.log('📱 Inicjalizacja ulepszonej nawigacji mobilnej...');
     
     setupNavButtons();
-    setupScrollBehavior();
+    // Disable scroll-based hide on mobile - just use manual control
+    // setupScrollBehavior();
     setupTouchGestures();
     setupResponsiveness();
     setupAccessibility();
@@ -99,6 +100,7 @@ const MobileNavEnhance = (() => {
 
   /**
    * Scroll behavior - hide nav on scroll down, show on scroll up
+   * DISABLED when sidebar is open to prevent conflicts
    */
   function setupScrollBehavior() {
     const nav = document.querySelector('.bottom-nav');
@@ -107,6 +109,12 @@ const MobileNavEnhance = (() => {
     let ticking = false;
 
     window.addEventListener('scroll', () => {
+      // Don't auto-hide nav when sidebar is open
+      const sidebar = document.querySelector('.sidebar');
+      if (sidebar && sidebar.classList.contains('open')) {
+        return;
+      }
+
       if (!ticking) {
         requestAnimationFrame(() => {
           const currentScrollY = window.scrollY;
@@ -252,7 +260,8 @@ const MobileNavEnhance = (() => {
       
       // Add aria-current for active button
       const section = btn.dataset.section;
-      if (section && state && state.currentSection === section) {
+      // Check if state exists and currentSection matches
+      if (section && typeof window.state !== 'undefined' && window.state.currentSection === section) {
         btn.setAttribute('aria-current', 'page');
       }
 
@@ -275,6 +284,21 @@ const MobileNavEnhance = (() => {
         activeBtn.setAttribute('aria-current', 'page');
       }
     });
+
+    // Ensure nav is visible when sidebar closes
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      const showNav = document.querySelector('.bottom-nav');
+      
+      // When sidebar opens, show nav
+      const observeOpen = new MutationObserver(() => {
+        if (sidebar.classList.contains('open')) {
+          if (showNav) showNav.style.transform = 'translateY(0)';
+        }
+      });
+      
+      observeOpen.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+    }
   }
 
   /**
