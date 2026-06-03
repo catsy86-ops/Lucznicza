@@ -1,0 +1,102 @@
+# ===== Auto Line Ending Handling (Windows/Mac/Linux compatibility) =====
+* text=auto
+
+# ===== Source Code =====
+*.js eol=lf diff=javascript
+*.ts eol=lf diff=typescript
+*.jsx eol=lf diff=javascript
+*.tsx eol=lf diff=typescript
+*.json eol=lf diff=json
+*.html eol=lf diff=html
+*.css eol=lf
+*.scss eol=lf
+*.md eol=lf
+*.yml eol=lf
+*.yaml eol=lf
+*.xml eol=lf
+*.py eol=lf diff=python
+
+# ===== Shell Scripts =====
+*.sh eol=lf
+*.bash eol=lf
+*.zsh eol=lf
+*.fish eol=lf
+
+# ===== Windows Batch Files =====
+*.bat eol=crlf
+*.cmd eol=crlf
+
+# ===== Documentation =====
+*.md eol=lf
+*.txt eol=lf
+README eol=lf
+LICENSE eol=lf
+CHANGELOG eol=lf
+
+# ===== Binary Files (Don't Convert) =====
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mov binary
+*.mp4 binary
+*.mp3 binary
+*.gz binary
+*.zip binary
+*.7z binary
+*.ttf binary
+*.otf binary
+*.db binary
+*.sqlite binary
+
+# ===== Media Files =====
+*.jpg diff=exif
+*.png diff=exif
+*.gif diff=exif
+*.svg text eol=lf
+
+# ===== Node.js & Dependencies =====
+package.json eol=lf
+package-lock.json eol=lf merge=union
+yarn.lock eol=lf merge=union
+pnpm-lock.yaml eol=lf merge=union
+
+# ===== NPM & Yarn =====
+.npmrc eol=lf
+.yarnrc eol=lf
+
+# ===== Configuration Files =====
+.env.* eol=lf diff=diff
+.editorconfig eol=lf
+.eslintrc* eol=lf
+.prettierrc* eol=lf
+tsconfig.json eol=lf
+.gitignore eol=lf
+.gitattributes eol=lf
+
+# ===== Git Files =====
+.gitignore merge=union
+.gitattributes merge=union
+
+# ===== Diffs & Patches =====
+*.patch eol=lf
+*.diff eol=lf
+
+# ===== Gradle & Build Files =====
+*.gradle eol=lf
+gradlew eol=lf
+gradlew.bat eol=crlf
+
+# ===== Lock Files (Critical for reproducibility) =====
+# DO NOT MERGE - use ours/theirs strategy
+package-lock.json merge=ours
+yarn.lock merge=ours
+pnpm-lock.yaml merge=ours
+
+# ===== Export Encoding =====
+*.xlsx binary
+*.xls binary
+*.docx binary
+*.pdf binary
+*.pptx binary
