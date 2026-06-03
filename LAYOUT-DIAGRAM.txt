@@ -1,0 +1,316 @@
+================================================================================
+  RESPONSIVE LAYOUT DIAGRAM — UI/UX FIXES
+================================================================================
+
+📊 DESKTOP LAYOUT (≥1025px)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    ┌─────────────────────────────────────────────────────────────────────────┐
+    │ 🏹 HEADER (64px)  "Niebuszewo Guide — Szczecin"          🔍 🌓         │
+    ├─────────────────────────────────────────────────────────────────────────┤
+    │                                                                           │
+    │  ☀️ 23°C                                                    🕐 14:54:05   │
+    │  Pochmurnie                                                 wto 3 cze   │
+    │  💨 10 km/h                          🗺️ MAPA                📡 (28px)   │
+    │  💧 41%                                                     📍 (28px)   │
+    │  🌡️ 1003 hPa                                                🚶 (28px)   │
+    │  ☀️ UV 2.6                                                  👥 (28px)   │
+    │  ↻ 17:18                                                    [🏢 3D]    │
+    │                                                                           │
+    │                        (MAP CONTAINER)                                   │
+    │                                                                           │
+    │                                                                           │
+    │  ◯ LEGENDA                                       🌬️ AQI                 │
+    │  ⚽ Sport                                        DOBRE                    │
+    │  🍽️ Food                                         42 µg/m³                │
+    │  🛒 Shop                                                                 │
+    │                                                                           │
+    ├─────────────────────────────────────────────────────────────────────────┤
+    │     [89 | 69 | 53 · · ] (transport panel, centered)                     │
+    ├─────────────────────────────────────────────────────────────────────────┤
+    │ 🗺️ Mapa │ 📍 Miejsca │ 🚶 Trasy │ 📡 Na żywo │ ⋮ Więcej               │
+    │ (BOTTOM NAV, 72px)                                                      │
+    └─────────────────────────────────────────────────────────────────────────┘
+
+KEY MEASUREMENTS:
+• Header: 64px (fixed)
+• Top gap: 12px
+• Weather widget: 180px × auto
+• Clock widget: 72px × auto
+• Controls: ~56px per group
+• Bottom nav: 72px (fixed)
+• Transport panel: 580px × auto (max)
+• Safe areas: top 76px, bottom 88px
+
+Z-INDEX HIERARCHY:
+• Header: 100
+• Sidebar: 201
+• Modal: 300
+• Transport: 40
+• Toast: 400
+
+================================================================================
+
+📱 TABLET LAYOUT (768px – 1024px)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    ┌─────────────────────────────────────────────────────────────────────────┐
+    │ 🏹 HEADER (64px)  "Niebuszewo Guide"                      🔍 🌓         │
+    ├─────────────────────────────────────────────────────────────────────────┤
+    │                                                                           │
+    │  ☀️ 23°C                                              🕐 14:54 (compact) │
+    │  Pochmurnie                     🗺️ MAPA                  📡 (compact)   │
+    │  💨 10 km/h                                              📍 (compact)   │
+    │  [Weather compact]                                       🚶 (compact)   │
+    │                                                                           │
+    │                        (MAP CONTAINER)                                   │
+    │                                                                           │
+    │                                                                           │
+    │                                                                           │
+    ├─────────────────────────────────────────────────────────────────────────┤
+    │          [89 | 69 | 53] (transport, 88% width, centered)               │
+    ├─────────────────────────────────────────────────────────────────────────┤
+    │ 🗺️ Mapa │ 📍 Miejsca │ 🚶 Trasy │ 📡 Na żywo │ ⋮ Więcej               │
+    │ (BOTTOM NAV, 72px)                                                      │
+    └─────────────────────────────────────────────────────────────────────────┘
+
+CHANGES FROM DESKTOP:
+• Weather: 160px (compact)
+• Clock: compact size (smaller font)
+• Legend: hidden (space constraint)
+• AQI: hidden
+• Transport: 88% width instead of fixed 580px
+• Controls: same right stack but more compact
+
+================================================================================
+
+📲 MOBILE LAYOUT (<768px)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    ┌─────────────────────────────────────────────────────────┐
+    │ 🏹 HEADER (64px)  "Niebuszewo"              🔍 🌓       │
+    ├─────────────────────────────────────────────────────────┤
+    │                                                           │
+    │  ☀️ 23°C                                                │
+    │  Pochmurnie                                             │
+    │                                                           │
+    │              🗺️ MAPA                              [📡]  │
+    │              (MAP CONTAINER)                    [📍]  │
+    │                                                  [🚶]  │
+    │                                                  [🏢]  │
+    │                                                           │
+    ├──[89 | 69 | 53] (horizontal transport strip)───────────┤
+    ├─────────────────────────────────────────────────────────┤
+    │ 🗺️ │ 📍 │ 🚶 │ 📡 │ ⋮                                  │
+    │ (BOTTOM NAV, 72px)                                      │
+    └─────────────────────────────────────────────────────────┘
+
+MOBILE-SPECIFIC:
+• Weather: 148px (compact) top-left
+• Clock: hidden (saves space)
+• Controls: vertical stack bottom-right
+• 3D FAB: below controls
+• Legend: hidden
+• AQI: hidden
+• Transport: horizontal strip (4px above nav)
+• Touch targets: all ≥48px × 48px
+
+================================================================================
+
+🔧 Z-INDEX STACKING CONTEXT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9999 ┃ SKIP LINK (accessibility)
+     ┃
+500  ┃ NETWORK STATUS
+     ┃
+400  ┃ TOAST NOTIFICATIONS
+     ┃
+301  ┃ MODAL CLOSE BUTTON
+     ┃
+300  ┃ MODAL
+     ┃
+299  ┃ MODAL OVERLAY
+     ┃
+250  ┃ PULL REFRESH
+     ┃
+201  ┃ SIDEBAR (main)
+     ┃
+200  ┃ SIDEBAR OVERLAY
+     ┃
+100  ┃ HEADER / BOTTOM NAV
+     ┃
+95   ┃ SEARCH BAR
+     ┃
+42   ┃ LIVE TRANSPORT PANEL
+     ┃
+41   ┃ LIVE TRANSPORT BTN
+     ┃
+40   ┃ TRANSPORT PANEL (89, 69, 53)
+     ┃
+35   ┃ MINIMAL CONTROLS
+     ┃
+32   ┃ 3D FAB / CONTROLS GROUP
+     ┃
+31   ┃ CLOCK WIDGET
+     ┃
+30   ┃ WEATHER WIDGET
+     ┃
+29   ┃ MAP STATS
+     ┃
+28   ┃ MAP LEGEND / AQI
+     ┃
+0    ┃ MAP LAYER
+
+================================================================================
+
+📐 SPACING REFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+VERTICAL SPACING:
+┌─────────────────────────────────────────────────────────────┐
+│ TOP: 0px                                                      │
+│      ┌───────────────────────────────────────────────┐      │
+│      │ HEADER: 64px                                  │      │
+│      └───────────────────────────────────────────────┘      │
+│ TOP: 64px                                                     │
+│      ╔═ GAP: 12px ═╗                                         │
+│ TOP: 76px (safe area top)                                    │
+│      ┌───────────────────────────────────────────────┐      │
+│      │ WIDGETS START HERE                            │      │
+│      │ Weather, Clock, Controls, MAP...             │      │
+│      └───────────────────────────────────────────────┘      │
+│      [MAP TAKES ALL AVAILABLE SPACE]                         │
+│      └───────────────────────────────────────────────┘      │
+│      ╔═ GAP: 4px ═╗                                          │
+│ BOT: 88px (safe area bottom)                                 │
+│      ┌───────────────────────────────────────────────┐      │
+│      │ TRANSPORT PANEL (89, 69, 53)                 │      │
+│      └───────────────────────────────────────────────┘      │
+│ BOT: 160px                                                    │
+│      ┌───────────────────────────────────────────────┐      │
+│      │ BOTTOM NAV: 72px                             │      │
+│      └───────────────────────────────────────────────┘      │
+│ BOT: 0px                                                      │
+└─────────────────────────────────────────────────────────────┘
+
+HORIZONTAL SPACING:
+LEFT: 12px (left edge to widgets)
+RIGHT: 12px (right edge to widgets)
+GAP BETWEEN WIDGETS: 4-8px
+CENTER: transport panel centered with 50% left + translateX(-50%)
+
+================================================================================
+
+🎨 POGOŃ SECTION LAYOUT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────┐
+│ [HERO CARD]                                                  │
+│ ⚽ POGOŃ SZCZECIN                                   [BADGE]  │
+│ PKO BP Ekstraklasa · 2025/26                           3     │
+│ Stadion Florian Krygier                            MIEJSCE  │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│ [STATS GRID - 6 columns on desktop, 3 on mobile]            │
+│                                                              │
+│  ┌──────┬──────┬──────┬──────┬──────┬──────┐               │
+│  │  62  │  32  │  18  │   8  │  54  │ +23  │               │
+│  │ Pkt  │Mecze │Wygr. │Remi. │Gole Z│Bilans│               │
+│  └──────┴──────┴──────┴──────┴──────┴──────┘               │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+
+⚽ SKŁAD (Squad - 11 players)
+┌─────────────────────────────────────────────────────────────┐
+│ [GK] 🇭🇷 #1  Dante Stipica                                  │
+│ [DF] 🇵🇱 #2  Kamil Grosicki                        ⚽ 9    │
+│ [MF] 🇵🇱 #7  Kacper Kozłowski                      ⚽ 6    │
+│ [FW] 🇬🇷 #9  Efthymis Koulouris                    ⚽ 14   │
+│ [MF] 🇦🇲 #10 Wahan Biczachczian                    ⚽ 7    │
+│ ... (6 more players)                                        │
+└─────────────────────────────────────────────────────────────┘
+
+📅 TERMINARZ (Fixtures - 4 matches)
+┌─────────────────────────────────────────────────────────────┐
+│ 7 cze  [DOM] Pogoń vs Jagiellonia Białystok         3:1 ✅  │
+│ 14 cze [WYJ] Legia Warszawa vs Pogoń                –:–     │
+│ 21 cze [DOM] Pogoń vs Cracovia                      –:–     │
+│ 28 cze [WYJ] Raków Częstochowa vs Pogoń             –:–     │
+└─────────────────────────────────────────────────────────────┘
+
+🏟️ STADIUM
+┌─────────────────────────────────────────────────────────────┐
+│ 🏟️ Stadion Florian Krygier                                   │
+│ Pojemność: 22,537 miejsc · Szczecin                          │
+│                              [🗺️ Pokaż]                    │
+└─────────────────────────────────────────────────────────────┘
+
+🦆 MASCOT
+┌─────────────────────────────────────────────────────────────┐
+│ 🦆 Kaczuś — Maskotka Pogoni                                  │
+│ Interaktywna maskotka · Podąża za kursorem                   │
+│                              [🦆 Pokaż]                     │
+└─────────────────────────────────────────────────────────────┘
+
+================================================================================
+
+🔄 NAVIGATION FLOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+                              ┌─────────────┐
+                              │   HEADER    │
+                              │ 🏹 Menu 🔍  │
+                              └────┬────────┘
+                                   │
+                         ┌─────────┴──────────┐
+                         │    SIDEBAR         │
+                         ├────────────────────┤
+                         │ 🗺️  Mapa 3D       │
+                         │ 📍  Miejsca       │
+                         │ 🚶  Trasy         │
+                         │ ℹ️   O dzielnicy   │
+                         │ 🚌  Transport     │
+                         │ 🎉  Wydarzenia    │
+                         │ 📡  Na żywo       │
+                         │ 👥  Społeczność   │
+                         │ ⚽  POGOŃ ← NEW!  │
+                         └────────────────────┘
+
+BOTTOM NAVIGATION:
+┌──────────┬──────────┬──────────┬──────────┬──────────┐
+│ 🗺️ Mapa  │ 📍 Miejsca│ 🚶 Trasy │ 📡 Na ży│⋮ Więcej  │
+├──────────┼──────────┼──────────┼──────────┼──────────┤
+│ Primary sections (4)              │ Overflow │
+│                                   │ menu (≥5)│
+│                                   │ including│
+│                                   │ Pogoń    │
+└──────────┴──────────┴──────────┴──────────┴──────────┘
+
+================================================================================
+
+✨ COLOR & VISUAL HIERARCHY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+POGOŃ COLORS:
+• Primary: #E84C3D (red)
+• Secondary: #1A1A2E (dark)
+• Badge gradient: 135deg from red to dark
+
+POSITION COLORS:
+• GK (Goalkeepers): #4ecdc4 (teal)
+• DF (Defenders): #6c63ff (blue)
+• MF (Midfielders): #43e97b (green)
+• FW (Forwards): #ff6b6b (red)
+
+MATCH STATUS COLORS:
+• Won (3:1): #43e97b (green) with 3px left border
+• Lost: #ff6584 (pink) with 3px left border
+• Draw: #ffd93d (yellow) with 3px left border
+• Upcoming (–:–): var(--text3) (muted)
+
+================================================================================
+
+END OF LAYOUT DIAGRAM
+================================================================================

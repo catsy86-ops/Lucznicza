@@ -1,0 +1,60 @@
+🔄 JAK PRZEŁADOWAĆ APLIKACJĘ
+
+════════════════════════════════════════════════════════════════
+
+OPCJA 1: Przeładowanie (najlepsze)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Windows/Chrome:
+  • Ctrl + Shift + R
+
+Windows/Firefox:
+  • Ctrl + Shift + R
+
+Windows/Edge:
+  • Ctrl + Shift + R
+
+macOS:
+  • Cmd + Shift + R
+
+════════════════════════════════════════════════════════════════
+
+OPCJA 2: Czyste Przeładowanie
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Otwórz DevTools: F12
+2. Prawy klik na przycisk Refresh (↻)
+3. Kliknij "Empty cache and hard refresh"
+
+════════════════════════════════════════════════════════════════
+
+OPCJA 3: Wyczyść Cache
+━━━━━━━━━━━━━━━━━━━━━
+1. Otwórz DevTools: F12
+2. Prawy klik → Settings → "Disable cache while DevTools is open"
+3. Przeładuj: F5
+
+════════════════════════════════════════════════════════════════
+
+WTEDY:
+1. Przejdź do: http://localhost:3000/#pogon
+2. Sekcja Pogoń powinna się załadować prawidłowo
+3. Powinna być widoczna:
+   ✅ Kolorowy hero section
+   ✅ Karty statystyk
+   ✅ Maskotka 🦆
+   ✅ Tabela ligowa
+   ✅ Tabela zawodników
+   ✅ Terminarz
+   ✅ Sekcja skład
+   ✅ Stadion
+
+════════════════════════════════════════════════════════════════
+
+JEŚLI NADAL SIĘ NIE WCZYTUJE:
+1. Sprawdź DevTools (F12)
+2. Przejdź do: Console tab
+3. Powinna NIE być tego błędu:
+   ❌ "Uncaught SyntaxError"
+
+Jeśli jest, błąd nie został naprawiony.
+
+════════════════════════════════════════════════════════════════

@@ -77,6 +77,8 @@
   </script>
 
   <link rel="stylesheet" href="style.css" />
+  <!-- MAP LAYOUT GRID: eliminates all widget overlaps on the map -->
+  <link rel="stylesheet" href="map-layout-grid.css" />
 </head>
 <body>
 
@@ -173,6 +175,9 @@
           <span class="nav-icon">👥</span> Społeczność
           <span class="nav-badge community-badge">LIVE</span>
         </a>
+        <a href="#" class="nav-item" data-section="pogon">
+          <span class="nav-icon">⚽</span> Pogoń
+        </a>
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-tools">
@@ -207,12 +212,12 @@
             <!-- Street View will be rendered here by Google Maps API -->
           </div>
 
-          <!-- Map Controls (streamlined — styles handled by 🎨 switcher, locate by 🎯 FAB) -->
-          <div class="map-controls">
+          <!-- Map Controls HIDDEN (replaced by minimal controls from ui-ux-polish.js) -->
+          <!-- <div class="map-controls">
             <button class="map-ctrl-btn" id="btnFly" title="Animacja lotu wokół dzielnicy">✈️</button>
             <button class="map-ctrl-btn" id="btnStreetView" title="Street View (Mapillary)">📸</button>
             <button class="map-ctrl-btn" id="btnQuick3D" title="Budynki 3D — Łucznicza 43">🏢</button>
-          </div>
+          </div> -->
 
           <!-- Dedicated 3D Buildings FAB — always visible -->
           <button class="buildings-3d-fab" id="buildings3dFab" title="Włącz widok budynków 3D — Łucznicza 43"
@@ -446,6 +451,21 @@
             <p>Dane aktualizowane w czasie rzeczywistym</p>
           </div>
 
+          <!-- Live Clock Card -->
+          <div class="live-card" id="liveClockCard">
+            <div class="live-card-header">
+              <span class="live-card-icon">🕐</span>
+              <div>
+                <h3>Czas na żywo</h3>
+                <span class="live-tag"><span class="live-dot"></span> Aktualizacja co sekundę</span>
+              </div>
+            </div>
+            <div class="live-clock-body">
+              <div class="live-clock-time" id="liveClockTime">--:--:--</div>
+              <div class="live-clock-date" id="liveClockDate">-- --- ----</div>
+            </div>
+          </div>
+
           <!-- Live Weather Full -->
           <div class="live-card" id="liveWeatherCard">
             <div class="live-card-header">
@@ -622,6 +642,13 @@
         </div>
       </section>
 
+      <!-- POGON SECTION -->
+      <section id="section-pogon" class="section hidden">
+        <div class="section-content">
+          <!-- renderuje się z pogon-feature.js -->
+        </div>
+      </section>
+
     </main>
 
     <!-- BOTTOM NAV (mobile) — 5 items max for usability -->
@@ -792,6 +819,10 @@
   <script src="mobile-map-ui.js" defer></script>
   <!-- UI/UX POLISH: Clean, professional interface (Senior Design) -->
   <script src="ui-ux-polish.js" defer></script>
+  <!-- UI FIX OVERLAPPING: Comprehensive z-index & positioning fixes -->
+  <script src="ui-fix-overlapping.js" defer></script>
+  <!-- DESKTOP LAYOUT LIVE: Live time top-right, icons stack, transport bottom -->
+  <script src="desktop-layout-live.js" defer></script>
   <!-- TRANSPORT PANEL PRO: Professional departures display (89, 69 side-by-side) -->
   <script src="transport-panel-pro.js" defer></script>
   <!-- MAP HAZARD ZONES HIDDEN: Clean map (remove danger zones, warnings) -->
@@ -804,8 +835,11 @@
   <script src="optimization.js" defer></script>
   <!-- ETAP 4: Tests (unit, E2E, performance, accessibility) -->
   <script src="tests.js" defer></script>
-  <!-- ETAP 5: Pogoń Mascot -->
+  <!-- UI/UX COMPREHENSIVE TEST SUITE (run: UIUXTestSuite.runAll() in console) -->
+  <script src="UI-UX-TEST-SUITE.js" defer></script>
+  <!-- ETAP 5: Pogoń Mascot & Feature -->
   <script src="pogon-mascot.js" defer></script>
+  <script src="pogon-feature.js" defer></script>
   <script src="app.js" defer></script>
   <script src="live.js" defer></script>
   <script src="google-maps.js" defer></script>

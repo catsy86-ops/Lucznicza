@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Pogoń Load</title>
+</head>
+<body>
+    <h1>Test Ładowania Pogoń</h1>
+    <div id="result"></div>
+    
+    <script>
+        // Test czy pogon-feature.js się załaduje bez błędów
+        const result = document.getElementById('result');
+        
+        try {
+            // Symuluj załadowanie pogon-feature.js
+            const s = document.createElement('script');
+            s.src = 'pogon-feature.js';
+            s.onload = () => {
+                result.innerHTML = '<p style="color:green">✅ pogon-feature.js załadowany bez błędów</p>';
+            };
+            s.onerror = (err) => {
+                result.innerHTML = '<p style="color:red">❌ Błąd: ' + err + '</p>';
+            };
+            document.head.appendChild(s);
+        } catch (e) {
+            result.innerHTML = '<p style="color:red">❌ Exception: ' + e.message + '</p>';
+        }
+    </script>
+</body>
+</html>

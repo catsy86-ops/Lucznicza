@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pogoń Feature Integration Test</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="map-layout-grid.css" />
+  <style>
+    body { padding: 20px; font-family: Inter, sans-serif; background: #1a1a2e; color: #fff; }
+    .test-section { margin: 20px 0; padding: 20px; border: 1px solid #444; border-radius: 8px; }
+    .test-result { padding: 10px; margin: 10px 0; border-radius: 4px; font-size: 14px; }
+    .pass { background: #43e97b44; border-left: 3px solid #43e97b; }
+    .fail { background: #ff658444; border-left: 3px solid #ff6584; }
+    .info { background: #4ecdc444; border-left: 3px solid #4ecdc4; }
+  </style>
+</head>
+<body>
+
+<h1>🧪 Pogoń Feature Integration Test</h1>
+
+<div class="test-section">
+  <h2>1️⃣ Test HTML Structure</h2>
+  <div class="test-result" id="test1"></div>
+  <div class="test-result" id="test2"></div>
+  <div class="test-result" id="test3"></div>
+</div>
+
+<div class="test-section">
+  <h2>2️⃣ Test Scripts Loading</h2>
+  <div class="test-result" id="test4"></div>
+  <div class="test-result" id="test5"></div>
+  <div class="test-result" id="test6"></div>
+</div>
+
+<div class="test-section">
+  <h2>3️⃣ Test Navigation Integration</h2>
+  <div class="test-result" id="test7"></div>
+  <div class="test-result" id="test8"></div>
+</div>
+
+<div class="test-section">
+  <h2>Test Summary</h2>
+  <div class="test-result info" id="summary"></div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const tests = [];
+    const addTest = (id, title, pass, message) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.className = `test-result ${pass ? 'pass' : 'fail'}`;
+        el.innerHTML = `<strong>${title}:</strong> ${message}`;
+      }
+      tests.push(pass);
+    };
+
+    // Test 1: Check section-pogon exists
+    const section = document.querySelector('#section-pogon');
+    addTest('test1', 'Sekcja #section-pogon', !!section, section ? '✅ Znaleziona' : '❌ Nie znaleziona');
+
+    // Test 2: Check section has content container
+    const container = section?.querySelector('.section-content');
+    addTest('test2', 'Container .section-content', !!container, container ? '✅ Znaleziony' : '❌ Nie znaleziony');
+
+    // Test 3: Check navigation button
+    const navBtn = document.querySelector('[data-section="pogon"]');
+    addTest('test3', 'Button nawigacji', !!navBtn, navBtn ? `✅ Znaleziony (${navBtn.textContent.trim()})` : '❌ Nie znaleziony');
+
+    // Test 4: Check pogon-feature.js script
+    const pogonScript = Array.from(document.querySelectorAll('script')).find(s => s.src.includes('pogon-feature.js'));
+    addTest('test4', 'Script pogon-feature.js', !!pogonScript, pogonScript ? '✅ Załadowany' : '❌ Nie załadowany');
+
+    // Test 5: Check pogon-mascot.js script
+    const mascotScript = Array.from(document.querySelectorAll('script')).find(s => s.src.includes('pogon-mascot.js'));
+    addTest('test5', 'Script pogon-mascot.js', !!mascotScript, mascotScript ? '✅ Załadowany' : '❌ Nie załadowany');
+
+    // Test 6: Check app.js loads
+    const appScript = Array.from(document.querySelectorAll('script')).find(s => s.src.includes('app.js'));
+    addTest('test6', 'Script app.js', !!appScript, appScript ? '✅ Załadowany' : '❌ Nie załadowany');
+
+    // Test 7: Check PogonFeature global
+    // Note: This will fail until page fully loads - just check it exists after async
+    setTimeout(() => {
+      const hasPogon = typeof window.PogonFeature !== 'undefined';
+      addTest('test7', 'Window.PogonFeature', hasPogon, hasPogon ? '✅ Dostępny' : '⚠️ Czeka na załadowanie');
+    }, 100);
+
+    // Test 8: Check navigateTo function
+    setTimeout(() => {
+      const hasNav = typeof window.navigateTo === 'function';
+      addTest('test8', 'Funkcja navigateTo()', hasNav, hasNav ? '✅ Dostępna' : '⚠️ Czeka na załadowanie');
+
+      // Summary
+      const total = tests.length;
+      const passed = tests.filter(t => t).length;
+      const summary = document.getElementById('summary');
+      summary.innerHTML = `<strong>📊 Wynik:</strong> ${passed}/${total} testów przeszło`;
+    }, 100);
+  });
+</script>
+
+</body>
+</html>

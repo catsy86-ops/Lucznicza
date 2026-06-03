@@ -1,0 +1,467 @@
+/**
+ * map-layout-grid.css — Definitive Map Widget Layout
+ *
+ * Grid system for the map:
+ *
+ * DESKTOP (≥1025px)
+ * ┌─────────────────────────────────────────────────────────┐
+ * │ [HEADER 64px]                                           │
+ * ├───────────────────────────────────────────────┬─────────┤
+ * │ [weather 12,76]                               │ [clock] │
+ * │                                               │ [ctrl ] │  ← 76px from top = 64header+12gap
+ * │                                               │ [ctrl ] │
+ * │                                               │ [ctrl ] │
+ * │                                               │ [3D   ] │
+ * │                    MAP                        │         │
+ * │                                               │         │
+ * │                                               │         │
+ * │                                               │         │
+ * │ [legend]                [aqi]                 │         │
+ * ├───────────────────────────────────────────────┴─────────┤
+ * │ [transport panel  89 | 69 | 53 …]   (above bnav+12px)   │
+ * ├─────────────────────────────────────────────────────────┤
+ * │ [BOTTOM NAV 72px]                                       │
+ * └─────────────────────────────────────────────────────────┘
+ *
+ * MOBILE (<768px)
+ * ┌────────────────────────┐
+ * │ [HEADER 64px]          │
+ * ├────────────────────────┤
+ * │ [weather top-left]     │
+ * │        MAP             │
+ * │              [ctrl×3]  │
+ * │                        │
+ * │ [transport horizontal] │  ← bottom: 72+8px
+ * ├────────────────────────┤
+ * │ [BOTTOM NAV 72px]      │
+ * └────────────────────────┘
+ *
+ * EVERY element uses:  position: fixed + explicit top/right/bottom/left
+ * (not absolute-in-map-container) so they never overlap each other.
+ */
+
+/* ═══════════════════════════════════════════════
+   1. SHARED TOKEN — safe-top = header + 12 gap
+   ═══════════════════════════════════════════════ */
+:root {
+  --map-top:    76px;   /* 64 header + 12 gap            */
+  --map-bot:    88px;   /* 72 bnav  + 16 gap             */
+  --map-left:   12px;
+  --map-right:  12px;
+  --widget-r:   10px;  /* border-radius for all widgets */
+}
+
+/* ═══════════════════════════════════════════════
+   2. RESET CONFLICTING INLINE POSITIONS
+      (override everything previously set)
+   ═══════════════════════════════════════════════ */
+.weather-widget,
+.clock-widget,
+.aqi-widget,
+.map-legend,
+.map-stats,
+.map-controls,
+.minimal-controls,
+.controls-group,
+.clean-info-card,
+.buildings-3d-fab,
+#transportPanelContainer,
+.transport-panel-container,
+.category-filter,
+.live-ticker,
+.live-transport-btn,
+.live-transport-panel {
+  position: fixed !important;
+}
+
+/* ═══════════════════════════════════════════════
+   3. DESKTOP LAYOUT  ≥ 1025 px
+   ═══════════════════════════════════════════════ */
+@media (min-width: 1025px) {
+
+  /* ── TOP-LEFT: Weather ─────────────────────── */
+  .weather-widget {
+    top:   var(--map-top)  !important;
+    left:  var(--map-left) !important;
+    right: auto            !important;
+    bottom: auto           !important;
+    width: 180px           !important;
+    z-index: 30            !important;
+  }
+
+  /* ── TOP-CENTER: Stats ─────────────────────── */
+  .map-stats {
+    top:       var(--map-top) !important;
+    left:      50%            !important;
+    transform: translateX(-50%) !important;
+    right: auto               !important;
+    bottom: auto              !important;
+    z-index: 29               !important;
+    /* hide on desktop by default — only show if .map-stats-visible added */
+    display: none             !important;
+  }
+  .map-stats.map-stats-visible { display: flex !important; }
+
+  /* ── TOP-RIGHT: Clock ──────────────────────── */
+  .clock-widget {
+    top:    var(--map-top) !important;
+    right:  var(--map-right) !important;
+    left:   auto             !important;
+    bottom: auto             !important;
+    z-index: 31              !important;
+  }
+
+  /* ── RIGHT COLUMN: Map controls stack ─────── */
+  /* Minimal controls sit below clock.
+     Clock height ≈ 72px → start at map-top + 80px */
+  .minimal-controls {
+    top:    calc(var(--map-top) + 80px) !important;
+    right:  var(--map-right)            !important;
+    left:   auto                        !important;
+    bottom: auto                        !important;
+    flex-direction: column              !important;
+    gap:    8px                         !important;
+    z-index: 32                         !important;
+  }
+
+  /* ── RIGHT COLUMN: 3D FAB below controls ──── */
+  /* controls ≈ 3 groups × ~56px = ~168px
+     clock ~72px → start at map-top + 80 + 168 + 8 = map-top + 256 */
+  .buildings-3d-fab {
+    top:    calc(var(--map-top) + 256px) !important;
+    right:  var(--map-right)             !important;
+    left:   auto                         !important;
+    bottom: auto                         !important;
+    z-index: 32                          !important;
+  }
+
+  /* ── BOTTOM-LEFT: Legend ───────────────────── */
+  .map-legend {
+    bottom: calc(var(--map-bot) + 8px) !important;
+    left:   var(--map-left)            !important;
+    top:    auto                       !important;
+    right:  auto                       !important;
+    z-index: 28                        !important;
+    display: block                     !important;
+  }
+
+  /* ── BOTTOM-LEFT+2: AQI (right of legend) ─── */
+  /* legend width ≈ 120px + 8px gap */
+  .aqi-widget {
+    bottom: calc(var(--map-bot) + 8px) !important;
+    left:   calc(var(--map-left) + 138px) !important;
+    top:    auto                          !important;
+    right:  auto                          !important;
+    z-index: 28                           !important;
+  }
+
+  /* ── BOTTOM-CENTER: Transport panel ───────── */
+  #transportPanelContainer,
+  .transport-panel-container {
+    bottom:    calc(var(--map-bot) + 8px)  !important;
+    left:      50%                          !important;
+    transform: translateX(-50%)             !important;
+    top:       auto                         !important;
+    right:     auto                         !important;
+    width:     580px                        !important;
+    max-width: calc(100vw - 300px)          !important;
+    max-height: 160px                       !important;
+    z-index: 40                             !important;
+    overflow-y: auto                        !important;
+    border-radius: 12px                     !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,.4)   !important;
+  }
+
+  /* ── CATEGORY FILTER: hidden on desktop by default ─ */
+  .category-filter {
+    display: none !important;
+  }
+
+  /* ── LIVE TICKER: hidden (too much noise) ─── */
+  .live-ticker { display: none !important; }
+
+  /* ── LIVE TRANSPORT BTN: bottom-right ──────── */
+  .live-transport-btn {
+    bottom: calc(var(--map-bot) + 8px) !important;
+    right:  var(--map-right)           !important;
+    top:    auto                       !important;
+    left:   auto                       !important;
+    z-index: 41                        !important;
+  }
+
+  /* ── LIVE TRANSPORT PANEL: above button ────── */
+  .live-transport-panel {
+    bottom: calc(var(--map-bot) + 56px) !important;
+    right:  var(--map-right)            !important;
+    top:    auto                        !important;
+    left:   auto                        !important;
+    z-index: 42                         !important;
+  }
+
+  /* OLD map-controls (fly/street/3D buttons) — hidden, replaced */
+  .map-controls {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   4. TABLET LAYOUT  768px – 1024 px
+   ═══════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 1024px) {
+
+  .weather-widget {
+    top:   var(--map-top) !important;
+    left:  var(--map-left) !important;
+    right: auto !important; bottom: auto !important;
+    width: 160px !important;
+    z-index: 30 !important;
+  }
+
+  .clock-widget {
+    top:   var(--map-top) !important;
+    right: var(--map-right) !important;
+    left:  auto !important; bottom: auto !important;
+    z-index: 31 !important;
+  }
+
+  .minimal-controls {
+    top:    calc(var(--map-top) + 72px) !important;
+    right:  var(--map-right) !important;
+    left:   auto !important; bottom: auto !important;
+    flex-direction: column !important;
+    z-index: 32 !important;
+  }
+
+  .buildings-3d-fab {
+    top:    calc(var(--map-top) + 240px) !important;
+    right:  var(--map-right) !important;
+    left:   auto !important; bottom: auto !important;
+    z-index: 32 !important;
+  }
+
+  /* Legend hidden on tablet — not enough horizontal space */
+  .map-legend  { display: none !important; }
+  .map-stats   { display: none !important; }
+
+  /* AQI bottom-left */
+  .aqi-widget {
+    bottom: calc(var(--map-bot) + 8px) !important;
+    left:   var(--map-left) !important;
+    top: auto !important; right: auto !important;
+    z-index: 28 !important;
+  }
+
+  #transportPanelContainer,
+  .transport-panel-container {
+    bottom:    calc(var(--map-bot) + 8px) !important;
+    left:      50% !important;
+    transform: translateX(-50%) !important;
+    top:       auto !important; right: auto !important;
+    width:     88% !important;
+    max-width: 520px !important;
+    max-height: 150px !important;
+    z-index: 40 !important;
+    overflow-y: auto !important;
+    border-radius: 12px !important;
+  }
+
+  .category-filter { display: none !important; }
+  .live-ticker     { display: none !important; }
+  .map-controls    { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════
+   5. MOBILE LAYOUT  < 768 px
+   ═══════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* Weather — compact top-left */
+  .weather-widget {
+    top:    var(--map-top) !important;
+    left:   var(--map-left) !important;
+    right:  auto !important; bottom: auto !important;
+    width:  148px !important;
+    padding: 8px 10px !important;
+    z-index: 30 !important;
+  }
+  /* Compact weather text sizes */
+  .w-temp   { font-size: 18px !important; }
+  .w-icon   { font-size: 26px !important; }
+  .w-extra  { display: none  !important; }  /* hide extras on mobile */
+  .w-updated{ display: none  !important; }
+
+  /* Clock — hidden on mobile (saves space) */
+  .clock-widget { display: none !important; }
+
+  /* Stats — hidden on mobile */
+  .map-stats  { display: none !important; }
+
+  /* Legend — hidden on mobile */
+  .map-legend { display: none !important; }
+
+  /* AQI — hidden on mobile (too much clutter) */
+  .aqi-widget { display: none !important; }
+
+  /* Map controls (original) — hidden */
+  .map-controls { display: none !important; }
+
+  /* Minimal controls: bottom-right above transport */
+  .minimal-controls {
+    bottom:    calc(var(--map-bot) + 168px) !important;
+    right:     var(--map-right) !important;
+    top:       auto !important; left: auto !important;
+    flex-direction: column !important;
+    gap:       6px !important;
+    z-index: 35 !important;
+  }
+
+  /* 3D FAB: below minimal controls */
+  .buildings-3d-fab {
+    bottom:    calc(var(--map-bot) + 96px) !important;
+    right:     var(--map-right) !important;
+    top:       auto !important; left: auto !important;
+    z-index: 35 !important;
+  }
+
+  /* Transport panel: horizontal strip above bnav */
+  #transportPanelContainer,
+  .transport-panel-container {
+    bottom:    calc(var(--map-bot) + 4px) !important;
+    left:      8px !important;
+    right:     8px !important;
+    transform: none !important;
+    top:       auto !important;
+    width:     auto !important;
+    max-width: none !important;
+    max-height: 120px !important;
+    z-index: 40 !important;
+    overflow-y: auto !important;
+    border-radius: 12px !important;
+  }
+
+  /* Category filter — hidden on mobile */
+  .category-filter { display: none !important; }
+
+  /* Live ticker — hidden */
+  .live-ticker { display: none !important; }
+
+  /* Live transport btn — hidden on mobile */
+  .live-transport-btn   { display: none !important; }
+  .live-transport-panel { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════
+   6. TOAST — always above everything
+      raised above transport panel on all sizes
+   ═══════════════════════════════════════════════ */
+.toast {
+  bottom: calc(var(--map-bot) + 200px) !important;
+  z-index: 400 !important;
+}
+@media (max-width: 767px) {
+  .toast {
+    bottom: calc(var(--map-bot) + 140px) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   7. MAKE MAP CONTAINER NON-CLIPPING
+      (widgets are fixed so don't need this,
+       but just in case other code sets overflow)
+   ═══════════════════════════════════════════════ */
+.map-container,
+#section-map {
+  overflow: visible !important;
+}
+
+/* ═══════════════════════════════════════════════
+   8. CLEAN VISUAL POLISH FOR WIDGETS
+   ═══════════════════════════════════════════════ */
+.weather-widget,
+.clock-widget,
+.aqi-widget,
+.map-legend,
+.minimal-controls .controls-group {
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  box-shadow: 0 2px 14px rgba(0,0,0,.35) !important;
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .weather-widget,
+[data-theme="light"] .clock-widget,
+[data-theme="light"] .aqi-widget,
+[data-theme="light"] .map-legend,
+[data-theme="light"] .minimal-controls .controls-group {
+  background: rgba(255,255,255,0.88) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  box-shadow: 0 2px 14px rgba(0,0,0,.12) !important;
+}
+
+/* ═══════════════════════════════════════════════
+   9. CONTROLS & CLOCK — 2× SMALLER ON DESKTOP
+      (original: btn 40px, svg 20px, clock font 20px)
+      (new:      btn 22px, svg 11px, clock font 11px)
+   ═══════════════════════════════════════════════ */
+@media (min-width: 768px) {
+
+  /* ── Controls group shell ──────────────────── */
+  .controls-group {
+    padding:       3px  !important;
+    gap:           3px  !important;
+    border-radius: 8px  !important;
+  }
+
+  /* ── Each control button ───────────────────── */
+  .control-btn {
+    width:         22px !important;
+    height:        22px !important;
+    border-radius: 5px  !important;
+  }
+  .control-btn svg {
+    width:  11px !important;
+    height: 11px !important;
+  }
+
+  /* ── Gap between groups ────────────────────── */
+  .minimal-controls {
+    gap: 4px !important;
+  }
+
+  /* ── Recalculate 3D FAB position:
+        clock ~38px + controls ~3 groups × 32px ≈ 134px
+        → start at map-top + 46px ───────────── */
+  .buildings-3d-fab {
+    top: calc(var(--map-top) + 140px) !important;
+  }
+
+  /* ── Clock widget — half size ──────────────── */
+  .clock-widget {
+    padding: 4px 8px !important;
+  }
+  .clock-time {
+    font-size: 11px !important;
+    letter-spacing: 0.5px !important;
+  }
+  .clock-date {
+    font-size: 8px !important;
+    margin-top: 1px !important;
+  }
+  .clock-live {
+    font-size: 7px !important;
+    margin-top: 2px !important;
+    gap: 2px !important;
+  }
+  /* shrink the live dot inside clock */
+  .clock-live .live-dot {
+    width: 5px !important;
+    height: 5px !important;
+  }
+
+  /* ── Recalculate minimal-controls start:
+        clock new height ≈ 38px → gap 6px ─────── */
+  .minimal-controls {
+    top: calc(var(--map-top) + 44px) !important;
+  }
+}
