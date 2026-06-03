@@ -200,21 +200,23 @@ const MobileThemeColors = (() => {
 
         /* Sidebar improvements */
         .sidebar {
-          width: 100%;
-          max-width: 100%;
+          width: 280px;
+          max-width: 85vw;
           height: 100vh;
           top: 0;
-          left: -100%;
+          left: -300px;
           transition: left 0.3s ease;
+          z-index: 2000;
         }
 
-        .sidebar.active {
-          left: 0;
-          z-index: 200;
+        .sidebar.open {
+          left: 0 !important;
         }
 
-        .sidebar-overlay.active {
+        .sidebar-overlay:not(.hidden) {
           display: block !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
         }
 
         /* Search bar mobile */

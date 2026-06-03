@@ -37,7 +37,6 @@ const UIUXPolish = (() => {
     
     // Show only on desktop
     desktopOnly: [
-      '.sidebar',
       '.search-bar'
     ],
     
