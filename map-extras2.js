@@ -24,7 +24,7 @@ function startCinematicTour() {
 
   if (TOUR.active) { stopTour(); return; }
 
-  // Pick highlights — featured + popular places; fall back to first 8
+  // Pick highlights — featured + popular places + parks
   const highlights = APP_DATA.places.filter(p => p.featured || p.popular);
   const tourStops = highlights.length >= 5 ? highlights : APP_DATA.places.slice(0, 8);
 
@@ -291,27 +291,19 @@ async function toggle3DBuildings() {
   showToast('🏢 Ładowanie budynków 3D...');
 
   try {
-    // Correct bbox for Niebuszewo/Łucznicza: south,west,north,east
-    const bboxQuery = '53.448,14.543,53.462,14.571';
-    const query = `[out:json][timeout:25];(way["building"](${bboxQuery}););out geom;`;
+    // Fetch building footprints from Overpass for Niebuszewo
+    const bbox = '53.448,14.543,14.462,14.571'; // will fix below
+    const query = `[out:json][timeout:25];(way["building"](53.448,14.543,53.462,14.571););out geom;`;
+    const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
 
     let data = null;
-    // Try our own proxy first (avoids CORS/blocking), then direct Overpass
+    // Try our own proxy first (avoids CORS/blocking), then direct
     try {
       const res = await fetch('/api/buildings');
       if (res.ok) data = await res.json();
-    } catch { /* proxy unavailable — fall through to direct */ }
+    } catch {}
 
     if (!data || !data.elements) {
-      // Direct Overpass fallback
-      try {
-        const overpassUrl = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
-        const res = await fetch(overpassUrl, { signal: AbortSignal.timeout(20000) });
-        if (res.ok) data = await res.json();
-      } catch { /* Overpass also failed */ }
-    }
-
-    if (!data || !data.elements || !data.elements.length) {
       BUILDINGS.loading = false;
       showToast('🏢 Budynki 3D — używam uproszczonej wizualizacji');
       drawSimplifiedBuildings();

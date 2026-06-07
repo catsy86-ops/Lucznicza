@@ -125,11 +125,6 @@ function enableRouting(startPlaceId, endPlaceId) {
   const map = window.state && window.state.map;
   if (!map) return;
 
-  if (!APP_DATA?.places) {
-    showToast('⚠️ Dane miejsc niedostępne');
-    return;
-  }
-
   const startPlace = APP_DATA.places.find(p => p.id === startPlaceId);
   const endPlace = APP_DATA.places.find(p => p.id === endPlaceId);
 
@@ -197,18 +192,15 @@ function onMeasurementClick(e) {
 
   if (MAP_ENHANCEMENTS.measurementPoints.length > 1) {
     const pts = MAP_ENHANCEMENTS.measurementPoints;
-
-    // Remove ALL old polylines before drawing the updated one
-    MAP_ENHANCEMENTS.measurementLayers
-      .filter(l => l instanceof L.Polyline)
-      .forEach(l => map.removeLayer(l));
-    MAP_ENHANCEMENTS.measurementLayers = MAP_ENHANCEMENTS.measurementLayers
-      .filter(l => !(l instanceof L.Polyline));
-
-    // Draw updated line through all points
+    // Draw line
     const line = L.polyline(pts, {
       color: '#ff9900', weight: 3, opacity: 0.8, dashArray: '6, 4'
     }).addTo(map);
+    // Remove old line if exists
+    if (MAP_ENHANCEMENTS.measurementLayers.length > pts.length) {
+      const oldLine = MAP_ENHANCEMENTS.measurementLayers.find(l => l instanceof L.Polyline);
+      if (oldLine) map.removeLayer(oldLine);
+    }
     MAP_ENHANCEMENTS.measurementLayers.push(line);
 
     // Calculate total distance
@@ -286,6 +278,5 @@ window.mapEnhancements = {
   export: exportMapAsImage,
   geofences: addGeofences,
   getClusterGroup: () => MAP_ENHANCEMENTS.clusterGroup,
-  isClustering: () => MAP_ENHANCEMENTS.clusteringEnabled,
-  isMeasuring: () => MAP_ENHANCEMENTS.measurementMode
+  isClustering: () => MAP_ENHANCEMENTS.clusteringEnabled
 };

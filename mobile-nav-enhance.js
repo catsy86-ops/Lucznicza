@@ -55,9 +55,10 @@ const MobileNavEnhance = (() => {
         setTimeout(() => ripple.remove(), 600);
       });
 
-      // Prevent double-tap zoom on mobile
+      // Prevent double-tap zoom on mobile via CSS (touch-action: manipulation)
+      // but don't preventDefault here as it might block click events
       btn.addEventListener('touchend', (e) => {
-        e.preventDefault();
+        // e.preventDefault(); // Removed to allow click events
       });
 
       // Enhanced hover state for touch devices
@@ -144,6 +145,7 @@ const MobileNavEnhance = (() => {
    * Hide navigation with animation
    */
   function hideNav(nav) {
+    if (!nav) return;
     nav.style.transition = `transform ${config.animationDuration}ms cubic-bezier(0.34,1.56,0.64,1)`;
     nav.style.transform = 'translateY(100%)';
   }
@@ -152,6 +154,7 @@ const MobileNavEnhance = (() => {
    * Show navigation with animation
    */
   function showNav(nav) {
+    if (!nav) return;
     nav.style.transition = `transform ${config.animationDuration}ms cubic-bezier(0.34,1.56,0.64,1)`;
     nav.style.transform = 'translateY(0)';
   }

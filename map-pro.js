@@ -97,8 +97,6 @@ function buildFloatingControls() {
   fc.className = 'map-fab-group';
   fc.innerHTML = `
     <button class="map-fab" id="fabLocate"     title="Moja lokalizacja (L)">🎯</button>
-    <button class="map-fab" id="fabNearest"    title="Najbliższe miejsca">📍</button>
-    <button class="map-fab" id="fabFitAll"     title="Pokaż wszystkie miejsca">🗺️</button>
     <button class="map-fab" id="fabFullscreen" title="Pełny ekran (F)">⛶</button>
     <button class="map-fab" id="fabReset"      title="Wyśrodkuj (R)">🏹</button>
     <button class="map-fab" id="fabBack"       title="Cofnij widok (←)" style="font-size:14px">◀</button>
@@ -106,10 +104,6 @@ function buildFloatingControls() {
   container.appendChild(fc);
 
   document.getElementById('fabLocate').addEventListener('click', locateUser);
-  document.getElementById('fabNearest').addEventListener('click', () => {
-    if (typeof window.showNearestPlaces === 'function') window.showNearestPlaces();
-  });
-  document.getElementById('fabFitAll').addEventListener('click', fitAllPlaces);
   document.getElementById('fabFullscreen').addEventListener('click', toggleFullscreen);
   document.getElementById('fabReset').addEventListener('click', resetView);
   document.getElementById('fabBack').addEventListener('click', viewHistoryBack);
@@ -239,7 +233,6 @@ function buildContextMenu() {
       <button class="mcm-item" onclick="mapProOpenGoogleMaps('${lat}','${lng}')">🧭 Nawiguj tutaj</button>
       <button class="mcm-item" onclick="mapProReverseGeocode('${lat}','${lng}')">🏠 Jaki to adres?</button>
       <button class="mcm-item" onclick="mapProMeasureFrom('${lat}','${lng}')">📏 Mierz od tego punktu</button>
-      <button class="mcm-item" onclick="mapProSuggestPlace('${lat}','${lng}')">➕ Zgłoś miejsce tutaj</button>
       <div class="mcm-sep"></div>
       <button class="mcm-item" onclick="mapProResetView()">🏹 Wyśrodkuj mapę</button>`;
 
@@ -285,95 +278,18 @@ window.mapProReverseGeocode = async function(lat, lng) {
 
 window.mapProMeasureFrom = function(lat, lng) {
   MAP_PRO.contextMenu?.classList.add('hidden');
-  if (!window.mapEnhancements) return;
-  // Only enable measurement if not already active — don't toggle it off
-  if (!window.mapEnhancements.isMeasuring()) {
-    window.mapEnhancements.measurement();
+  if (window.mapEnhancements) {
+    // Enable measurement mode and add first point
+    if (!window.mapEnhancements.isMeasuring?.()) {
+      window.mapEnhancements.measurement();
+    }
+    MAP_PRO.map.fire('click', { latlng: L.latLng(parseFloat(lat), parseFloat(lng)) });
   }
-  // Simulate a click at the given coordinates to add the first point
-  MAP_PRO.map.fire('click', { latlng: L.latLng(parseFloat(lat), parseFloat(lng)) });
 };
 
 window.mapProResetView = function() {
   MAP_PRO.contextMenu?.classList.add('hidden');
   resetView();
-};
-
-window.mapProSuggestPlace = function(lat, lng) {
-  MAP_PRO.contextMenu?.classList.add('hidden');
-
-  // Remove any existing suggest modal
-  document.getElementById('suggestPlaceModal')?.remove();
-
-  const modal = document.createElement('div');
-  modal.id = 'suggestPlaceModal';
-  modal.className = 'suggest-modal-overlay';
-  modal.innerHTML = `
-    <div class="suggest-modal" role="dialog" aria-modal="true">
-      <button class="suggest-close" onclick="document.getElementById('suggestPlaceModal').remove()">✕</button>
-      <h3 class="suggest-title">➕ Zgłoś nowe miejsce</h3>
-      <p class="suggest-coords">📍 ${parseFloat(lat).toFixed(4)}, ${parseFloat(lng).toFixed(4)}</p>
-
-      <input id="suggestName" class="suggest-input" type="text" placeholder="Nazwa miejsca *" maxlength="80" />
-      <select id="suggestCat" class="suggest-input">
-        <option value="">Kategoria *</option>
-        <option value="food">🍽️ Jedzenie</option>
-        <option value="shop">🛒 Sklep</option>
-        <option value="sport">⚽ Sport</option>
-        <option value="park">🌳 Park / Zieleń</option>
-        <option value="service">🔧 Usługi</option>
-        <option value="edu">📚 Edukacja</option>
-      </select>
-      <input id="suggestAddr" class="suggest-input" type="text" placeholder="Adres (opcjonalnie)" maxlength="100" />
-      <textarea id="suggestDesc" class="suggest-textarea" rows="3" placeholder="Opis (opcjonalnie)" maxlength="300"></textarea>
-
-      <div class="suggest-actions">
-        <button class="suggest-btn cancel" onclick="document.getElementById('suggestPlaceModal').remove()">Anuluj</button>
-        <button class="suggest-btn submit" id="suggestSubmit">Wyślij zgłoszenie</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-
-  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
-
-  document.getElementById('suggestSubmit').addEventListener('click', () => {
-    const name = document.getElementById('suggestName').value.trim();
-    const cat  = document.getElementById('suggestCat').value;
-    const addr = document.getElementById('suggestAddr').value.trim();
-    const desc = document.getElementById('suggestDesc').value.trim();
-
-    if (!name) { showToast('⚠️ Podaj nazwę miejsca'); return; }
-    if (!cat)  { showToast('⚠️ Wybierz kategorię'); return; }
-
-    // Save to localStorage (community suggestions)
-    const suggestions = JSON.parse(localStorage.getItem('lucznicza_suggestions') || '[]');
-    suggestions.push({
-      id: Date.now(),
-      name, cat, addr, desc,
-      lat: parseFloat(lat), lng: parseFloat(lng),
-      date: new Date().toLocaleDateString('pl'),
-      status: 'pending'
-    });
-    localStorage.setItem('lucznicza_suggestions', JSON.stringify(suggestions));
-
-    // Show a temporary marker on the map
-    if (MAP_PRO.map) {
-      L.marker([parseFloat(lat), parseFloat(lng)], {
-        icon: L.divIcon({
-          html: `<div class="suggest-marker">➕</div>`,
-          iconSize: [32, 32], iconAnchor: [16, 32], className: ''
-        })
-      }).addTo(MAP_PRO.map)
-        .bindPopup(`<b>➕ ${name}</b><br><small>Zgłoszone przez Ciebie</small>`)
-        .openPopup();
-    }
-
-    modal.remove();
-    showToast(`✅ Dziękujemy! "${name}" zostało zgłoszone.`);
-  });
-
-  setTimeout(() => document.getElementById('suggestName')?.focus(), 100);
 };
 
 // ===== COMPASS =====
@@ -390,34 +306,14 @@ function buildCompass() {
 
   compass.addEventListener('click', resetView);
 
-  // Update compass on device orientation (if available and permitted)
-  // Using the new DeviceOrientationEvent with permission API
-  if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent !== 'undefined') {
-    // For iOS 13+, need to request permission first
-    if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
-      compass.style.cursor = 'pointer';
-      compass.title += ' — kliknij aby włączyć kompas';
-      compass.addEventListener('click', async () => {
-        try {
-          const permission = await DeviceOrientationEvent.requestPermission();
-          if (permission === 'granted') {
-            window.addEventListener('deviceorientation', handleDeviceOrientation, true);
-          }
-        } catch (err) {
-          console.warn('Permisja do orientacji urządzenia odrzucona:', err);
-        }
-      });
-    } else {
-      // For other browsers, just listen
-      window.addEventListener('deviceorientation', handleDeviceOrientation, true);
-    }
-  }
-
-  function handleDeviceOrientation(e) {
-    if (e.alpha != null) {
-      const needle = compass.querySelector('.compass-needle');
-      if (needle) needle.style.transform = `rotate(${-e.alpha}deg)`;
-    }
+  // Update compass on device orientation (if available)
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', e => {
+      if (e.alpha != null) {
+        const needle = compass.querySelector('.compass-needle');
+        if (needle) needle.style.transform = `rotate(${-e.alpha}deg)`;
+      }
+    });
   }
 }
 
@@ -458,9 +354,7 @@ function buildWeatherOverlay() {
   overlay.innerHTML = `<div class="mwo-loading">⏳</div>`;
   container.appendChild(overlay);
 
-  let attempts = 0;
-  const MAX_ATTEMPTS = 15; // max 30 seconds (15 × 2s)
-
+  // Populate from live.js data when available
   function tryPopulate() {
     const wData = document.getElementById('wTemp');
     const wIcon = document.getElementById('wIcon');
@@ -470,18 +364,14 @@ function buildWeatherOverlay() {
         <span class="mwo-icon">${wIcon?.textContent || '🌡️'}</span>
         <span class="mwo-temp">${wData.textContent}</span>
         <span class="mwo-desc">${wDesc?.textContent || ''}</span>`;
-    } else if (attempts < MAX_ATTEMPTS) {
-      attempts++;
-      setTimeout(tryPopulate, 2000);
     } else {
-      // Give up gracefully — hide the loading spinner
-      overlay.innerHTML = '';
+      setTimeout(tryPopulate, 2000);
     }
   }
   setTimeout(tryPopulate, 1500);
 
-  // Refresh every 5 min (only if data is available)
-  setInterval(() => { attempts = 0; tryPopulate(); }, 5 * 60 * 1000);
+  // Refresh every 5 min
+  setInterval(tryPopulate, 5 * 60 * 1000);
 }
 
 // ===== LEGEND WITH POI COUNTS =====
@@ -561,22 +451,6 @@ function resetView() {
   showToast('🏹 Powrót do centrum dzielnicy');
 }
 
-// Fit map to show all visible POI markers
-function fitAllPlaces() {
-  const map = MAP_PRO.map;
-  const st = window.state;
-  if (!map || !st || !st.markers || !st.markers.length) return;
-  const visible = st.markers.filter(m => map.hasLayer(m));
-  const toFit = visible.length ? visible : st.markers;
-  try {
-    const bounds = L.latLngBounds(toFit.map(m => m.getLatLng()));
-    map.flyToBounds(bounds, { padding: [60, 60], maxZoom: 17, duration: 1 });
-    showToast(`🗺️ Pokazuję ${toFit.length} miejsc`);
-  } catch (e) {
-    resetView();
-  }
-}
-
 // ===== VIEW HISTORY (back/forward) =====
 function initViewHistory() {
   const map = MAP_PRO.map;
@@ -650,6 +524,5 @@ window.mapPro = {
   locate: locateUser,
   fullscreen: toggleFullscreen,
   reset: resetView,
-  fitAll: fitAllPlaces,
   search: searchOnMap
 };

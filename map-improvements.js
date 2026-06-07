@@ -10,9 +10,7 @@
 const MAP_IMPROVEMENTS = {
   legendExpanded: true,
   hiddenCategories: new Set(),
-  routeAnimInterval: null,
-  animatedLine: null,
-  routeMarkers: []
+  routeAnimInterval: null
 };
 
 // ===== INTERACTIVE LEGEND =====
@@ -154,7 +152,8 @@ function addRouteEndpoints(route, coords) {
   startM.bindPopup(`<b>Start:</b> ${route.stops?.[0]?.name || 'Start'}`);
   endM.bindPopup(`<b>Meta:</b> ${route.stops?.[route.stops.length - 1]?.name || 'Meta'}`);
 
-  // Store for cleanup — remove previous endpoint markers
+  // Store for cleanup
+  if (!MAP_IMPROVEMENTS.routeMarkers) MAP_IMPROVEMENTS.routeMarkers = [];
   MAP_IMPROVEMENTS.routeMarkers.forEach(m => map.removeLayer(m));
   MAP_IMPROVEMENTS.routeMarkers = [startM, endM];
 }

@@ -4,7 +4,7 @@
 
 const APP_DATA = {
 
-  center: [53.4559, 14.5546],  // Centrum Niebuszewo, Szczecin [lat, lng]
+  center: [14.5546, 53.4559],  // Centrum Niebuszewo, Szczecin
 
   // ===== MIEJSCA — PRAWDZIWE DANE OSM (Niebuszewo/Łucznicza, Szczecin) =====
   // Źródło: OpenStreetMap via Nominatim | Pobrano: 2026-05-30

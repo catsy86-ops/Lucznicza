@@ -86,18 +86,13 @@ function setupStreetViewListeners() {
 // ===== POPULATE MARKER LOCATIONS =====
 function populateMarkerLocations() {
   // Map data from APP_DATA.places to Street View coordinates
-  // Data model uses coords[0]=lng, coords[1]=lat (GeoJSON order)
   if (typeof APP_DATA !== 'undefined' && APP_DATA.places) {
     APP_DATA.places.forEach(place => {
-      // Support both coords array [lng, lat] and direct lat/lng properties
-      const lat = place.coords ? place.coords[1] : place.lat;
-      const lng = place.coords ? place.coords[0] : place.lng;
-      if (lat == null || lng == null || isNaN(lat) || isNaN(lng)) return;
       GOOGLE_MAPS.markerLocations[place.id] = {
         name: place.name,
-        coords: { lat, lng },
+        coords: { lat: place.lat, lng: place.lng },
         category: place.cat,
-        description: place.desc || ''
+        description: place.desc
       };
     });
   }
@@ -168,22 +163,34 @@ function setupPanoramicControls() {
   const controls = document.getElementById('panoramicControls');
   if (!controls) return;
 
-  // Null-safe helper
-  const on = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+  // Zoom Street View
+  document.getElementById('svZoomIn').addEventListener('click', () => {
+    const zoom = GOOGLE_MAPS.panorama.getZoom();
+    GOOGLE_MAPS.panorama.setZoom(Math.min(zoom + 1, 4));
+  });
 
-  on('svZoomIn', () => {
-    const zoom = GOOGLE_MAPS.panorama?.getZoom() ?? 1;
-    GOOGLE_MAPS.panorama?.setZoom(Math.min(zoom + 1, 4));
+  document.getElementById('svZoomOut').addEventListener('click', () => {
+    const zoom = GOOGLE_MAPS.panorama.getZoom();
+    GOOGLE_MAPS.panorama.setZoom(Math.max(zoom - 1, 0));
   });
-  on('svZoomOut', () => {
-    const zoom = GOOGLE_MAPS.panorama?.getZoom() ?? 1;
-    GOOGLE_MAPS.panorama?.setZoom(Math.max(zoom - 1, 0));
+
+  // Rotate Street View
+  document.getElementById('svRotateLeft').addEventListener('click', () => {
+    rotatePanorama(-15);
   });
-  on('svRotateLeft',  () => rotatePanorama(-15));
-  on('svRotateRight', () => rotatePanorama(15));
-  on('streetViewToggle', toggleStreetView);
-  on('svShowLinks', showStreetViewLinks);
-  on('svReset', resetStreetView);
+
+  document.getElementById('svRotateRight').addEventListener('click', () => {
+    rotatePanorama(15);
+  });
+
+  // Toggle Street View
+  document.getElementById('streetViewToggle').addEventListener('click', toggleStreetView);
+
+  // Show nearby links
+  document.getElementById('svShowLinks').addEventListener('click', showStreetViewLinks);
+
+  // Reset view
+  document.getElementById('svReset').addEventListener('click', resetStreetView);
 }
 
 // ===== ROTATE PANORAMA =====
@@ -305,12 +312,12 @@ function getCompassDirection(heading) {
 
 // ===== UPDATE MAP CENTER FROM STREET VIEW =====
 function updateMapCenterFromStreetView(position) {
-  // Use Leaflet panTo — this is a Leaflet map, not Mapbox
+  // If Mapbox map exists, update its center
   if (window.state && window.state.map) {
-    window.state.map.panTo(
-      [position.lat(), position.lng()],
-      { animate: true, duration: 0.5 }
-    );
+    window.state.map.easeTo({
+      center: [position.lng(), position.lat()],
+      duration: 500
+    });
   }
 }
 

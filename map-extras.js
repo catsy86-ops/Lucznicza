@@ -293,9 +293,8 @@ function buildSwipeHandle() {
 }
 
 function applySwipeClip() {
-  if (!SWIPE.satLayer || !SWIPE.enabled) return;
-  // L.TileLayer doesn't expose getContainer() — access the internal _container directly
-  const container = SWIPE.satLayer._container || SWIPE.satLayer.getPane?.();
+  if (!SWIPE.satLayer) return;
+  const container = SWIPE.satLayer.getContainer?.();
   if (container) {
     container.style.clipPath = `inset(0 0 0 ${SWIPE.clipValue}%)`;
   }

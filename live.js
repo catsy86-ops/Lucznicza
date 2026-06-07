@@ -82,43 +82,32 @@ function initLive() {
   // Auto-refresh intervals (staggered to avoid network spikes)
   live.weatherInterval = setInterval(fetchWeather, 10 * 60 * 1000);   // 10 min
   live.aqiInterval     = setInterval(fetchAqi, 15 * 60 * 1000);       // 15 min
-  // Transport: only refresh when user is on Live or Transport section (saves network/CPU)
-  live.transportInterval = setInterval(() => {
-    const sec = window.state?.currentSection;
-    if (sec === 'live' || sec === 'transport') generateTransportDepartures();
-  }, 60 * 1000); // 1 min
+  live.transportInterval = setInterval(generateTransportDepartures, 60 * 1000); // 1 min
 
   // Update refresh countdown every second
   live.countdownInterval = setInterval(updateRefreshCountdown, 1000);
 
-  // Live transport panel (null-safe — elements may not exist)
-  const liveTransportBtn = document.getElementById('liveTransportBtn');
-  if (liveTransportBtn) {
-    liveTransportBtn.addEventListener('click', () => {
-      const panel = document.getElementById('liveTransportPanel');
-      if (!panel) return;
-      panel.classList.toggle('hidden');
-      if (!panel.classList.contains('hidden')) generateTransportDepartures();
-    });
-  }
-  const ltpClose = document.getElementById('ltpClose');
-  if (ltpClose) {
-    ltpClose.addEventListener('click', () => {
-      document.getElementById('liveTransportPanel')?.classList.add('hidden');
-    });
-  }
-  document.getElementById('ltpRefresh')?.addEventListener('click', generateTransportDepartures);
+  // Live transport panel
+  document.getElementById('liveTransportBtn').addEventListener('click', () => {
+    const panel = document.getElementById('liveTransportPanel');
+    panel.classList.toggle('hidden');
+    if (!panel.classList.contains('hidden')) generateTransportDepartures();
+  });
+  document.getElementById('ltpClose').addEventListener('click', () => {
+    document.getElementById('liveTransportPanel').classList.add('hidden');
+  });
+  document.getElementById('ltpRefresh').addEventListener('click', generateTransportDepartures);
 
   // Live section refresh buttons
-  document.getElementById('refreshWeather')?.addEventListener('click', () => {
+  document.getElementById('refreshWeather').addEventListener('click', () => {
     live.lastWeatherFetch = 0;
     fetchWeather();
   });
-  document.getElementById('refreshAqi')?.addEventListener('click', () => {
+  document.getElementById('refreshAqi').addEventListener('click', () => {
     live.lastAqiFetch = 0;
     fetchAqi();
   });
-  document.getElementById('refreshTransport')?.addEventListener('click', generateTransportDepartures);
+  document.getElementById('refreshTransport').addEventListener('click', generateTransportDepartures);
 }
 
 // ===== CLOCK =====
@@ -476,7 +465,6 @@ async function generateTransportDepartures() {
         live.nextDepartures = departures;
         renderTransportPanel(departures);
         renderTransportFull(departures, true);
-        renderTransportSectionLive(departures, true);
         updateTicker();
         return;
       }
@@ -490,7 +478,6 @@ async function generateTransportDepartures() {
           live.nextDepartures = cached;
           renderTransportPanel(cached);
           renderTransportFull(cached, true);
-          renderTransportSectionLive(cached, true);
           showToast('📵 Odjazdy z cache (offline)');
           return;
         }
@@ -503,30 +490,6 @@ async function generateTransportDepartures() {
   live.nextDepartures = departures;
   renderTransportPanel(departures);
   renderTransportFull(departures, false);
-  renderTransportSectionLive(departures, false);
-}
-
-// Render live departures into the Transport section panel (unifies Transport + Live)
-function renderTransportSectionLive(deps, isRealtime) {
-  const list = document.getElementById('transportLiveList');
-  if (!list) return;
-  if (!deps || !deps.length) {
-    list.innerHTML = `<div class="tlp-empty">🚌 Brak odjazdów w tej chwili</div>`;
-    return;
-  }
-  list.innerHTML = deps.slice(0, 8).map(d => `
-    <div class="tlp-row">
-      <div class="tlp-line" style="background:${d.color}">${d.line}</div>
-      <div class="tlp-dest">
-        <div>${d.dest}</div>
-        <div class="tlp-stop">🚏 ${d.stop}${d.realtime ? ' 📡' : ''}</div>
-      </div>
-      <div class="tlp-time ${d.minsLeft <= 2 ? 'soon' : ''}">
-        ${d.minsLeft <= 0 ? 'Teraz' : d.minsLeft + ' min'}
-        <div class="tlp-clock">${d.time}</div>
-      </div>
-    </div>
-  `).join('');
 }
 
 function generateSimulatedTransportDepartures() {
@@ -698,12 +661,7 @@ function updateTicker() {
   const allItems = [...items, ...items];
   const track = document.getElementById('tickerTrack');
   if (track) {
-    const html = allItems.map(i => `<span class="ticker-item">${i}</span>`).join('');
-    // Only touch the DOM if content changed (avoids layout thrashing + animation restart)
-    if (track._lastHtml !== html) {
-      track.innerHTML = html;
-      track._lastHtml = html;
-    }
+    track.innerHTML = allItems.map(i => `<span class="ticker-item">${i}</span>`).join('');
   }
 }
 

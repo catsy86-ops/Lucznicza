@@ -1,341 +1,205 @@
-# 🚀 Quick Reference — Enhancements API
+# Quick Reference Guide
 
-**Bookmark this for quick access to all enhancement APIs!**
+## 🚀 Live App
+**URL**: https://szn-theta.vercel.app
 
 ---
 
-## 📱 Mobile Navigation API
+## 📋 Key Features
 
-```javascript
-// Haptic Feedback (vibration)
-MobileNavEnhance.triggerHapticFeedback('light');   // 10ms
-MobileNavEnhance.triggerHapticFeedback('medium');  // 20-10-20ms pattern
-MobileNavEnhance.triggerHapticFeedback('heavy');   // 50-30-50ms pattern
+| Feature | Status | How to Use |
+|---------|--------|-----------|
+| **3D Map** | ✅ Live | Pan, zoom, rotate • Click buildings • Toggle dark/light |
+| **POI** | ✅ Live | Click "Atrakcje" tab • Filter by category • Click marker for details |
+| **Routes** | ✅ Live | Click "Trasy" tab • Select route • See on map + directions |
+| **Weather** | ✅ Live | Click "Na żywo" tab • See current + 7-day forecast |
+| **Air Quality** | ✅ Live | "Na żywo" tab • AQI meter + pollutants breakdown |
+| **Transport** | ✅ Live | Click "Odjazdy 🚌" button • Real-time departures • Refresh to update |
 
-// Nav Control
-MobileNavEnhance.hideNav();    // Hide bottom navigation
-MobileNavEnhance.showNav();    // Show bottom navigation
+---
 
-// Module Status
-console.log(MobileNavEnhance); // View module state
+## 🔧 Real-Time Data Sources
+
+### Weather (Open-Meteo)
+- Updates: Every 10 minutes
+- Shows: Temp, feels-like, humidity, wind, pressure, UV
+- 7-day forecast included
+
+### Air Quality (Open-Meteo)
+- Updates: Every 15 minutes
+- Shows: AQI, PM2.5, PM10, NO₂, Ozone, CO
+- Health recommendations
+
+### Transport (ZDiTM via Vercel Proxy) ⭐
+- Updates: Every 1 minute
+- Shows: Live tram/bus departures
+- Lines: 3, 7, 12, 51, 64, 78, 103, N1
+- Stops: Łucznicza, Tarczowa, Osiedle Łucznicza
+- Badge: 🟢 Real (live API) vs 🟡 Simulated (fallback)
+
+---
+
+## 💾 Local Development
+
+```bash
+# Start dev server
+npm run dev
+
+# Open browser
+http://localhost:3000
+
+# Build for production
+npm run build
+
+# Deploy (auto-triggers on git push)
+git push origin main
 ```
 
 ---
 
-## ⚡ Performance API
+## 📱 Features
 
-```javascript
-// Device Information
-const info = MobileOptimizations.getDeviceInfo();
-console.log(info.isLowEnd);       // Boolean: low-end device?
-console.log(info.reducedMotion);  // Boolean: prefers reduced motion?
-console.log(info.connection);     // String: '3g', '4g', etc
-console.log(info.memory);         // Number: GB or 'unknown'
-console.log(info.cores);          // Number: CPU cores
+### On Dashboard
+- Weather widget (top right) — Current conditions
+- Clock (top center) — Time + date
+- AQI meter (top left) — Air quality level
+- Transport button (bottom right) — Live departures
 
-// Check Capabilities
-MobileOptimizations.isLowEnd();        // → boolean
-MobileOptimizations.hasReducedMotion(); // → boolean
+### Tabs
+1. **Mapa** — 3D map + POI visualization
+2. **Atrakcje** — Points of interest (12 locations)
+3. **Trasy** — Walking routes (3 routes)
+4. **Na żywo** — Real-time data (weather, AQI, transport, calendar)
+5. **Ustawienia** — Settings (dark/light mode)
 
-// Animation Control
-MobileOptimizations.setAnimationOptimization(true);  // Enable/disable
+### Transport Panel
+- Shows next 12 departures
+- Red "🚌 Teraz" = arriving now
+- Minutes count down
+- Click "Odśwież" to update immediately
+
+---
+
+## ⚡ Performance Tips
+
+- **First load**: ~2-3 seconds (includes map tiles)
+- **Cached loads**: <500ms
+- **Offline**: Works fully (uses cached data)
+- **Mobile**: Optimized for all screen sizes
+- **Dark mode**: Default (toggle in Settings)
+
+---
+
+## 🐛 Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Transport not showing | Click "Odśwież" button • Wait 30s • Check internet |
+| Weather outdated | Wait 10 min for refresh • Click "Odśwież" button |
+| App slow | Clear browser cache • Refresh page • Check internet |
+| Offline doesn't work | Visit app online first (caches assets) |
+| Map not loading | Check Mapbox token • Try another browser |
+
+---
+
+## 📂 Important Files
+
+```
+szn/
+├── index.html          Main app file
+├── app.js              Map & navigation logic
+├── live.js             Real-time data (weather, AQI, transport)
+├── style.css           UI styling
+├── sw.js               Offline support
+├── api/
+│   └── zditm-departures.js   Proxy for transport API
+└── vercel.json         Deployment config
 ```
 
 ---
 
-## 👆 Gesture Events
+## 🔐 Security & Privacy
 
-```javascript
-// Listen for Gestures
-document.addEventListener('gesture:swipeleft', (e) => {
-  console.log('User swiped left');
-});
+✅ HTTPS only
+✅ No user data stored
+✅ No tracking
+✅ APIs require no login
+✅ Mapbox public token (by design)
 
-// Available Gestures:
-// gesture:swipeleft     — swipe 50px left
-// gesture:swiperight    — swipe 50px right
-// gesture:swipeup       — swipe 50px up
-// gesture:swipedown     — swipe 50px down
-// gesture:longpress     — hold 500ms
-// gesture:doubletap     — tap twice within 300ms
-// gesture:zoomin        — pinch outward
-// gesture:zoomout       — pinch inward
-// gesture:drag          — drag element
+---
+
+## 📞 Support
+
+**Real-time data not updating?**
+1. Check internet connection
+2. Click "Odśwież" button
+3. Wait for automatic refresh (10-15 min)
+
+**App crashing?**
+1. Clear browser cache
+2. Force refresh (Ctrl+Shift+R)
+3. Try different browser
+
+**Need to report bug?**
+Check browser console (F12) for errors
+
+---
+
+## 🚀 Deployment
+
+Auto-deploys on `git push`:
+
+```bash
+git add .
+git commit -m "Your message"
+git push origin main
+# Vercel auto-builds & deploys
+# Live in ~1-2 minutes
 ```
 
 ---
 
-## 🎨 UI Polish API
+## 📊 Data Refresh Intervals
 
-```javascript
-// Tooltips
-UIPolishEnhancements.showTooltip(element);
-UIPolishEnhancements.hideTooltip(element);
-
-// HTML Attribute Method
-<button data-tooltip="Help text">Button</button>
-<button data-tooltip="Success!" data-tooltip-variant="success">Done</button>
-
-// Tooltip Variants
-data-tooltip-variant="default"   // black background (default)
-data-tooltip-variant="success"   // green background
-data-tooltip-variant="error"     // red background
-data-tooltip-variant="warning"   // yellow background
-data-tooltip-variant="info"      // purple background
-```
+| Data | Interval | Manual Refresh |
+|------|----------|-----------------|
+| Weather | 10 min | "Odśwież" button |
+| AQI | 15 min | "Odśwież" button |
+| Transport | 1 min | "Odśwież" or button click |
+| Ticker | 5 min | Auto (no action needed) |
 
 ---
 
-## 🎬 Animation Classes
+## 🎨 UI Elements
 
-```html
-<!-- Use these classes for animations -->
-<div class="card-animate">Animates on load</div>
-<div class="hover-lift">Lifts on hover</div>
-<div class="hover-scale">Scales on hover</div>
-<div class="scroll-reveal">Reveals on scroll</div>
-<div class="attention-pulse">Pulses for attention</div>
-<div class="attention-wiggle">Wiggles</div>
-<button class="btn-pulse">Pulsing button</button>
-<button class="btn-spin">Spinning button</button>
-```
+- **Dark mode** (default) — Easier on eyes
+- **Light mode** — Toggle in Settings
+- **Responsive** — Works on all devices
+- **Accessible** — Keyboard navigation
+- **Fast** — No heavy frameworks
 
 ---
 
-## ⚙️ Configuration
+## 💡 Tips & Tricks
 
-```javascript
-// Mobile Navigation Config (in mobile-nav-enhance.js)
-config.enableHaptics = true;           // Vibrations on/off
-config.scrollThreshold = 80;           // px to scroll before hide
-config.animationDuration = 250;        // ms for animations
-config.mobileBreakpoint = 480;         // px for mobile/desktop
-
-// Mobile Optimizations Config (in mobile-optimizations.js)
-config.enableLazyLoad = true;          // Image lazy loading
-config.enableAnimationOptimization = true;
-config.reduceMotionOnLowEnd = true;
-config.imageLazyLoadThreshold = '50px';
-
-// Mobile Gestures Config (in mobile-gestures.js)
-config.swipeThreshold = 50;            // px for swipe detection
-config.longPressDelay = 500;           // ms for long press
-config.doubleTapDelay = 300;           // ms between taps
-config.pinchThreshold = 50;            // px for pinch detection
-```
+1. **Offline mode**: Visit app once online, works anywhere
+2. **Install app**: Click "Install" prompt (home screen)
+3. **Share location**: Click map for directions
+4. **Dark mode**: Default for 8pm-6am
+5. **Real-time ticker**: Scrolls continuously at bottom
 
 ---
 
-## 🧪 Quick Tests
+## 📈 Next Steps
 
-```javascript
-// Test All Modules
-console.log('✅ MobileNavEnhance:', typeof MobileNavEnhance);
-console.log('✅ MobileOptimizations:', typeof MobileOptimizations);
-console.log('✅ MobileGestures:', typeof MobileGestures);
-console.log('✅ UIPolishEnhancements:', typeof UIPolishEnhancements);
-
-// Test Haptic Feedback
-MobileNavEnhance.triggerHapticFeedback('heavy');
-// Your device should vibrate
-
-// Test Device Info
-console.log(MobileOptimizations.getDeviceInfo());
-
-// Test Animation
-document.querySelector('.place-card').classList.add('card-animate');
-
-// Test Gesture (on mobile)
-document.addEventListener('gesture:swipeleft', () => {
-  console.log('👈 Left swipe detected!');
-});
-```
+Future enhancements:
+- Vehicle tracking on map
+- Push notifications for departures
+- Route planning (multi-stop)
+- Service disruption alerts
+- Photo gallery for POI
 
 ---
 
-## 🎯 Common Patterns
-
-### Haptic Feedback on Custom Event
-```javascript
-document.addEventListener('gesture:doubletap', (e) => {
-  MobileNavEnhance.triggerHapticFeedback('medium');
-  // Do something on double-tap
-});
-```
-
-### Optimize for Low-End Devices
-```javascript
-if (MobileOptimizations.isLowEnd()) {
-  console.log('Running on low-end device');
-  // Use simpler animations, reduce content
-}
-```
-
-### Respect Motion Preferences
-```javascript
-if (MobileOptimizations.hasReducedMotion()) {
-  // Disable animations or use simpler ones
-  element.style.animation = 'none';
-}
-```
-
-### Add Custom Tooltip
-```javascript
-const btn = document.querySelector('button');
-btn.setAttribute('data-tooltip', 'Click me!');
-btn.setAttribute('data-tooltip-variant', 'success');
-```
-
-### Listen for Multiple Gestures
-```javascript
-['swipeleft', 'swiperight', 'swipeup', 'swipedown'].forEach(gesture => {
-  document.addEventListener(`gesture:${gesture}`, (e) => {
-    console.log(`User performed: ${gesture}`);
-  });
-});
-```
-
----
-
-## 📊 Performance Metrics
-
-```javascript
-// Get Performance Metrics
-const metrics = PerfMonitor.getMetrics();
-console.log(metrics.pageLoad);     // ms - total page load time
-console.log(metrics.firstPaint);   // ms - DOM ready time
-console.log(metrics.lcp);          // ms - Largest Contentful Paint
-console.log(metrics.fid);          // ms - First Input Delay
-console.log(metrics.cls);          // number - Cumulative Layout Shift
-console.log(metrics.apiCalls);     // array - tracked API calls
-```
-
----
-
-## 🔍 Debugging Tips
-
-```javascript
-// Enable debugging for module
-window.DEBUG_ENHANCEMENTS = true;
-
-// Check module initialization order
-const scripts = document.querySelectorAll('script[defer]');
-scripts.forEach(s => console.log(s.src)); // Shows load order
-
-// Monitor FPS in real-time
-let frame = 0;
-const startTime = performance.now();
-function countFps() {
-  frame++;
-  requestAnimationFrame(countFps);
-}
-countFps();
-setTimeout(() => {
-  const elapsed = performance.now() - startTime;
-  console.log(`FPS: ${(frame / (elapsed / 1000)).toFixed(0)}`);
-}, 1000);
-
-// Monitor touch events
-document.addEventListener('touchstart', (e) => {
-  console.log(`👇 Touch: ${e.touches.length} fingers`);
-}, true);
-```
-
----
-
-## 🚨 Error Handling
-
-```javascript
-// All modules have built-in error handling
-// If something fails, it logs to console but doesn't crash
-
-// Check for errors
-try {
-  MobileNavEnhance.triggerHapticFeedback('light');
-} catch (e) {
-  console.error('Haptic feedback failed:', e);
-}
-
-// Fallback if module not loaded
-if (typeof MobileNavEnhance !== 'undefined') {
-  MobileNavEnhance.triggerHapticFeedback('light');
-} else {
-  console.warn('MobileNavEnhance not loaded');
-}
-```
-
----
-
-## 📱 Mobile-Specific
-
-```javascript
-// Check if touch device
-const isTouch = () => {
-  return (('ontouchstart' in window) ||
-          (navigator.maxTouchPoints > 0) ||
-          (navigator.msMaxTouchPoints > 0));
-};
-
-// Get viewport height (accounting for mobile keyboard)
-const viewportHeight = window.innerHeight;
-const viewportWidth = window.innerWidth;
-
-// Detect orientation
-const isPortrait = window.innerHeight > window.innerWidth;
-const isLandscape = window.innerWidth > window.innerHeight;
-
-// Listen for orientation change
-window.addEventListener('orientationchange', () => {
-  console.log('Orientation:', window.orientation);
-  // 0: portrait, ±90: landscape
-});
-```
-
----
-
-## 🎮 Control Flow
-
-```javascript
-// Typical User Flow with Enhancements
-1. Page loads → all modules auto-initialize
-2. Device capabilities auto-detected
-3. Animations auto-optimized based on device
-4. User touches → haptic feedback + ripple
-5. User swipes → gesture event dispatched
-6. Module responds → haptic + visual feedback
-7. Animation plays → smooth 60fps
-8. Mobile preference respected → animations adapt
-```
-
----
-
-## 📚 Resources
-
-- **Full Documentation:** `ENHANCEMENTS_SUMMARY_2024.md`
-- **Console Commands:** `CONSOLE_COMMANDS_GUIDE.md`
-- **Testing Guide:** `FINAL_ENHANCEMENTS_CHECKLIST.md`
-- **User Guide:** `MOBILE_NAV_START_HERE.md`
-
----
-
-## 🎯 Cheat Sheet
-
-| Want To... | Code |
-|-----------|------|
-| Vibrate phone | `MobileNavEnhance.triggerHapticFeedback('light')` |
-| Hide nav | `MobileNavEnhance.hideNav()` |
-| Check device | `MobileOptimizations.getDeviceInfo()` |
-| Listen for swipe | `document.addEventListener('gesture:swipeleft', ...)` |
-| Show tooltip | `UIPolishEnhancements.showTooltip(element)` |
-| Animate element | `element.classList.add('card-animate')` |
-| Check FPS | Check DevTools Performance tab |
-| Debug module | Open console, call `console.log(MobileNavEnhance)` |
-
----
-
-**Print this page as reference! 📋**
-
----
-
-*Last Updated: June 3, 2026*  
-*Part of Niebuszewo Guide v2.0.0 - Enhanced Edition*
+**Last Updated**: May 29, 2026
+**Status**: ✅ Live & Production-Ready
