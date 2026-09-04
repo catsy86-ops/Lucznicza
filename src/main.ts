@@ -15,6 +15,7 @@ import { geofenceRadar } from './services/geofence-radar';
 import { gpxExporter } from './services/gpx-exporter';
 import { favoritesSync } from './services/favorites-sync';
 import { accessibilityFilter } from './services/accessibility-filter';
+import { niebuszewoBoundary } from './services/niebuszewo-boundary';
 
 export * from './types';
 export * from './store';
@@ -31,6 +32,7 @@ export * from './services/geofence-radar';
 export * from './services/gpx-exporter';
 export * from './services/favorites-sync';
 export * from './services/accessibility-filter';
+export * from './services/niebuszewo-boundary';
 
 // Expose on global window object for interoperability with legacy components and console debugging
 if (typeof window !== 'undefined') {
@@ -52,7 +54,8 @@ if (typeof window !== 'undefined') {
     gpxExporter,
     favoritesSync,
     accessibilityFilter,
-    version: '1.2.0'
+    niebuszewoBoundary,
+    version: '1.3.0'
   };
 
   // Sync real-time transport arrivals on load

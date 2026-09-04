@@ -138,9 +138,19 @@ function initMap() {
     mapContainer.style.animation = '';
     mapContainer.innerHTML = '';
 
-    // Initialize Leaflet map centered on Niebuszewo, Szczecin
+    // Bounding box of Niebuszewo to prevent drifting outside the neighborhood
+    const NIEBUSZEWO_BOUNDS = [
+      [53.4380, 14.5200], // SW
+      [53.4720, 14.5850]  // NE
+    ];
+
+    // Initialize Leaflet map strictly focused on Niebuszewo, Szczecin
     const map = L.map('map', {
-      zoomControl: false
+      zoomControl: false,
+      minZoom: 14,
+      maxZoom: 19,
+      maxBounds: NIEBUSZEWO_BOUNDS,
+      maxBoundsViscosity: 0.85
     }).setView([53.4530, 14.5520], 15);
 
     // OpenStreetMap — 100% Free, zero API key required, pure open-source tiles
@@ -210,11 +220,46 @@ function initMap() {
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     L.control.scale({ position: 'bottomleft', metric: true, imperial: false }).addTo(map);
 
-    // Area highlight rectangle — Niebuszewo
-    L.rectangle(
-      [[53.4472, 14.5431], [53.4623, 14.5710]],
-      { color: '#6c63ff', weight: 2, opacity: 0.4, fill: true, fillColor: '#6c63ff', fillOpacity: 0.04, dashArray: '4, 2' }
-    ).addTo(map);
+    // Inverted Spotlight Mask — Dims everything outside Niebuszewo so the neighborhood stands out
+    const worldOuter = [
+      [-90, -180],
+      [90, -180],
+      [90, 180],
+      [-90, 180],
+      [-90, -180]
+    ];
+
+    const niebuszewoBoundaryCoords = [
+      [53.4470, 14.5445], // Rondo Giedroycia / Kołłątaja
+      [53.4495, 14.5410], // Staszica / Krasińskiego
+      [53.4525, 14.5380], // Niemierzyńska / Krasińskiego zachód
+      [53.4570, 14.5405], // Krasińskiego / Przyjaciół Żołnierza
+      [53.4615, 14.5460], // Przyjaciół Żołnierza (północ)
+      [53.4630, 14.5540], // Przyjaciół Żołnierza / Warcisława
+      [53.4600, 14.5620], // Wiadukt kolejowy / SKM Niebuszewo północ
+      [53.4550, 14.5650], // Stacja Szczecin Niebuszewo wschód
+      [53.4505, 14.5610], // Orzeszkowej / Kołłątaja wschód
+      [53.4475, 14.5530], // Dworzec Niebuszewo powrót do Kołłątaja
+      [53.4470, 14.5445]
+    ];
+
+    // Inverted mask polygon (outer world filled with subtle dark tint, Niebuszewo left bright & crisp)
+    L.polygon([worldOuter, niebuszewoBoundaryCoords], {
+      stroke: false,
+      fillColor: '#0b111e',
+      fillOpacity: 0.38,
+      interactive: false
+    }).addTo(map);
+
+    // Glowing boundary contour of Niebuszewo in Pogoń / Szczecin navy & gold
+    L.polyline(niebuszewoBoundaryCoords, {
+      color: '#002D62',
+      weight: 3.5,
+      opacity: 0.85,
+      dashArray: '8, 4',
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(map);
 
     // Park im. Stefana Kadziaka — Natural Green Zone Polygon
     const kadziakPolygon = L.polygon([
@@ -888,6 +933,30 @@ function initGoogleMapControls() {
     };
   }
 }
+
+// ===== NIEBUSZEWO CAMERA FOCUS PRESETS =====
+function flyToPreset(presetId) {
+  const map = state.map;
+  if (!map) return;
+
+  const presets = {
+    'full-district': { center: [53.4530, 14.5520], zoom: 15, toast: '🏙️ Całe Osiedle Niebuszewo' },
+    'lucznicza-axis': { center: [53.4535, 14.5505], zoom: 16.5, toast: '🏹 Oś Ulicy Łuczniczej' },
+    'kadziak-park': { center: [53.4530, 14.5520], zoom: 17, toast: '🌳 Park Stefana Kadziaka' },
+    'station-hub': { center: [53.4554, 14.5587], zoom: 16.5, toast: '🚉 Dworzec Szczecin Niebuszewo' },
+    'kollataja-hub': { center: [53.4475, 14.5518], zoom: 16.5, toast: '🚋 Pętla Kołłątaja & Manhattan' }
+  };
+
+  const target = presets[presetId];
+  if (target) {
+    map.flyTo(target.center, target.zoom, { animate: true, duration: 1.0 });
+    document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+    const clickedBtn = document.querySelector(`.preset-btn[onclick*="${presetId}"]`);
+    if (clickedBtn) clickedBtn.classList.add('active');
+    showToast(target.toast);
+  }
+}
+window.flyToPreset = flyToPreset;
 
 // ===== PLACES TOOLBAR (sort + favorites + distance) =====
 function initPlacesToolbar() {

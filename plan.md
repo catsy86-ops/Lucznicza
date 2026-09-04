@@ -157,12 +157,25 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 - [x] **5.4. Testy automatyczne (Vitest: 57/57 zdanych)**:
   - Utworzono pakiet `src/tests/favorites-and-gpx.test.ts`.
 
+#### ✅ SPRINT 6: Kartografia Osiedlowa — Maska Reflektorowa (Spotlight) i Presety Kamery Niebuszewa (v1.3.0) [UKOŃCZONE 100%]
+- [x] **6.1. Odwrócona Maska Poligonowa (Inverted Spotlight Mask)**:
+  - Serwis `src/services/niebuszewo-boundary.ts`: generowanie poligonu pokrywającego cały świat z precyzyjnym wycięciem granic osiedla Niebuszewo.
+  - Wyciemnienie i rozmycie obszarów poza Niebuszewem (`fillColor: '#0b111e'`, `fillOpacity: 0.38`), skupiające 100% uwagi użytkownika na osiedlu.
+- [x] **6.2. Świetlny Kontur i Geofencing Granic**:
+  - Podwójna świecąca obwódka granic Niebuszewa w barwach Pogoni Szczecin (`#002D62` / `#FFD700`).
+  - Ograniczenie przesuwania mapy (`maxBounds`, `maxBoundsViscosity: 0.85`, `minZoom: 14`), uniemożliwiające przypadkowe odpłynięcie poza Szczecin i Niebuszewo.
+- [x] **6.3. Szybkie Presety Kamery (Camera Presets)**:
+  - Pasek szybkiego focusu na mapie: *Całe Niebuszewo*, *Oś Łucznicza*, *Park Kadziaka*, *Stacja SKM*, *Pętla Kołłątaja*.
+  - Płynne przeloty animowane (`map.flyTo`) z responsywnym paskiem pigułek (`.map-presets-bar`).
+- [x] **6.4. Algorytm Ray-Casting & Testy Automatyczne (Vitest: 61/61 zdanych)**:
+  - Utworzono pakiet `src/tests/niebuszewo-boundary.test.ts` weryfikujący geometrię GeoJSON, wycięcie maski, algorytm punktu w wielokącie oraz presety kamery.
+
 ---
 
-### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0, v1.1.0 & v1.2.0 [UKOŃCZONE 100%]
-- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 57/57)**.
+### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0, v1.1.0, v1.2.0 & v1.3.0 [UKOŃCZONE 100%]
+- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 61/61)**.
 - [x] **6.2. Weryfikacja produkcyjnego bundle Vite (`tsc && vite build`)**.
-- [x] **6.3. Wypchnięcie kodu i tagu `v1.2.0` do origin/main**.
+- [x] **6.3. Wypchnięcie kodu i tagu `v1.3.0` do origin/main**.
 
 ---
 
@@ -172,6 +185,9 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 |---|---|---|---|
 | **Podkład Mapy (OSM)** | 🟢 Gotowy | Płynne ładowanie | **100% Darmowy (0 API Keys)** |
 | **Satelita HD (Esri)** | 🟢 Gotowy | Fotomapa wysokiej rozdzielczości | **100% Darmowy (0 API Keys)** |
+| **Maska Spotlight Niebuszewa** | 🟢 Gotowy | Odwrócony poligon wyciemniający tło | **GeoJSON / Leaflet** |
+| **Świetlny Kontur Granic** | 🟢 Gotowy | Barwy Pogoni Szczecin (#002D62 / #FFD700) | SVG / Leaflet Path |
+| **Presety Kamery Mapy** | 🟢 Gotowy | Szybki focus na kluczowe punkty osiedla | FlyTo Animacje |
 | **Piny i Markery POI** | 🟢 Gotowy | Styl Google Pins, animacja hover | Brak |
 | **Niebieska kropka GPS** | 🟢 Gotowy | Wskaźnik z radarem dokładności | Wbudowane Geolocation API |
 | **Pasek szukania i Chipsy** | 🟢 Gotowy | Google Floating Searchbar & Filter Chips | Brak |
@@ -181,5 +197,5 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Eksport tras GPX** | 🟢 Gotowy | Pobieranie plików dla Garmin/Strava | XML / Blob API |
 | **Synchronizacja Ulubionych** | 🟢 Gotowy | Pamięć lokalna + subskrypcje | LocalStorage |
 | **Filtr Dostępności (A11y)** | 🟢 Gotowy | Wózki, rodziny, psy, rowery | TypeScript |
-| **Testy jednostkowe** | 🟢 Gotowy | **57/57 testów przechodzi (Vitest)** | Vitest |
+| **Testy jednostkowe** | 🟢 Gotowy | **61/61 testów przechodzi (Vitest)** | Vitest |
 | **Migracja ESM / Vite** | 🟢 Gotowy | Zbudowano bundle produkcyjny (`dist/`) | Vite + TypeScript |
