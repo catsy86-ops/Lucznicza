@@ -1123,7 +1123,7 @@ body {
 .live-transport-panel {
   position: absolute;
   bottom: 84px;
-  right: 88px;
+  right: 154px;
   z-index: 1050;
   background: rgba(0, 23, 56, 0.96);
   backdrop-filter: blur(20px);
@@ -4623,6 +4623,11 @@ body.offline::after {
     border: 1px solid rgba(255, 215, 0, 0.3) !important;
   }
 
+  /* Hide on-screen +/- zoom on touch screens (pinch-to-zoom is native) */
+  .leaflet-control-zoom {
+    display: none !important;
+  }
+
   /* Zero-Collision Mobile Map Controls Stack */
   .google-layer-thumb-btn {
     bottom: 152px !important;
@@ -5771,7 +5776,7 @@ body.offline::after {
   }
   .live-transport-panel {
     bottom: 84px;
-    right: 88px;
+    right: 154px;
     width: 310px;
     max-height: 420px;
     z-index: 1050;
