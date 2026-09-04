@@ -17,9 +17,6 @@ const state = {
   showFavoritesOnly: false
 };
 
-// Expose state globally for other modules
-window.state = state;
-
 // ===== CATEGORY COLORS =====
 const CAT_COLORS = {
   sport: '#ff6b6b',
@@ -143,19 +140,18 @@ function initMap() {
       zoomControl: false
     }).setView([53.4530, 14.5520], 15);
 
-    // Base tile layers — NO crossOrigin (it breaks tile display if the
-    // tile server doesn't send CORS headers → tiles load but show blank/gray).
+    // OpenStreetMap — 100% Free, zero API key required, pure open-source tiles
     const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
       maxZoom: 19
     });
 
-    // CARTO Voyager — colourful, modern default
+    // CARTO Voyager — colourful, modern optional layer
     const voyagerLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap © CARTO',
       subdomains: 'abcd',
       maxZoom: 20
-    }).addTo(map);
+    });
 
     // CARTO Dark — for night / dark theme
     const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
@@ -171,11 +167,11 @@ function initMap() {
       maxZoom: 20
     });
 
-    // Esri satellite imagery
+    // Esri satellite imagery — default layer for premium look
     const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: '© Esri',
       maxZoom: 18
-    });
+    }).addTo(map);
 
     // If Voyager fails to load tiles, fall back to OSM
     let voyagerErrors = 0;
@@ -197,7 +193,7 @@ function initMap() {
       satellite: satelliteLayer,
       osm: osmLayer
     };
-    state.currentBaseLayer = 'voyager';
+    state.currentBaseLayer = 'satellite';
 
     // Add controls
     L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -208,6 +204,36 @@ function initMap() {
       [[53.4472, 14.5431], [53.4623, 14.5710]],
       { color: '#6c63ff', weight: 2, opacity: 0.4, fill: true, fillColor: '#6c63ff', fillOpacity: 0.04, dashArray: '4, 2' }
     ).addTo(map);
+
+    // Park im. Stefana Kadziaka — Natural Green Zone Polygon
+    const kadziakPolygon = L.polygon([
+      [53.4502, 14.5440],
+      [53.4538, 14.5460],
+      [53.4532, 14.5505],
+      [53.4510, 14.5518],
+      [53.4496, 14.5480]
+    ], {
+      color: '#2ec4b6',
+      weight: 2,
+      fillColor: '#2ec4b6',
+      fillOpacity: 0.18,
+      dashArray: '3, 3'
+    }).addTo(map);
+    kadziakPolygon.bindTooltip('🌳 Park im. Stefana Kadziaka', { permanent: false, direction: 'center' });
+
+    // Strefa Sportowo-Rekreacyjna Łucznicza (Boisko & Siłownia)
+    const sportsPolygon = L.polygon([
+      [53.4518, 14.5505],
+      [53.4528, 14.5508],
+      [53.4527, 14.5525],
+      [53.4517, 14.5522]
+    ], {
+      color: '#ff9f1c',
+      weight: 2,
+      fillColor: '#ff9f1c',
+      fillOpacity: 0.22
+    }).addTo(map);
+    sportsPolygon.bindTooltip('⚽ Kompleks Sportowy Łucznicza', { permanent: false, direction: 'center' });
 
     // Add POI markers
     if (APP_DATA && APP_DATA.places) {
@@ -270,20 +296,19 @@ function createPoiMarker(place) {
     : '';
 
   const iconHtml = `
-    <div class="mk-wrap" data-cat="${place.cat}">
-      <div class="mk-pin" style="background:${CAT_COLORS[place.cat]}">
-        <span class="mk-emoji">${place.emoji}</span>
+    <div class="google-pin-marker" data-cat="${place.cat}">
+      <div class="google-pin-head pin-${place.cat}">
+        <span class="google-pin-icon">${place.emoji}</span>
       </div>
-      ${statusDot}
-      <div class="mk-pulse" style="border-color:${CAT_COLORS[place.cat]}"></div>
+      <div class="google-pin-pulse"></div>
     </div>
   `;
   const icon = L.divIcon({
     html: iconHtml,
-    iconSize: [44, 44],
-    iconAnchor: [22, 44],
-    popupAnchor: [0, -44],
-    className: 'leaflet-marker-custom'
+    iconSize: [40, 48],
+    iconAnchor: [20, 46],
+    popupAnchor: [0, -42],
+    className: 'leaflet-marker-google-style'
   });
 
   const marker = L.marker([place.coords[1], place.coords[0]], {
@@ -316,14 +341,140 @@ function createPoiMarker(place) {
     </div>
   `, { maxWidth: 260, minWidth: 220, closeButton: true, className: 'map-popup-wrapper' });
 
+  marker.on('click', () => {
+    showGooglePlaceSheet(place);
+  });
+
   return marker;
 }
+
+// ===== GOOGLE PLACE PEEK SHEET CONTROLLER =====
+let activePlaceForSheet = null;
+
+function showGooglePlaceSheet(place) {
+  activePlaceForSheet = place;
+  const sheet = document.getElementById('googlePlaceSheet');
+  if (!sheet) return;
+
+  const PE = window.placesEnhanced;
+  const status = PE ? PE.getOpenStatus(place) : null;
+
+  const emojiEl = document.getElementById('gpsEmoji');
+  const titleEl = document.getElementById('gpsTitle');
+  const statusEl = document.getElementById('gpsStatus');
+  const ratingEl = document.getElementById('gpsRating');
+  const distEl = document.getElementById('gpsDist');
+  const addrEl = document.getElementById('gpsAddr');
+
+  if (emojiEl) emojiEl.textContent = place.emoji || '📍';
+  if (titleEl) titleEl.textContent = place.name;
+  if (addrEl) addrEl.textContent = place.addr;
+  if (ratingEl) ratingEl.textContent = `⭐ ${place.rating || '–'}`;
+
+  if (statusEl) {
+    if (status) {
+      statusEl.textContent = status.open ? '🟢 Otwarte teraz' : '🔴 Zamknięte';
+      statusEl.className = `gps-status ${status.open ? 'open' : 'closed'}`;
+    } else {
+      statusEl.textContent = '🟢 Otwarte';
+    }
+  }
+
+  // Calculate distance from user position if available
+  if (distEl) {
+    if (navigator.geolocation) {
+      distEl.textContent = '📍 Sprawdzanie dystansu...';
+      navigator.geolocation.getCurrentPosition(pos => {
+        const d = calculateDistance(pos.coords.latitude, pos.coords.longitude, place.coords[1], place.coords[0]);
+        distEl.textContent = d < 1 ? `📍 ${Math.round(d * 1000)} m stąd` : `📍 ${d.toFixed(1)} km stąd`;
+      }, () => {
+        distEl.textContent = '📍 Niebuszewo';
+      }, { timeout: 3000, maximumAge: 60000 });
+    } else {
+      distEl.textContent = '📍 Niebuszewo';
+    }
+  }
+
+  sheet.classList.remove('hidden');
+
+  // Center slightly offset to accommodate the sheet
+  if (state.map) {
+    state.map.panTo([place.coords[1], place.coords[0]], { animate: true, duration: 0.5 });
+  }
+}
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function initGooglePlaceSheetEvents() {
+  const sheet = document.getElementById('googlePlaceSheet');
+  const closeBtn = document.getElementById('gpsClose');
+  const navBtn = document.getElementById('gpsNavigateBtn');
+  const detailsBtn = document.getElementById('gpsDetailsBtn');
+  const shareBtn = document.getElementById('gpsShareBtn');
+
+  if (closeBtn && sheet) {
+    closeBtn.addEventListener('click', () => {
+      sheet.classList.add('hidden');
+    });
+  }
+
+  if (navBtn) {
+    navBtn.addEventListener('click', () => {
+      if (!activePlaceForSheet) return;
+      if (typeof startNavigation === 'function') {
+        startNavigation(activePlaceForSheet.coords[1], activePlaceForSheet.coords[0], activePlaceForSheet.name);
+      } else {
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${activePlaceForSheet.coords[1]},${activePlaceForSheet.coords[0]}`, '_blank');
+      }
+    });
+  }
+
+  if (detailsBtn) {
+    detailsBtn.addEventListener('click', () => {
+      if (!activePlaceForSheet) return;
+      openPlaceModal(activePlaceForSheet.id);
+    });
+  }
+
+  if (shareBtn) {
+    shareBtn.addEventListener('click', async () => {
+      if (!activePlaceForSheet) return;
+      const shareData = {
+        title: activePlaceForSheet.name,
+        text: `Sprawdź ${activePlaceForSheet.name} na Niebuszewie w aplikacji Niebuszewo Guide!`,
+        url: window.location.origin + window.location.pathname + `#miejsce-${activePlaceForSheet.id}`
+      };
+      if (navigator.share) {
+        try { await navigator.share(shareData); } catch {}
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
+        showToast('🔗 Skopiowano link do schowka!');
+      }
+    });
+  }
+}
+
+let showOnlyOpenNow = false;
 
 // ===== FILTER MARKERS (Leaflet, cluster-aware) =====
 function filterMarkers(cat) {
   if (!state.map) return;
-  state.currentCat = cat;
+  if (cat !== undefined && cat !== null) {
+    state.currentCat = cat;
+  }
+  const currentCat = state.currentCat || 'all';
 
+  const PE = window.placesEnhanced;
   const clusterGroup = (window.mapEnhancements && window.mapEnhancements.getClusterGroup)
     ? window.mapEnhancements.getClusterGroup()
     : null;
@@ -331,7 +482,15 @@ function filterMarkers(cat) {
   state.markers.forEach(marker => {
     const place = marker.placeData;
     if (!place) return;
-    const show = (cat === 'all' || place.cat === cat);
+    let show = (currentCat === 'all' || place.cat === currentCat);
+
+    // Apply 'open now' filter
+    if (show && showOnlyOpenNow && PE) {
+      const status = PE.getOpenStatus(place);
+      if (status && !status.open) {
+        show = false;
+      }
+    }
 
     if (clusterGroup) {
       // Cluster mode: add/remove from the cluster group
@@ -356,78 +515,64 @@ function initMapControls() {
   const map = state.map;
   if (!map) return;
 
-  // 3D toggle — removed (handled via style switcher / Street View)
+  initGooglePlaceSheetEvents();
 
-  // Fly animation (rotate around center)
-  const btnFly = document.getElementById('btnFly');
-  if (btnFly) {
-    btnFly.addEventListener('click', () => {
-      if (state.flyInterval) {
-        clearInterval(state.flyInterval);
-        state.flyInterval = null;
-        btnFly.classList.remove('active');
-        showToast('✈️ Animacja zatrzymana');
-        return;
-      }
-      btnFly.classList.add('active');
-      showToast('✈️ Lot wokół dzielnicy uruchomiony');
-      let zoom = map.getZoom();
-      let step = 0;
-      const center = [53.4530, 14.5520];
-      const radius = 0.003;
-      state.flyInterval = setInterval(() => {
-        step += 0.02;
-        const lat = center[0] + radius * Math.sin(step);
-        const lng = center[1] + radius * Math.cos(step);
-        map.setView([lat, lng], zoom, { animate: false });
-      }, 50);
+  // 'Otwarte teraz' toggle button
+  const openNowBtn = document.getElementById('catOpenNowBtn');
+  if (openNowBtn) {
+    openNowBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showOnlyOpenNow = !showOnlyOpenNow;
+      openNowBtn.classList.toggle('active', showOnlyOpenNow);
+      filterMarkers();
+      showToast(showOnlyOpenNow ? '🟢 Filtruję: Tylko otwarte teraz' : '⚪ Pokazuję wszystkie godziny');
     });
   }
 
-  // Street View (Google Maps) — or Mapillary fallback
-  const btnStreetView = document.getElementById('btnStreetView');
-  if (btnStreetView) {
-    btnStreetView.addEventListener('click', () => {
-      if (window.GOOGLE_MAPS_FAILED) {
-        // Fallback: open Mapillary street-level imagery for the area
-        const center = state.map ? state.map.getCenter() : { lat: 53.4530, lng: 14.5520 };
-        const mapillaryUrl = `https://www.mapillary.com/app/?lat=${center.lat}&lng=${center.lng}&z=17`;
-        window.open(mapillaryUrl, '_blank');
-        showToast('📸 Otwieranie Mapillary (alternatywa Street View)');
-        return;
-      }
-      if (window.googleMapsAPI && window.googleMapsAPI.toggleStreetView && GOOGLE_MAPS && GOOGLE_MAPS.panorama) {
-        window.googleMapsAPI.toggleStreetView();
-        showToast('📸 Google Street View');
-      } else {
-        showToast('⚠️ Street View jeszcze się ładuje lub jest niedostępny');
-      }
-    });
-  }
-
-  // Quick 3D Buildings button (in tools panel)
-  const btnQuick3D = document.getElementById('btnQuick3D');
-  if (btnQuick3D) {
-    btnQuick3D.addEventListener('click', () => {
-      if (window.Buildings3D) {
-        window.Buildings3D.toggle();
-        btnQuick3D.classList.toggle('active', window.Buildings3D.isEnabled());
-        const fab = document.getElementById('buildings3dFab');
-        if (fab) fab.classList.toggle('active', window.Buildings3D.isEnabled());
-      }
-    });
-  }
-
-  // FAB button is wired in buildings-3d.js directly (with L.DomEvent.disableClickPropagation)
-
-  // Category filter buttons
-  document.querySelectorAll('.cat-btn').forEach(btn => {
+  // Category filter buttons (excluding toggles like open-now and layers)
+  document.querySelectorAll('.cat-btn[data-cat]').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.cat-btn[data-cat]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       filterMarkers(btn.dataset.cat);
     });
   });
+
+  // Layer Switcher Modal handling
+  const layerModalBtn = document.getElementById('mapLayersModalBtn');
+  const layerModalOverlay = document.getElementById('mapLayersModalOverlay');
+  const layerModalClose = document.getElementById('mapLayersModalClose');
+
+  if (layerModalBtn && layerModalOverlay) {
+    layerModalBtn.addEventListener('click', () => {
+      layerModalOverlay.classList.remove('hidden');
+    });
+    if (layerModalClose) {
+      layerModalClose.addEventListener('click', () => {
+        layerModalOverlay.classList.add('hidden');
+      });
+    }
+    layerModalOverlay.addEventListener('click', (e) => {
+      if (e.target === layerModalOverlay) layerModalOverlay.classList.add('hidden');
+    });
+
+    // Wire layer toggles
+    document.getElementById('layerToggleZditm')?.addEventListener('change', (e) => {
+      window.toggleTransitLayer?.(e.target.checked);
+    });
+    document.getElementById('layerToggleBikes')?.addEventListener('change', (e) => {
+      window.toggleBikesLayer?.(e.target.checked);
+    });
+    document.getElementById('layerToggleParks')?.addEventListener('change', (e) => {
+      window.toggleParksLayer?.(e.target.checked);
+    });
+    document.getElementById('layerToggleAlerts')?.addEventListener('change', (e) => {
+      window.toggleAlertsLayer?.(e.target.checked);
+    });
+    document.getElementById('layerToggleDogs')?.addEventListener('change', (e) => {
+      window.toggleDogsLayer?.(e.target.checked);
+    });
+  }
 }
 
 // ===== UI INIT =====
@@ -435,103 +580,8 @@ function initUI() {
   initMapControls();
 
   // Map Tools Panel
-  const toolsToggle = document.getElementById('toolsToggle');
-  const toolsPanel = document.getElementById('mapToolsPanel');
-  const toolsClose = document.getElementById('toolsClose');
 
-  if (toolsToggle && toolsPanel) {
-    toolsToggle.addEventListener('click', () => {
-      toolsPanel.classList.toggle('hidden');
-      toolsToggle.style.background = toolsPanel.classList.contains('hidden')
-        ? 'rgba(26,26,46,0.9)'
-        : 'var(--accent)';
-    });
-  }
-  if (toolsClose && toolsPanel) {
-    toolsClose.addEventListener('click', () => {
-      toolsPanel.classList.add('hidden');
-      if (toolsToggle) toolsToggle.style.background = 'rgba(26,26,46,0.9)';
-    });
-  }
 
-  // Map enhancement tool buttons
-  const btnHeatmap = document.getElementById('btnHeatmap');
-  if (btnHeatmap) {
-    btnHeatmap.addEventListener('click', () => {
-      if (window.mapEnhancements) window.mapEnhancements.toggleHeatmap();
-      btnHeatmap.classList.toggle('active');
-    });
-  }
-
-  const btnClustering = document.getElementById('btnClustering');
-  if (btnClustering) {
-    btnClustering.addEventListener('click', () => {
-      if (window.mapEnhancements) window.mapEnhancements.enableClustering();
-      btnClustering.classList.toggle('active');
-    });
-  }
-
-  const btnGeofences = document.getElementById('btnGeofences');
-  if (btnGeofences) {
-    btnGeofences.addEventListener('click', () => {
-      if (window.mapEnhancements) window.mapEnhancements.geofences();
-      btnGeofences.classList.toggle('active');
-    });
-  }
-
-  // Buildings 3D
-  const btnBuildings3D = document.getElementById('btnBuildings3D');
-  if (btnBuildings3D) {
-    btnBuildings3D.addEventListener('click', () => {
-      if (window.Buildings3D) window.Buildings3D.toggle();
-      btnBuildings3D.classList.toggle('active');
-    });
-  }
-
-  // Routing
-  const btnCalculateRoute = document.getElementById('btnCalculateRoute');
-  if (btnCalculateRoute) {
-    btnCalculateRoute.addEventListener('click', () => {
-      const startId = parseInt(document.getElementById('routeStart').value);
-      const endId = parseInt(document.getElementById('routeEnd').value);
-      if (startId && endId && window.mapEnhancements) {
-        window.mapEnhancements.routing(startId, endId);
-      } else {
-        showToast('⚠️ Wybierz początek i koniec trasy');
-      }
-    });
-  }
-
-  // Populate route selects
-  const selects = ['routeStart', 'routeEnd'];
-  selects.forEach(id => {
-    const select = document.getElementById(id);
-    if (select && APP_DATA && APP_DATA.places) {
-      APP_DATA.places.forEach(place => {
-        const option = document.createElement('option');
-        option.value = place.id;
-        option.textContent = place.name;
-        select.appendChild(option);
-      });
-    }
-  });
-
-  // Measurement button
-  const btnMeasure = document.getElementById('btnMeasure');
-  if (btnMeasure) {
-    btnMeasure.addEventListener('click', () => {
-      if (window.mapEnhancements) window.mapEnhancements.measurement();
-      btnMeasure.classList.toggle('active');
-    });
-  }
-
-  // Export button
-  const btnExportMap = document.getElementById('btnExportMap');
-  if (btnExportMap) {
-    btnExportMap.addEventListener('click', () => {
-      if (window.mapEnhancements) window.mapEnhancements.export();
-    });
-  }
 
   // Menu button
   document.getElementById('menuBtn').addEventListener('click', () => {
@@ -556,9 +606,14 @@ function initUI() {
     });
   });
 
-  // Bottom nav
+  // Bottom nav with haptic feedback
   document.querySelectorAll('.bnav-btn').forEach(btn => {
-    btn.addEventListener('click', () => navigateTo(btn.dataset.section));
+    btn.addEventListener('click', () => {
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        try { navigator.vibrate(15); } catch {}
+      }
+      navigateTo(btn.dataset.section);
+    });
   });
 
   // Search
@@ -613,6 +668,201 @@ function initUI() {
   });
 
   initPlacesToolbar();
+  initBottomSheet();
+}
+
+// ===== MODERN BOTTOM SHEET LOGIC =====
+function initBottomSheet() {
+  const sheet = document.getElementById('modernBottomSheet');
+  const handleBar = document.getElementById('sheetHandleBar');
+  const toggleBtn = document.getElementById('sheetToggleBtn');
+  const peekArea = document.getElementById('sheetPeek');
+  if (!sheet) return;
+
+  function toggleSheet() {
+    if (sheet.classList.contains('state-half')) {
+      sheet.classList.remove('state-half');
+      sheet.classList.add('state-full');
+      if (toggleBtn) toggleBtn.textContent = 'Zwiń 🔽';
+    } else if (sheet.classList.contains('state-full')) {
+      sheet.classList.remove('state-full');
+      sheet.classList.remove('state-half');
+      if (toggleBtn) toggleBtn.textContent = 'Rozwiń 🔼';
+    } else {
+      sheet.classList.add('state-half');
+      if (toggleBtn) toggleBtn.textContent = 'Więcej 🔼';
+    }
+  }
+
+  if (handleBar) handleBar.addEventListener('click', toggleSheet);
+  if (toggleBtn) toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleSheet();
+  });
+  if (peekArea) peekArea.addEventListener('click', (e) => {
+    if (e.target !== toggleBtn) toggleSheet();
+  });
+
+  // Touch swipe gesture physics for mobile
+  let startY = 0;
+  let currentY = 0;
+  let isSwiping = false;
+
+  const dragArea = handleBar || sheet;
+  dragArea.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    if (touch) {
+      startY = touch.clientY;
+      currentY = startY;
+      isSwiping = true;
+    }
+  }, { passive: true });
+
+  dragArea.addEventListener('touchmove', (e) => {
+    if (!isSwiping) return;
+    const touch = e.touches[0];
+    if (touch) currentY = touch.clientY;
+  }, { passive: true });
+
+  dragArea.addEventListener('touchend', () => {
+    if (!isSwiping) return;
+    isSwiping = false;
+    const deltaY = startY - currentY; // positive = swipe up, negative = swipe down
+    if (Math.abs(deltaY) < 35) return;
+
+    if (deltaY > 35) {
+      // Swiped UP
+      if (!sheet.classList.contains('state-half') && !sheet.classList.contains('state-full')) {
+        sheet.classList.add('state-half');
+        if (toggleBtn) toggleBtn.textContent = 'Więcej 🔼';
+      } else if (sheet.classList.contains('state-half')) {
+        sheet.classList.remove('state-half');
+        sheet.classList.add('state-full');
+        if (toggleBtn) toggleBtn.textContent = 'Zwiń 🔽';
+      }
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        try { navigator.vibrate(15); } catch {}
+      }
+    } else if (deltaY < -35) {
+      // Swiped DOWN
+      if (sheet.classList.contains('state-full')) {
+        sheet.classList.remove('state-full');
+        sheet.classList.add('state-half');
+        if (toggleBtn) toggleBtn.textContent = 'Więcej 🔼';
+      } else if (sheet.classList.contains('state-half')) {
+        sheet.classList.remove('state-half');
+        if (toggleBtn) toggleBtn.textContent = 'Rozwiń 🔼';
+      }
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        try { navigator.vibrate(15); } catch {}
+      }
+    }
+  }, { passive: true });
+
+  // Google Satellite / Map Toggle Thumbnail
+  const thumbBtn = document.getElementById('googleLayerThumbBtn');
+  const thumbLabel = document.getElementById('googleLayerThumbLabel');
+  if (thumbBtn && state.baseLayers) {
+    thumbBtn.addEventListener('click', () => {
+      const map = state.map;
+      if (!map) return;
+      if (state.currentBaseLayer === 'satellite') {
+        map.removeLayer(state.baseLayers.satellite);
+        state.baseLayers.osm.addTo(map);
+        state.currentBaseLayer = 'osm';
+        thumbBtn.style.backgroundImage = "url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/10762/17709')";
+        if (thumbLabel) thumbLabel.textContent = 'SATELITA';
+        showToast('🗺️ Widok Mapy');
+      } else {
+        if (state.baseLayers[state.currentBaseLayer] && map.hasLayer(state.baseLayers[state.currentBaseLayer])) {
+          map.removeLayer(state.baseLayers[state.currentBaseLayer]);
+        }
+        state.baseLayers.satellite.addTo(map);
+        state.currentBaseLayer = 'satellite';
+        thumbBtn.style.backgroundImage = "url('https://a.tile.openstreetmap.org/15/17709/10762.png')";
+        if (thumbLabel) thumbLabel.textContent = 'MAPA';
+        showToast('🛰️ Widok Satelitarny HD (Esri)');
+      }
+    });
+  }
+
+  // Google Locate GPS Action Button with Blue Dot & Heading Tracking
+  let userGpsMarker = null;
+  let userGpsCircle = null;
+  let isTrackingUser = false;
+
+  const gLocateBtn = document.getElementById('googleLocateBtn');
+  if (gLocateBtn) {
+    gLocateBtn.addEventListener('click', () => {
+      const map = state.map;
+      if (!map) return;
+
+      if (!navigator.geolocation) {
+        showToast('⚠️ Geolokalizacja nie jest wspierana');
+        return;
+      }
+
+      showToast('🎯 Lokalizowanie pozycji...');
+
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const { latitude: lat, longitude: lng, accuracy, heading } = pos.coords;
+
+          if (userGpsMarker) {
+            map.removeLayer(userGpsMarker);
+          }
+          if (userGpsCircle) {
+            map.removeLayer(userGpsCircle);
+          }
+
+          // Accuracy circle
+          userGpsCircle = L.circle([lat, lng], {
+            radius: Math.min(accuracy || 30, 100),
+            color: '#1a73e8',
+            weight: 1,
+            fillColor: '#1a73e8',
+            fillOpacity: 0.12
+          }).addTo(map);
+
+          // Google Blue Dot marker with pulse & heading cone
+          const blueDotHtml = `
+            <div class="google-blue-dot-wrap">
+              <div class="gbd-heading-cone" style="transform: rotate(${heading || 0}deg);"></div>
+              <div class="gbd-pulse"></div>
+              <div class="gbd-core"></div>
+            </div>
+          `;
+          const blueDotIcon = L.divIcon({
+            html: blueDotHtml,
+            className: 'custom-blue-dot-icon',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+          });
+
+          userGpsMarker = L.marker([lat, lng], { icon: blueDotIcon, zIndexOffset: 2000 }).addTo(map);
+          userGpsMarker.bindPopup('<b>📍 Twoja pozycja</b><br>Dokładność: ±' + Math.round(accuracy || 15) + ' m');
+
+          map.flyTo([lat, lng], 16.5, { animate: true, duration: 1.2 });
+          showToast('📍 Wycentrowano na Twojej pozycji');
+
+          // Device orientation support for heading beam on mobile
+          if (window.DeviceOrientationEvent && !isTrackingUser) {
+            isTrackingUser = true;
+            window.addEventListener('deviceorientation', (e) => {
+              if (e.webkitCompassHeading != null || e.alpha != null) {
+                const angle = e.webkitCompassHeading || (360 - e.alpha);
+                const cone = document.querySelector('.gbd-heading-cone');
+                if (cone) cone.style.transform = `rotate(${angle}deg)`;
+              }
+            }, { passive: true });
+          }
+        },
+        () => showToast('⚠️ Nie udało się pobrać lokalizacji GPS'),
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+      );
+    });
+  }
 }
 
 // ===== PLACES TOOLBAR (sort + favorites + distance) =====

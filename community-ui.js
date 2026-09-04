@@ -54,13 +54,89 @@ function renderCommunity() {
 
     <!-- Nav pills -->
     <div class="comm-nav-pills" id="commNavPills">
-      <button class="cnp-btn active" data-target="comm-activity">🔴 Na żywo</button>
+      <button class="cnp-btn active" data-target="comm-alerts">🚨 Alerty Osiedlowe</button>
+      <button class="cnp-btn" data-target="comm-sos">🆘 Apteki & Dyżury 24h</button>
+      <button class="cnp-btn" data-target="comm-dogs">🐕 Psie Niebuszewo</button>
+      <button class="cnp-btn" data-target="comm-badges">🎖️ Odznaki Gryfusa</button>
+      <button class="cnp-btn" data-target="comm-waste">♻️ Śmieci & Gabaryty</button>
+      <button class="cnp-btn" data-target="comm-artisans">🏆 Rzemieślnicy</button>
+      <button class="cnp-btn" data-target="comm-activity">🔴 Na żywo</button>
       <button class="cnp-btn" data-target="comm-events">🎉 Eventy</button>
       <button class="cnp-btn" data-target="comm-groups">💬 Grupy</button>
       <button class="cnp-btn" data-target="comm-reviews">⭐ Opinie</button>
       <button class="cnp-btn" data-target="comm-surveys">🗳️ Ankiety</button>
       <button class="cnp-btn" data-target="comm-news">📰 Wiadomości</button>
       <button class="cnp-btn" data-target="comm-demo">📊 Statystyki</button>
+    </div>
+
+    <!-- Citizen Alerts (Dziki / Awaria / Usterka) -->
+    <div id="comm-alerts">
+      <div class="comm-section-title">
+        <span>🚨 Obywatelskie Alerty (Dziki / Awarie)</span>
+        <button class="comm-add-alert-btn" id="commAddAlertTrigger">+ Zgłoś zdarzenie</button>
+      </div>
+      <div id="communityAlertsList" class="comm-alerts-list"></div>
+    </div>
+
+    <!-- SOS: Apteki Całodobowe, Dyżury & Weterynarz 24h -->
+    <div id="comm-sos">
+      <div class="comm-section-title">
+        <span>🆘 Apteki Całodobowe & Dyżury Medyczne / Weterynaryjne 24h</span>
+        <span class="comm-refresh-hint">Szybki Kontakt</span>
+      </div>
+      <div id="sosContactsList" class="comm-sos-grid"></div>
+    </div>
+
+    <!-- Psie Niebuszewo: Wybiegi, Torebki, Dog-Friendly -->
+    <div id="comm-dogs">
+      <div class="comm-section-title">
+        <span>🐕 Psie Niebuszewo (Wybiegi, Eko-Stacje & Kawiarnie)</span>
+        <span class="comm-refresh-hint">Dla Opiekunów Psów</span>
+      </div>
+      <div id="dogZoneList" class="comm-dogs-grid"></div>
+    </div>
+
+    <!-- Odznaki Gryfusa & Grywalizacja -->
+    <div id="comm-badges">
+      <div class="comm-section-title">
+        <span>🎖️ Odznaki Gryfusa — Odkrywca Niebuszewa</span>
+        <span class="comm-refresh-hint" id="badgesScoreHint">Punkty: 0</span>
+      </div>
+      <div class="badges-hero-card">
+        <div class="bhc-left">
+          <span class="bhc-icon">🦅</span>
+          <div>
+            <div class="bhc-title">Certyfikat Dumy Niebuszewa</div>
+            <div class="bhc-sub">Zdobywaj odznaki spacerując po osiedlu i korzystając z lokalnych usług!</div>
+          </div>
+        </div>
+        <button class="bhc-cert-btn" id="generateCertBtn" onclick="generateExplorerCertificate()">
+          📜 Odbierz Certyfikat
+        </button>
+      </div>
+      <div id="explorerBadgesList" class="comm-badges-grid"></div>
+    </div>
+
+    <!-- Harmonogram Odpadów & Gabarytów -->
+    <div id="comm-waste">
+      <div class="comm-section-title">
+        <span>♻️ Kiedy Śmieci & Gabaryty na Łuczniczej?</span>
+        <span class="comm-refresh-hint">Czysty Szczecin</span>
+      </div>
+      <div id="wasteScheduleList" class="comm-waste-grid"></div>
+      <div class="comm-section-title" style="margin-top:20px;">
+        <span>📍 Eko-Punkty & Książkodzielnie</span>
+      </div>
+      <div id="ekoDropPointsList" class="comm-eko-grid"></div>
+    </div>
+
+    <!-- Local Artisans ("Kupuj Lokalnie na Niebuszewie") -->
+    <div id="comm-artisans">
+      <div class="comm-section-title">
+        <span>🏆 Tradycyjni Rzemieślnicy Niebuszewa</span>
+        <span class="comm-refresh-hint">Kupuj Lokalnie</span>
+      </div>
+      <div id="communityArtisansList" class="comm-artisans-grid"></div>
     </div>
 
     <!-- Live activity -->
@@ -123,6 +199,12 @@ function renderCommunity() {
   });
 
   // Render all sub-sections
+  renderCommunityAlerts();
+  renderSosContacts();
+  renderDogZone();
+  renderExplorerBadges();
+  renderWasteCalendar();
+  renderCommunityArtisans();
   renderLiveActivity();
   renderEventsCommunity();
   renderGroups();
@@ -512,6 +594,432 @@ function buildDonutSegments(groups) {
   return `<div class="demo-donut-ring" style="background:conic-gradient(${stops.join(',')})"></div>`;
 }
 
+// ===== CITIZEN ALERTS & LOCAL ARTISANS =====
+let communityAlertMarkers = [];
+
+function getAlertsService() {
+  return window.__SZCZECIN_APP__?.communityAlerts;
+}
+
+function renderCommunityAlerts() {
+  const container = document.getElementById('communityAlertsList');
+  if (!container) return;
+
+  const service = getAlertsService();
+  const alerts = service ? service.getAlerts() : [];
+
+  const triggerBtn = document.getElementById('commAddAlertTrigger');
+  if (triggerBtn && !triggerBtn.dataset.bound) {
+    triggerBtn.dataset.bound = 'true';
+    triggerBtn.addEventListener('click', () => openAlertModal());
+  }
+
+  if (!alerts.length) {
+    container.innerHTML = `
+      <div class="alert-empty-state">
+        <span class="aes-icon">✨</span>
+        <div class="aes-title">Spokój na Niebuszewie!</div>
+        <div class="aes-desc">Brak aktywnych utrudnień i dzików w okolicy. Zauważyłeś coś? Daj znać sąsiadom.</div>
+      </div>
+    `;
+    syncCommunityAlertsOnMap(alerts);
+    return;
+  }
+
+  const now = Date.now();
+  container.innerHTML = alerts.map(a => {
+    const minLeft = Math.max(1, Math.round((a.expiresAt - now) / 60000));
+    return `
+      <div class="calert-card" id="calert-${a.id}">
+        <div class="calert-top">
+          <span class="calert-icon">${a.icon}</span>
+          <div class="calert-info">
+            <div class="calert-title">${a.title}</div>
+            <div class="calert-loc">📍 ${a.locationName}</div>
+          </div>
+          <span class="calert-timer">⏳ ${minLeft} min</span>
+        </div>
+        <p class="calert-desc">${a.desc}</p>
+        <div class="calert-footer">
+          <span class="calert-author">Zgłosił: <b>${a.authorNick}</b></span>
+          <div class="calert-actions">
+            <button class="calert-btn-confirm" onclick="confirmCommunityAlert('${a.id}')" title="Potwierdź, że to nadal aktualne">
+              👍 Potwierdź (${a.confirmations})
+            </button>
+            <button class="calert-btn-share" onclick="shareCommunityAlert('${a.id}')" title="Udostępnij sąsiadom">
+              🔗 Udostępnij
+            </button>
+            <button class="calert-btn-map" onclick="focusAlertOnMap(${a.coords[0]}, ${a.coords[1]})" title="Pokaż na mapie">
+              🗺️ Na mapie
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  syncCommunityAlertsOnMap(alerts);
+}
+
+function renderCommunityArtisans() {
+  const container = document.getElementById('communityArtisansList');
+  if (!container) return;
+
+  const service = getAlertsService();
+  const artisans = service ? service.getArtisans() : [];
+
+  container.innerHTML = artisans.map(art => `
+    <div class="artisan-card">
+      <div class="art-header">
+        <span class="art-icon">${art.icon}</span>
+        <div class="art-badge">${art.badge}</div>
+      </div>
+      <h4 class="art-name">${art.name}</h4>
+      <div class="art-craft">${art.craft}</div>
+      <p class="art-story">${art.story}</p>
+      <div class="art-details">
+        <div class="art-row">📍 <span>${art.address}</span></div>
+        <div class="art-row">🕒 <span>${art.hours}</span></div>
+        ${art.phone ? `<div class="art-row">📞 <a href="tel:${art.phone.replace(/\s+/g, '')}">${art.phone}</a></div>` : ''}
+      </div>
+      <button class="art-map-btn" onclick="focusAlertOnMap(${art.coords[0]}, ${art.coords[1]})">
+        🗺️ Pokaż na mapie
+      </button>
+    </div>
+  `).join('');
+}
+
+window.confirmCommunityAlert = function(id) {
+  const service = getAlertsService();
+  if (!service) return;
+  if (service.confirmAlert(id)) {
+    if (typeof showToast === 'function') showToast('👍 Dziękujemy! Przedłużono czas wyświetlania alertu o 30 min.');
+    renderCommunityAlerts();
+  }
+};
+
+window.shareCommunityAlert = async function(id) {
+  const service = getAlertsService();
+  if (!service) return;
+  const ok = await service.shareAlert(id);
+  if (ok && typeof showToast === 'function') {
+    showToast('📢 Skopiowano treść ostrzeżenia do schowka!');
+  }
+};
+
+window.focusAlertOnMap = function(lat, lng) {
+  if (typeof navigateTo === 'function') navigateTo('map');
+  const map = window.state?.map;
+  if (map) {
+    setTimeout(() => {
+      map.flyTo([lat, lng], 17, { animate: true, duration: 1 });
+    }, 200);
+  }
+};
+
+function syncCommunityAlertsOnMap(alerts) {
+  const map = window.state?.map;
+  if (!map || typeof L === 'undefined') return;
+
+  // Clear existing alert markers
+  communityAlertMarkers.forEach(m => {
+    try { map.removeLayer(m); } catch {}
+  });
+  communityAlertMarkers = [];
+
+  alerts.forEach(a => {
+    const iconHtml = `
+      <div class="alert-map-marker alert-type-${a.type}" title="${a.title}">
+        <span>${a.icon}</span>
+        <div class="alert-pulse-ring"></div>
+      </div>
+    `;
+    const customIcon = L.divIcon({
+      html: iconHtml,
+      className: 'custom-alert-icon',
+      iconSize: [38, 38],
+      iconAnchor: [19, 19]
+    });
+
+    const marker = L.marker(a.coords, { icon: customIcon }).addTo(map);
+    const popupContent = `
+      <div class="alert-popup">
+        <div class="ap-header">
+          <span class="ap-icon">${a.icon}</span>
+          <b class="ap-title">${a.title}</b>
+        </div>
+        <p class="ap-desc">${a.desc}</p>
+        <div class="ap-loc">📍 ${a.locationName}</div>
+        <div class="ap-meta">
+          <span>Potwierdzenia: <b>${a.confirmations}</b></span>
+          <button class="ap-confirm-btn" onclick="confirmCommunityAlert('${a.id}')">👍 Potwierdzam</button>
+        </div>
+      </div>
+    `;
+    marker.bindPopup(popupContent);
+    communityAlertMarkers.push(marker);
+  });
+}
+
+// Modal handling for reporting alert
+function openAlertModal() {
+  const overlay = document.getElementById('alertModalOverlay');
+  if (overlay) overlay.classList.remove('hidden');
+}
+
+function closeAlertModal() {
+  const overlay = document.getElementById('alertModalOverlay');
+  if (overlay) overlay.classList.add('hidden');
+}
+
+function initCommunityAlertReporting() {
+  // Bind FAB button on map
+  const fab = document.getElementById('communityAlertFab');
+  if (fab) {
+    fab.addEventListener('click', () => {
+      openAlertModal();
+    });
+  }
+
+  // Bind close buttons
+  const closeBtn = document.getElementById('alertModalClose');
+  const cancelBtn = document.getElementById('alertFormCancel');
+  const overlay = document.getElementById('alertModalOverlay');
+
+  if (closeBtn) closeBtn.addEventListener('click', closeAlertModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeAlertModal);
+  if (overlay) {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeAlertModal();
+    });
+  }
+
+  // Type selector styling
+  const typeButtons = document.querySelectorAll('.alert-type-btn');
+  typeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      typeButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Form submit
+  const form = document.getElementById('communityAlertForm');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const service = getAlertsService();
+      if (!service) {
+        if (typeof showToast === 'function') showToast('⚠️ Usługa alertów nie została jeszcze załadowana.');
+        return;
+      }
+
+      const typeRadio = form.querySelector('input[name="alertType"]:checked');
+      const type = typeRadio ? typeRadio.value : 'other';
+      const title = document.getElementById('alertFormTitle')?.value || '';
+      const desc = document.getElementById('alertFormDesc')?.value || '';
+      const locationName = document.getElementById('alertFormLocation')?.value || 'Niebuszewo, Szczecin';
+      const authorNick = document.getElementById('alertFormNick')?.value || 'Sąsiad z Niebuszewa';
+
+      // Pick center of current map view or default coords
+      const map = window.state?.map;
+      const center = map ? map.getCenter() : { lat: 53.4530, lng: 14.5520 };
+      const coords = [center.lat, center.lng];
+
+      const created = service.addAlert(type, title, desc, coords, locationName, authorNick);
+      closeAlertModal();
+      form.reset();
+
+      if (typeof showToast === 'function') {
+        showToast(`📢 Dodano alert: ${created.icon} ${created.title}`);
+      }
+
+      renderCommunityAlerts();
+      if (window.state?.currentSection === 'map' && map) {
+        map.flyTo(coords, 16.5, { animate: true, duration: 0.8 });
+      }
+    });
+  }
+}
+
+// ===== SOS: APTEKI, DYŻURY 24H, WETERYNARZE =====
+function renderSosContacts() {
+  const container = document.getElementById('sosContactsList');
+  if (!container) return;
+
+  const service = window.__SZCZECIN_APP__?.sosPets;
+  const contacts = service ? service.getSosContacts() : [];
+
+  container.innerHTML = contacts.map(c => `
+    <div class="sos-card ${c.open24h ? 'is-24h' : ''}">
+      <div class="sos-card-header">
+        <span class="sos-icon">${c.icon}</span>
+        <span class="sos-badge">${c.badge}</span>
+      </div>
+      <h4 class="sos-name">${c.name}</h4>
+      <p class="sos-desc">${c.desc}</p>
+      <div class="sos-meta">
+        <div>📍 <span>${c.address}</span></div>
+        <div>🕒 <span>${c.hours}</span></div>
+      </div>
+      <div class="sos-actions">
+        <a href="tel:${c.phone.replace(/\s+/g, '')}" class="sos-call-btn">
+          📞 Zadzwoń: ${c.phone}
+        </a>
+        <button class="sos-map-btn" onclick="focusAlertOnMap(${c.coords[0]}, ${c.coords[1]})">
+          🗺️ Mapa
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== PSIE NIEBUSZEWO (WYBIEGI, TOREBKI, DOG-FRIENDLY) =====
+function renderDogZone() {
+  const container = document.getElementById('dogZoneList');
+  if (!container) return;
+
+  const service = window.__SZCZECIN_APP__?.sosPets;
+  const points = service ? service.getDogPoints() : [];
+
+  container.innerHTML = points.map(p => `
+    <div class="dog-card">
+      <div class="dog-card-header">
+        <span class="dog-icon">${p.icon}</span>
+        <h4 class="dog-title">${p.name}</h4>
+      </div>
+      <div class="dog-addr">📍 ${p.address}</div>
+      <p class="dog-desc">${p.desc}</p>
+      <div class="dog-features">
+        ${p.features.map(f => `<span class="dog-pill">✓ ${f}</span>`).join('')}
+      </div>
+      <button class="dog-map-btn" onclick="focusAlertOnMap(${p.coords[0]}, ${p.coords[1]})">
+        🗺️ Prowadź do miejsca
+      </button>
+    </div>
+  `).join('');
+}
+
+// ===== ODZNAKI GRYFUSA & GRYWALIZACJA =====
+function renderExplorerBadges() {
+  const container = document.getElementById('explorerBadgesList');
+  const scoreHint = document.getElementById('badgesScoreHint');
+  if (!container) return;
+
+  const service = window.__SZCZECIN_APP__?.explorerBadges;
+  const badges = service ? service.getBadges() : [];
+  const totalPoints = service ? service.getTotalPoints() : 0;
+  const unlockedCount = service ? service.getUnlockedCount() : 0;
+
+  if (scoreHint) {
+    scoreHint.textContent = `Punkty: ${totalPoints} pkt (${unlockedCount}/${badges.length})`;
+  }
+
+  container.innerHTML = badges.map(b => `
+    <div class="badge-card ${b.isUnlocked ? 'unlocked' : 'locked'}" onclick="unlockBadgePrompt('${b.id}')">
+      <div class="badge-medal">${b.medal}</div>
+      <div class="badge-icon-wrap">
+        <span class="badge-icon">${b.icon}</span>
+        ${b.isUnlocked ? '<span class="badge-check">✓</span>' : '<span class="badge-lock">🔒</span>'}
+      </div>
+      <div class="badge-name">${b.title}</div>
+      <p class="badge-desc">${b.desc}</p>
+      <div class="badge-points">+${b.points} pkt Gryfa</div>
+    </div>
+  `).join('');
+}
+
+window.unlockBadgePrompt = function(id) {
+  const service = window.__SZCZECIN_APP__?.explorerBadges;
+  if (!service) return;
+
+  const res = service.unlockBadge(id);
+  if (res.success && res.badge) {
+    if (typeof showToast === 'function') {
+      showToast(`🎉 Brawo! Odblokowano odznakę: ${res.badge.icon} ${res.badge.title} (+${res.badge.points} pkt)`);
+    }
+    renderExplorerBadges();
+  } else {
+    if (typeof showToast === 'function') {
+      showToast(`ℹ️ Ta odznaka jest już w Twojej kolekcji Gryfusa!`);
+    }
+  }
+};
+
+window.generateExplorerCertificate = function() {
+  const service = window.__SZCZECIN_APP__?.explorerBadges;
+  const points = service ? service.getTotalPoints() : 0;
+  const count = service ? service.getUnlockedCount() : 0;
+
+  const name = prompt('Podaj swoje imię lub pseudonim do Certyfikatu Mieszkańca:', 'Dzielny Mieszkaniec') || 'Mieszkaniec Niebuszewa';
+
+  const certContent = `
+    ======================================================
+    🏆 CERTYFIKAT ODKRYWCY NIEBUSZEWA & ŁUCZNICZEJ 🏆
+    ======================================================
+    Niniejszym zaświadcza się, że:
+    ⭐ ${name.toUpperCase()} ⭐
+    
+    Został oficjalnie wpisany do Księgi Odkrywców Niebuszewa!
+    Zdobyte punkty: ${points} pkt
+    Odblokowane odznaki: ${count} z 5
+    
+    Data nadania: ${new Date().toLocaleDateString('pl-PL')}
+    Pieczęć: 🦅 Gryfus Szczeciński (Duma Pomorza)
+    Aplikacja: Szczecin Niebuszewo Guide
+    ======================================================
+  `;
+
+  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+    navigator.clipboard.writeText(certContent);
+    if (typeof showToast === 'function') {
+      showToast('📜 Skopiowano treść Certyfikatu do schowka! Możesz wkleić na Facebooku!');
+    }
+  } else {
+    alert(certContent);
+  }
+};
+
+// ===== HARMONOGRAM ODPADÓW & GABARYTÓW =====
+function renderWasteCalendar() {
+  const scheduleContainer = document.getElementById('wasteScheduleList');
+  const ekoContainer = document.getElementById('ekoDropPointsList');
+  if (!scheduleContainer) return;
+
+  const service = window.__SZCZECIN_APP__?.wasteCalendar;
+  const schedule = service ? service.getSchedule() : [];
+  const ekoPoints = service ? service.getEkoPoints() : [];
+
+  scheduleContainer.innerHTML = schedule.map(item => `
+    <div class="waste-card" style="border-top: 4px solid ${item.color}">
+      <div class="waste-card-top">
+        <span class="waste-icon">${item.icon}</span>
+        <span class="waste-days">${item.daysLeft === 1 ? 'Jutro!' : `Za ${item.daysLeft} dni`}</span>
+      </div>
+      <div class="waste-title">${item.name}</div>
+      <div class="waste-date">📅 ${item.dateStr}</div>
+      <p class="waste-tips">💡 ${item.tips}</p>
+    </div>
+  `).join('');
+
+  if (ekoContainer) {
+    ekoContainer.innerHTML = ekoPoints.map(pt => `
+      <div class="eko-card">
+        <div class="eko-header">
+          <span class="eko-icon">${pt.icon}</span>
+          <h4 class="eko-title">${pt.name}</h4>
+        </div>
+        <div class="eko-addr">📍 ${pt.address}</div>
+        <div class="eko-hours">🕒 ${pt.hours}</div>
+        <p class="eko-desc">${pt.desc}</p>
+        <button class="eko-map-btn" onclick="focusAlertOnMap(${pt.coords[0]}, ${pt.coords[1]})">
+          🗺️ Pokaż na mapie
+        </button>
+      </div>
+    `).join('');
+  }
+}
+
 // ===== AUTO-REFRESH =====
 function setupCommunityRefresh() {
   setInterval(() => {
@@ -519,12 +1027,27 @@ function setupCommunityRefresh() {
         !document.getElementById('section-community').classList.contains('hidden')) {
       renderLiveActivity();
       renderCommunityStats();
+      renderCommunityAlerts();
     }
   }, 30000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(setupCommunityRefresh, 200);
+  setTimeout(() => {
+    setupCommunityRefresh();
+    initCommunityAlertReporting();
+    renderCommunityAlerts();
+    renderSosContacts();
+    renderDogZone();
+    renderExplorerBadges();
+    renderWasteCalendar();
+  }, 250);
 });
 
 window.renderCommunity = renderCommunity;
+window.renderCommunityAlerts = renderCommunityAlerts;
+window.renderCommunityArtisans = renderCommunityArtisans;
+window.renderSosContacts = renderSosContacts;
+window.renderDogZone = renderDogZone;
+window.renderExplorerBadges = renderExplorerBadges;
+window.renderWasteCalendar = renderWasteCalendar;

@@ -163,7 +163,34 @@ async function fetchWeather() {
     updateTicker();
 
   } catch (err) {
-    console.warn('Weather fetch failed:', err);
+    console.warn('Open-Meteo weather fetch failed, attempting IMGW Szczecin fallback:', err);
+    try {
+      const imgwRes = await fetch('/api/imgw-szczecin');
+      if (imgwRes.ok) {
+        const imgwData = await imgwRes.json();
+        if (imgwData.synop) {
+          const fallbackCurrent = {
+            temperature_2m: imgwData.synop.temp,
+            apparent_temperature: imgwData.synop.temp,
+            relative_humidity_2m: imgwData.synop.humidity,
+            wind_speed_10m: (imgwData.synop.windSpeed || 0) * 3.6,
+            wind_direction_10m: imgwData.synop.windDir || 0,
+            surface_pressure: imgwData.synop.pressure,
+            weather_code: 1,
+            uv_index: 2,
+            is_day: 1
+          };
+          live.weather = fallbackCurrent;
+          renderWeatherWidget(fallbackCurrent);
+          renderWeatherFull(fallbackCurrent);
+          showToast('🌤️ Dane pogodowe: IMGW Szczecin');
+          return;
+        }
+      }
+    } catch (imgwErr) {
+      console.warn('IMGW fallback also failed:', imgwErr);
+    }
+
     // Try IndexedDB fallback
     if (window.OfflineStore) {
       const cached = await OfflineStore.getStale('weather');
@@ -550,6 +577,27 @@ function renderTransportPanel(deps) {
   const now = new Date();
   const upd = document.getElementById('ltpUpdated');
   if (upd) upd.textContent = `Aktualizacja: ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+
+  // Synchronize Mobile Bottom Sheet with Live ZDiTM Departures
+  const sheetList = document.getElementById('sheetDeparturesList');
+  if (sheetList && deps.length) {
+    sheetList.innerHTML = deps.slice(0, 4).map(d => `
+      <div class="sdb-row">
+        <span class="sdb-line-badge ${d.type || 'bus'}" style="background:${d.color || '#2980b9'};color:#fff;">${d.line}</span>
+        <span class="sdb-dest">${d.dest || d.direction} (${d.stop || 'Łucznicza'})</span>
+        <span class="sdb-time">${d.minsLeft <= 0 ? 'Teraz' : d.minsLeft + ' min'}</span>
+      </div>
+    `).join('');
+
+    const peekTitle = document.getElementById('sheetPeekTitle');
+    const peekSub = document.getElementById('sheetPeekSub');
+    if (peekTitle && deps[0]) {
+      peekTitle.textContent = `${deps[0].line} → ${deps[0].dest} (${deps[0].minsLeft <= 0 ? 'Teraz' : deps[0].minsLeft + ' min'})`;
+    }
+    if (peekSub) {
+      peekSub.textContent = `Najbliższy odjazd z przystanku ${deps[0]?.stop || 'Łucznicza'}`;
+    }
+  }
 }
 
 function renderTransportFull(deps, isRealtime = false) {

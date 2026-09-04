@@ -25,24 +25,12 @@ function mapProInit(map) {
   if (!map || MAP_PRO.map) return;
   MAP_PRO.map = map;
 
-  buildStyleSwitcher();
   buildFloatingControls();
   buildMapSearch();
   buildContextMenu();
-  buildCompass();
-  buildCoordBar();
-  buildWeatherOverlay();
-  updateLegendCounts();
   applyAutoDayNight();
   initKeyboardShortcuts();
   initViewHistory();
-
-  if (!localStorage.getItem('mapHintShown')) {
-    setTimeout(() => {
-      showToast('💡 Wskazówka: 🔍 szukaj miejsc · prawy klik = menu · L = lokalizacja');
-      localStorage.setItem('mapHintShown', '1');
-    }, 3000);
-  }
 }
 
 // ===== STYLE SWITCHER =====
@@ -96,18 +84,12 @@ function buildFloatingControls() {
   const fc = document.createElement('div');
   fc.className = 'map-fab-group';
   fc.innerHTML = `
-    <button class="map-fab" id="fabLocate"     title="Moja lokalizacja (L)">🎯</button>
     <button class="map-fab" id="fabFullscreen" title="Pełny ekran (F)">⛶</button>
-    <button class="map-fab" id="fabReset"      title="Wyśrodkuj (R)">🏹</button>
-    <button class="map-fab" id="fabBack"       title="Cofnij widok (←)" style="font-size:14px">◀</button>
-    <button class="map-fab" id="fabForward"    title="Naprzód widok (→)" style="font-size:14px">▶</button>`;
+    <button class="map-fab" id="fabReset"      title="Wyśrodkuj na Łucznicza 43">🏹</button>`;
   container.appendChild(fc);
 
-  document.getElementById('fabLocate').addEventListener('click', locateUser);
-  document.getElementById('fabFullscreen').addEventListener('click', toggleFullscreen);
-  document.getElementById('fabReset').addEventListener('click', resetView);
-  document.getElementById('fabBack').addEventListener('click', viewHistoryBack);
-  document.getElementById('fabForward').addEventListener('click', viewHistoryForward);
+  document.getElementById('fabFullscreen')?.addEventListener('click', toggleFullscreen);
+  document.getElementById('fabReset')?.addEventListener('click', resetView);
 }
 
 // ===== MAP SEARCH =====
@@ -412,16 +394,16 @@ function locateUser() {
       if (MAP_PRO.userCircle) map.removeLayer(MAP_PRO.userCircle);
 
       const userIcon = L.divIcon({
-        html: '<div class="user-dot"><div class="user-dot-core"></div><div class="user-dot-pulse"></div></div>',
-        iconSize: [24, 24], iconAnchor: [12, 12], className: 'user-location-icon'
+        html: '<div class="google-blue-dot-wrap"><div class="google-blue-dot-core"></div><div class="google-blue-dot-halo"></div></div>',
+        iconSize: [44, 44], iconAnchor: [22, 22], className: 'user-location-icon'
       });
-      MAP_PRO.userMarker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
-      MAP_PRO.userMarker.bindPopup(`<b>📍 Twoja lokalizacja</b><br>Dokładność: ±${Math.round(acc)}m`);
+      MAP_PRO.userMarker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 2000 }).addTo(map);
+      MAP_PRO.userMarker.bindPopup(`<b>🔵 Twoja lokalizacja</b><br>Dokładność: ±${Math.round(acc)}m`);
       MAP_PRO.userCircle = L.circle([lat, lng], {
-        radius: acc, color: '#4285f4', weight: 1, fillColor: '#4285f4', fillOpacity: 0.12
+        radius: acc, color: '#1a73e8', weight: 1.5, fillColor: '#1a73e8', fillOpacity: 0.15
       }).addTo(map);
 
-      map.flyTo([lat, lng], 16, { animate: true, duration: 1.2 });
+      map.flyTo([lat, lng], 16.5, { animate: true, duration: 1.4 });
       showToast(`📍 Znaleziono (±${Math.round(acc)}m)`);
     },
     () => showToast('❌ Nie udało się zlokalizować'),

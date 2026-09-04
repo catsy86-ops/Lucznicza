@@ -199,152 +199,37 @@
         <div class="map-container">
           <!-- Leaflet Map Container -->
           <div id="map" class="map-main"></div>
-          
-          <!-- Street View Panoramic (hidden by default, toggle to show) -->
-          <div id="streetViewContainer" class="street-view-container hidden">
-            <!-- Street View will be rendered here by Google Maps API -->
-          </div>
 
-          <!-- Map Controls (streamlined — styles handled by 🎨 switcher, locate by 🎯 FAB) -->
-          <div class="map-controls">
-            <button class="map-ctrl-btn" id="btnFly" title="Animacja lotu wokół dzielnicy">✈️</button>
-            <button class="map-ctrl-btn" id="btnStreetView" title="Street View (Mapillary)">📸</button>
-            <button class="map-ctrl-btn" id="btnQuick3D" title="Budynki 3D — Łucznicza 43">🏢</button>
-          </div>
-
-          <!-- Dedicated 3D Buildings FAB — always visible -->
-          <button class="buildings-3d-fab" id="buildings3dFab" title="Włącz widok budynków 3D — Łucznicza 43"
-            onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
-            <span class="b3d-fab-icon">🏢</span>
-            <span class="b3d-fab-label">3D</span>
+          <!-- Google Style Layer Toggle (Thumbnail in corner) -->
+          <button class="google-layer-thumb-btn" id="googleLayerThumbBtn" title="Przełącz Satelita / Mapa" style="background-image: url('https://a.tile.openstreetmap.org/15/17709/10762.png');">
+            <span class="google-layer-thumb-label" id="googleLayerThumbLabel">MAPA</span>
           </button>
 
-          <!-- Advanced Map Tools -->
-          <div class="map-tools-panel hidden" id="mapToolsPanel">
-            <div class="tools-header">
-              <h4>🛠️ Zaawansowane Narzędzia Mapy</h4>
-              <button class="tools-close" id="toolsClose">✕</button>
-            </div>
-            <div class="tools-content">
-              <div class="tool-group">
-                <h5>📊 Wizualizacja</h5>
-                <button class="tool-btn" id="btnHeatmap" title="Mapa ciepła aktywności">
-                  🔥 Mapa Ciepła
-                </button>
-                <button class="tool-btn" id="btnClustering" title="Grupowanie markerów">
-                  📍 Clustering
-                </button>
-                <button class="tool-btn" id="btnGeofences" title="Strefy zainteresowania">
-                  🎯 Strefy
-                </button>
-                <button class="tool-btn" id="btnBuildings3D" title="Budynki 3D — Łucznicza 43 i okolice">
-                  🏢 Budynki 3D
-                </button>
-              </div>
-
-              <div class="tool-group">
-                <h5>🗺️ Nawigacja</h5>
-                <div class="routing-controls">
-                  <select id="routeStart" class="route-select">
-                    <option value="">Początek</option>
-                  </select>
-                  <select id="routeEnd" class="route-select">
-                    <option value="">Koniec</option>
-                  </select>
-                  <button class="tool-btn" id="btnCalculateRoute" title="Oblicz trasę">
-                    ➜ Trasa
-                  </button>
-                </div>
-              </div>
-
-              <div class="tool-group">
-                <h5>📏 Pomiary</h5>
-                <button class="tool-btn" id="btnMeasure" title="Mierz odległość">
-                  📏 Pomiar
-                </button>
-              </div>
-
-              <div class="tool-group">
-                <h5>💾 Export</h5>
-                <button class="tool-btn" id="btnExportMap" title="Pobierz mapę">
-                  📥 Pobierz PNG
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tools Toggle Button -->
-          <button class="tools-toggle-btn" id="toolsToggle" title="Narzędzia mapy">
-            🛠️
+          <!-- Google Floating GPS Button -->
+          <button class="google-locate-btn" id="googleLocateBtn" title="Twoja lokalizacja">
+            🎯
           </button>
 
-          <!-- Panoramic Controls (for Street View) -->
-          <div class="pano-controls hidden" id="panoControls">
-            <div class="pano-control-group">
-              <button id="svZoomIn" title="Zoom in" class="pano-btn">🔍+</button>
-              <button id="svZoomOut" title="Zoom out" class="pano-btn">🔍−</button>
-            </div>
-            <div class="pano-control-group">
-              <button id="svRotateLeft" title="Rotate left" class="pano-btn">⟲</button>
-              <button id="svRotateRight" title="Rotate right" class="pano-btn">⟳</button>
-            </div>
-            <div class="pano-control-group">
-              <button id="svShowLinks" title="Show directions" class="pano-btn">🧭</button>
-              <button id="svReset" title="Reset view" class="pano-btn">↺</button>
-            </div>
-          </div>
+          <!-- Citizen Alert FAB: Dzik / Awaria / Usterka -->
+          <button class="community-alert-fab" id="communityAlertFab" title="Zgłoś Dzika / Usterkę na Niebuszewie" aria-label="Zgłoś Dzika lub Awarię">
+            🐗 <span class="caf-label">Alert</span>
+          </button>
 
-          <!-- POV Display (Street View info) -->
-          <div class="pov-display hidden" id="povDisplay"></div>
-          
-          <!-- Position Display (Street View coordinates) -->
-          <div class="position-display hidden" id="positionDisplay"></div>
 
-          <!-- POI Street View Info Card -->
-          <div class="poi-street-view-info hidden" id="poiStreetViewInfo"></div>
 
-          <!-- Street View Navigation -->
-          <div class="street-view-navigation hidden" id="streetViewNavigation"></div>
 
-          <!-- Street View Links -->
-          <div class="street-view-links hidden" id="streetViewLinks"></div>
 
-          <!-- Category Filter -->
+          <!-- Category Filter (Pills bar like Google Maps) -->
           <div class="category-filter">
             <button class="cat-btn active" data-cat="all">Wszystkie</button>
+            <button class="cat-btn cat-open-now" id="catOpenNowBtn" title="Pokaż tylko otwarte teraz">🟢 Otwarte teraz</button>
             <button class="cat-btn" data-cat="sport">⚽ Sport</button>
             <button class="cat-btn" data-cat="food">🍽️ Jedzenie</button>
             <button class="cat-btn" data-cat="shop">🛒 Sklepy</button>
             <button class="cat-btn" data-cat="park">🌳 Parki</button>
             <button class="cat-btn" data-cat="service">🔧 Usługi</button>
             <button class="cat-btn" data-cat="edu">📚 Edukacja</button>
-          </div>
-
-          <!-- Map Legend -->
-          <div class="map-legend" id="mapLegend">
-            <h4>Legenda</h4>
-            <div class="legend-item"><span class="legend-dot sport"></span> Sport</div>
-            <div class="legend-item"><span class="legend-dot food"></span> Jedzenie</div>
-            <div class="legend-item"><span class="legend-dot shop"></span> Sklepy</div>
-            <div class="legend-item"><span class="legend-dot park"></span> Parki</div>
-            <div class="legend-item"><span class="legend-dot service"></span> Usługi</div>
-            <div class="legend-item"><span class="legend-dot edu"></span> Edukacja</div>
-          </div>
-
-          <!-- Stats bar -->
-          <div class="map-stats">
-            <div class="stat-item">
-              <span class="stat-num" id="statTotal">0</span>
-              <span class="stat-label">Miejsc</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-num" id="statRoutes">0</span>
-              <span class="stat-label">Trasy</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-num" id="statStops">10</span>
-              <span class="stat-label">Przystanki</span>
-            </div>
+            <button class="cat-btn" id="mapLayersModalBtn" title="Przełącz warstwy mapy">🎛️ Warstwy</button>
           </div>
         </div>
       </section>
@@ -678,6 +563,129 @@
       </div>
     </div>
 
+    <!-- CITIZEN ALERT MODAL (Dzik / Awaria / Usterka) -->
+    <div class="modal-overlay hidden" id="alertModalOverlay" role="dialog" aria-modal="true" aria-labelledby="alertModalTitle">
+      <div class="modal alert-modal" id="alertModal">
+        <button class="modal-close" id="alertModalClose" aria-label="Zamknij">✕</button>
+        <div class="modal-content" id="alertModalContent">
+          <div class="alert-modal-header">
+            <span class="alert-modal-badge">📢 Obywatelski Alert</span>
+            <h2 id="alertModalTitle">Zgłoś zdarzenie na Niebuszewie</h2>
+            <p>Ostrzeż sąsiadów w czasie rzeczywistym. Zgłoszenie pojawi się na mapie.</p>
+          </div>
+          <form id="communityAlertForm" class="alert-form" onsubmit="return false;">
+            <div class="alert-type-selector">
+              <label class="alert-type-btn active" data-type="dzik">
+                <input type="radio" name="alertType" value="dzik" checked />
+                <span class="atb-icon">🐗</span>
+                <span class="atb-text">Dziki</span>
+              </label>
+              <label class="alert-type-btn" data-type="hazard">
+                <input type="radio" name="alertType" value="hazard" />
+                <span class="atb-icon">🕳️</span>
+                <span class="atb-text">Dziura / Chodnik</span>
+              </label>
+              <label class="alert-type-btn" data-type="water">
+                <input type="radio" name="alertType" value="water" />
+                <span class="atb-icon">💧</span>
+                <span class="atb-text">Awaria wody</span>
+              </label>
+              <label class="alert-type-btn" data-type="other">
+                <input type="radio" name="alertType" value="other" />
+                <span class="atb-icon">⚠️</span>
+                <span class="atb-text">Inne</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label for="alertFormTitle">Tytuł zgłoszenia *</label>
+              <input type="text" id="alertFormTitle" placeholder="np. Stado 4 dzików przy placu zabaw" required maxlength="80" />
+            </div>
+
+            <div class="form-group">
+              <label for="alertFormDesc">Opis sytuacji *</label>
+              <textarea id="alertFormDesc" rows="3" placeholder="Gdzie dokładnie, w jakim kierunku idą, czy jest niebezpiecznie..." required maxlength="300"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="alertFormLocation">Lokalizacja / Ulica</label>
+              <input type="text" id="alertFormLocation" placeholder="np. ul. Łucznicza obok SP 47" value="ul. Łucznicza, Szczecin" maxlength="80" />
+            </div>
+
+            <div class="form-group">
+              <label for="alertFormNick">Twój podpis / nick</label>
+              <input type="text" id="alertFormNick" placeholder="np. Sąsiad z Łuczniczej" value="Mieszkaniec Niebuszewa" maxlength="40" />
+            </div>
+
+            <div class="alert-form-actions">
+              <button type="button" class="alert-btn secondary" id="alertFormCancel">Anuluj</button>
+              <button type="submit" class="alert-btn primary" id="alertFormSubmit">🚀 Opublikuj Alert</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- GOOGLE STYLE PLACE QUICK PEEK SHEET -->
+    <div class="google-place-sheet hidden" id="googlePlaceSheet" role="region" aria-label="Podgląd miejsca">
+      <div class="gps-top">
+        <div class="gps-title-wrap">
+          <span class="gps-emoji" id="gpsEmoji">📍</span>
+          <h3 class="gps-title" id="gpsTitle">Nazwa Miejsca</h3>
+        </div>
+        <button class="gps-close" id="gpsClose" aria-label="Zamknij podgląd">✕</button>
+      </div>
+      <div class="gps-meta">
+        <span class="gps-status" id="gpsStatus">🟢 Otwarte</span>
+        <span class="gps-rating" id="gpsRating">⭐ 4.8</span>
+        <span class="gps-dist" id="gpsDist">📍 320 m stąd</span>
+      </div>
+      <div class="gps-addr" id="gpsAddr">ul. Łucznicza 15, Szczecin</div>
+      <div class="gps-actions">
+        <button class="gps-btn primary" id="gpsNavigateBtn">🧭 Prowadź pieszo</button>
+        <button class="gps-btn" id="gpsDetailsBtn">ℹ️ Szczegóły</button>
+        <button class="gps-btn" id="gpsShareBtn">🔗 Udostępnij</button>
+      </div>
+    </div>
+
+    <!-- MAP LAYERS OVERLAY MODAL -->
+    <div class="modal-overlay hidden" id="mapLayersModalOverlay" role="dialog" aria-modal="true" aria-labelledby="mapLayersTitle">
+      <div class="modal layers-modal" id="mapLayersModal">
+        <button class="modal-close" id="mapLayersModalClose" aria-label="Zamknij">✕</button>
+        <div class="modal-content">
+          <h2 id="mapLayersTitle">🎛️ Warstwy Mapy Niebuszewa</h2>
+          <p>Włączaj i wyłączaj warstwy tematyczne na mapie:</p>
+          <div class="layers-toggle-list">
+            <label class="layer-toggle-row">
+              <span class="ltr-icon">🚌</span>
+              <span class="ltr-label">Przystanki i linie ZDiTM</span>
+              <input type="checkbox" id="layerToggleZditm" checked />
+            </label>
+            <label class="layer-toggle-row">
+              <span class="ltr-icon">🚲</span>
+              <span class="ltr-label">Ścieżki rowerowe & Bike_S</span>
+              <input type="checkbox" id="layerToggleBikes" checked />
+            </label>
+            <label class="layer-toggle-row">
+              <span class="ltr-icon">🌳</span>
+              <span class="ltr-label">Strefy zielone & Park Kadziaka</span>
+              <input type="checkbox" id="layerToggleParks" checked />
+            </label>
+            <label class="layer-toggle-row">
+              <span class="ltr-icon">🐗</span>
+              <span class="ltr-label">Obywatelskie Alerty (Dziki/Awarie)</span>
+              <input type="checkbox" id="layerToggleAlerts" checked />
+            </label>
+            <label class="layer-toggle-row">
+              <span class="ltr-icon">🐕</span>
+              <span class="ltr-label">Wybiegi dla psów i eko-stacje</span>
+              <input type="checkbox" id="layerToggleDogs" checked />
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- TOAST NOTIFICATION -->
     <div class="toast hidden" id="toast" role="alert" aria-live="polite" aria-atomic="true"></div>
 
@@ -750,6 +758,102 @@
       🚌 <span class="live-dot"></span>
     </button>
 
+    <!-- MODERN MOBILE BOTTOM SHEET -->
+    <div class="modern-bottom-sheet" id="modernBottomSheet">
+      <div class="sheet-handle-bar" id="sheetHandleBar">
+        <div class="sheet-handle"></div>
+      </div>
+      <div class="sheet-peek-content" id="sheetPeek">
+        <div class="sheet-peek-left">
+          <span class="sheet-badge">🟢 NA ŻYWO</span>
+          <div>
+            <div class="sheet-peek-title" id="sheetPeekTitle">Łucznicza / Tarczowa</div>
+            <div class="sheet-peek-sub" id="sheetPeekSub">Kliknij lub przeciągnij, aby rozwinąć</div>
+          </div>
+        </div>
+        <button class="sheet-peek-btn" id="sheetToggleBtn">Rozwiń 🔼</button>
+      </div>
+      <div class="sheet-expanded-content" id="sheetExpanded">
+        <!-- Quick Actions -->
+        <div class="sheet-quick-grid">
+          <div class="sheet-quick-card" onclick="navigateTo('places')">
+            <div class="sq-icon">📍</div>
+            <div class="sq-label">Miejsca</div>
+          </div>
+          <div class="sheet-quick-card" onclick="navigateTo('routes')">
+            <div class="sq-icon">🚶</div>
+            <div class="sq-label">Trasy</div>
+          </div>
+          <div class="sheet-quick-card" onclick="navigateTo('transport')">
+            <div class="sq-icon">🚌</div>
+            <div class="sq-label">Rozkłady</div>
+          </div>
+        </div>
+
+        <!-- Virtual Departures Board in Bottom Sheet -->
+        <div class="sheet-departures-board">
+          <div class="sdb-header">
+            <span>🚌 Najbliższe odjazdy</span>
+            <span style="font-size:11px;color:var(--text3)">ZDiTM Szczecin</span>
+          </div>
+          <div class="sdb-list" id="sheetDeparturesList">
+            <div class="sdb-row">
+              <span class="sdb-line-badge tram">12</span>
+              <span class="sdb-dest">Pomorzany przez Plac Rodła</span>
+              <span class="sdb-time">4 min</span>
+            </div>
+            <div class="sdb-row">
+              <span class="sdb-line-badge tram">3</span>
+              <span class="sdb-dest">Dworzec Niebuszewo</span>
+              <span class="sdb-time">7 min</span>
+            </div>
+            <div class="sdb-row">
+              <span class="sdb-line-badge bus">51</span>
+              <span class="sdb-dest">Kołłątaja</span>
+              <span class="sdb-time">9 min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV (Mobile First, Thumb Zone Ergonomics) -->
+    <nav class="bottom-nav" id="bottomNav" aria-label="Główna nawigacja mobilna">
+      <button class="bnav-btn active" data-section="map" aria-label="Mapa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+          <line x1="8" y1="2" x2="8" y2="18"></line>
+          <line x1="16" y1="6" x2="16" y2="22"></line>
+        </svg>
+        <span>Mapa</span>
+      </button>
+      <button class="bnav-btn" data-section="places" aria-label="Miejsca">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span>Miejsca</span>
+      </button>
+      <button class="bnav-btn" data-section="transport" aria-label="Odjazdy ZDiTM">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="16" rx="2"></rect>
+          <path d="M3 9h18"></path>
+          <circle cx="7.5" cy="15" r="1"></circle>
+          <circle cx="16.5" cy="15" r="1"></circle>
+        </svg>
+        <span>Odjazdy</span>
+      </button>
+      <button class="bnav-btn" data-section="community" aria-label="Społeczność">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span>Osiedle</span>
+      </button>
+    </nav>
+
   </div><!-- /#app -->
 
   <!-- Leaflet is loaded via CDN in <head>, no extra script needed -->
@@ -771,7 +875,8 @@
   <script src="map-vehicles.js"></script>
   <script src="map-extras.js"></script>
   <script src="map-extras2.js"></script>
-  <script src="buildings-3d.js"></script>
+
+
   <script src="navigation.js"></script>
   <script src="search.js"></script>
   <script src="place-images.js"></script>
@@ -781,17 +886,9 @@
   <script src="pwa.js"></script>
   <script src="pull-refresh.js"></script>
   <script src="pogon-mascot.js"></script>
-
-  <!-- Mobile Enhancements -->
-  <script src="mobile-nav-enhance.js"></script>
-  <script src="mobile-optimizations.js"></script>
-  <script src="mobile-gestures.js"></script>
-  <script src="mobile-map-ui.js"></script>
-  <script src="mobile-theme-colors.js"></script>
-  <script src="ui-fix-overlapping.js"></script>
-
   <script src="app.js"></script>
   <script src="live.js"></script>
-  <script src="google-maps.js"></script>
+  <!-- Modern TypeScript / ESM Bundle Entrypoint -->
+  <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
