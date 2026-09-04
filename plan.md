@@ -146,12 +146,23 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 - [x] **4.4. Testy automatyczne (Vitest: 49/49 zdanych)**:
   - Utworzono pakiet `src/tests/navigation-and-guide.test.ts` weryfikujący nawigację, odtwarzanie audio i radar geofence.
 
+#### ✅ SPRINT 5: Inteligentny Rejestr Ulubionych, Eksport GPX & Filtr Dostępności [UKOŃCZONE 100%]
+- [x] **5.1. Generator i Eksport do formatu GPX 1.1**:
+  - Serwis `src/services/gpx-exporter.ts`: tworzenie standardowych plików `.gpx` z punktami kontrolnymi (`<wpt>`) i śladem GPS (`<trkpt>`) dla Garmin, Strava i Komoot.
+  - Dedykowany przycisk `[ 📥 GPX ]` na kartach tras w `app.js` i stylowanie w `style.css`.
+- [x] **5.2. Reaktywny Serwis Ulubionych (FavoritesSync)**:
+  - Serwis `src/services/favorites-sync.ts`: persystencja w `LocalStorage` dla miejsc, tras i przystanków z systemem subskrypcji zdarzeń.
+- [x] **5.3. Filtr Dostępności i Udogodnień (A11y & Family Filter)**:
+  - Serwis `src/services/accessibility-filter.ts`: 6 kryteriów (wózki, dzieci/spacerówki, zwierzęta, rowery, wstęp bezpłatny, tereny zielone).
+- [x] **5.4. Testy automatyczne (Vitest: 57/57 zdanych)**:
+  - Utworzono pakiet `src/tests/favorites-and-gpx.test.ts`.
+
 ---
 
-### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0 & v1.1.0 [UKOŃCZONE 100%]
-- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 49/49)**.
+### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0, v1.1.0 & v1.2.0 [UKOŃCZONE 100%]
+- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 57/57)**.
 - [x] **6.2. Weryfikacja produkcyjnego bundle Vite (`tsc && vite build`)**.
-- [x] **6.3. Wypchnięcie kodu i tagu `v1.0.0` do origin/main**.
+- [x] **6.3. Wypchnięcie kodu i tagu `v1.2.0` do origin/main**.
 
 ---
 
@@ -167,7 +178,8 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Mobile Bottom Sheet** | 🟢 Gotowy | 3 stany wysuwania (Peek/Half/Full) | Czysty CSS/JS |
 | **Centralny Store** | 🟢 Gotowy | Reaktywny Pub/Sub, typowany TS | TypeScript |
 | **Przewodnik Głosowy (Audio)**| 🟢 Gotowy | Opowieści Gryfusa (Web Speech API) | Web Speech API |
-| **Multimodalny Nawigator**| 🟢 Gotowy | Czas dojścia + węzły ZDiTM | TypeScript |
-| **Radar Bliskości (Geofence)**| 🟢 Gotowy | Alerty w promieniu 150-300m | TypeScript |
-| **Testy jednostkowe** | 🟢 Gotowy | **49/49 testów przechodzi (Vitest)** | Vitest |
+| **Eksport tras GPX** | 🟢 Gotowy | Pobieranie plików dla Garmin/Strava | XML / Blob API |
+| **Synchronizacja Ulubionych** | 🟢 Gotowy | Pamięć lokalna + subskrypcje | LocalStorage |
+| **Filtr Dostępności (A11y)** | 🟢 Gotowy | Wózki, rodziny, psy, rowery | TypeScript |
+| **Testy jednostkowe** | 🟢 Gotowy | **57/57 testów przechodzi (Vitest)** | Vitest |
 | **Migracja ESM / Vite** | 🟢 Gotowy | Zbudowano bundle produkcyjny (`dist/`) | Vite + TypeScript |

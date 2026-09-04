@@ -12,6 +12,9 @@ import { wasteCalendarService } from './services/waste-calendar';
 import { navigationAssistant } from './services/navigation-assistant';
 import { audioGuideService } from './services/audio-guide';
 import { geofenceRadar } from './services/geofence-radar';
+import { gpxExporter } from './services/gpx-exporter';
+import { favoritesSync } from './services/favorites-sync';
+import { accessibilityFilter } from './services/accessibility-filter';
 
 export * from './types';
 export * from './store';
@@ -25,6 +28,9 @@ export * from './services/waste-calendar';
 export * from './services/navigation-assistant';
 export * from './services/audio-guide';
 export * from './services/geofence-radar';
+export * from './services/gpx-exporter';
+export * from './services/favorites-sync';
+export * from './services/accessibility-filter';
 
 // Expose on global window object for interoperability with legacy components and console debugging
 if (typeof window !== 'undefined') {
@@ -43,6 +49,9 @@ if (typeof window !== 'undefined') {
     navigationAssistant,
     audioGuide: audioGuideService,
     geofenceRadar,
+    gpxExporter,
+    favoritesSync,
+    accessibilityFilter,
     version: '1.2.0'
   };
 

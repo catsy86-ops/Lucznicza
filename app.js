@@ -1157,6 +1157,28 @@ function toggleRouteFav(id) {
   return favs.includes(id);
 }
 
+function downloadRouteGpx(id) {
+  const route = APP_DATA.routes.find(r => r.id === id);
+  if (!route) return;
+
+  const app = window.__SZCZECIN_APP__;
+  if (app && app.gpxExporter) {
+    app.gpxExporter.downloadGpx(route);
+  } else {
+    const xml = `<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1"><trk><name>${route.name}</name></trk></gpx>`;
+    const blob = new Blob([xml], { type: 'application/gpx+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trasa_${route.id}.gpx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+}
+window.downloadRouteGpx = downloadRouteGpx;
+
 function renderRoutes() {
   const container = document.getElementById('section-routes');
   if (!container) return;
@@ -1339,6 +1361,9 @@ function renderRouteCard(r, isFav) {
           </button>
           <button class="rc2-btn timer ${routeState.timerRouteId === r.id ? 'active' : ''}" id="timer-btn-${r.id}" onclick="toggleRouteTimer(${r.id})">
             ${routeState.timerRouteId === r.id ? '⏹ Stop' : '▶ Start trasy'}
+          </button>
+          <button class="rc2-btn gpx" onclick="downloadRouteGpx(${r.id})" title="Pobierz plik GPX do Garmina, Stravy lub Komoot">
+            📥 GPX
           </button>
           <button class="rc2-btn share" onclick="shareRoute(${r.id})">
             🔗 Udostępnij
