@@ -291,13 +291,41 @@ function initMap() {
     }).addTo(map);
     sportsPolygon.bindTooltip('⚽ Kompleks Sportowy Łucznicza', { permanent: false, direction: 'center' });
 
-    // Add POI markers
+    // Add POI markers (Smart clustering enabled by default to prevent overlapping)
     if (APP_DATA && APP_DATA.places) {
-      APP_DATA.places.forEach(place => {
-        const marker = createPoiMarker(place);
-        marker.addTo(map);
-        state.markers.push(marker);
-      });
+      if (typeof L.markerClusterGroup === 'function') {
+        const cluster = L.markerClusterGroup({
+          showCoverageOnHover: false,
+          maxClusterRadius: 45,
+          spiderfyOnMaxZoom: true,
+          disableClusteringAtZoom: 18,
+          iconCreateFunction: c => {
+            const count = c.getChildCount();
+            return L.divIcon({
+              html: `<div class="cluster-bubble">${count}</div>`,
+              className: 'cluster-icon',
+              iconSize: [40, 40]
+            });
+          }
+        });
+        APP_DATA.places.forEach(place => {
+          const marker = createPoiMarker(place);
+          cluster.addLayer(marker);
+          state.markers.push(marker);
+        });
+        map.addLayer(cluster);
+        state.poiClusterGroup = cluster;
+        if (window.MAP_ENHANCEMENTS) {
+          window.MAP_ENHANCEMENTS.clusterGroup = cluster;
+          window.MAP_ENHANCEMENTS.clusteringEnabled = true;
+        }
+      } else {
+        APP_DATA.places.forEach(place => {
+          const marker = createPoiMarker(place);
+          marker.addTo(map);
+          state.markers.push(marker);
+        });
+      }
     }
 
     // Add routes
@@ -364,9 +392,9 @@ function createPoiMarker(place) {
   `;
   const icon = L.divIcon({
     html: iconHtml,
-    iconSize: [40, 48],
-    iconAnchor: [20, 46],
-    popupAnchor: [0, -42],
+    iconSize: [34, 42],
+    iconAnchor: [17, 40],
+    popupAnchor: [0, -38],
     className: 'leaflet-marker-google-style'
   });
 
@@ -535,8 +563,8 @@ function filterMarkers(cat) {
 
   const PE = window.placesEnhanced;
   const clusterGroup = (window.mapEnhancements && window.mapEnhancements.getClusterGroup)
-    ? window.mapEnhancements.getClusterGroup()
-    : null;
+    ? (window.mapEnhancements.getClusterGroup() || state.poiClusterGroup)
+    : state.poiClusterGroup;
 
   state.markers.forEach(marker => {
     const place = marker.placeData;
@@ -1219,13 +1247,18 @@ function flyToPlace(id) {
   if (!place || !state.map) return;
   navigateTo('map');
   setTimeout(() => {
-    state.map.setView([place.coords[1], place.coords[0]], 17, { animate: true, duration: 1.5 });
-    // Open popup for matching marker
-    state.markers.forEach(marker => {
-      if (marker.placeData && marker.placeData.id === id) {
-        setTimeout(() => marker.openPopup(), 800);
+    const targetMarker = state.markers.find(m => m.placeData && m.placeData.id === id);
+    const cluster = state.poiClusterGroup || (window.MAP_ENHANCEMENTS && window.MAP_ENHANCEMENTS.clusterGroup);
+    if (targetMarker && cluster && typeof cluster.zoomToShowLayer === 'function') {
+      cluster.zoomToShowLayer(targetMarker, () => {
+        setTimeout(() => targetMarker.openPopup(), 150);
+      });
+    } else {
+      state.map.setView([place.coords[1], place.coords[0]], 17, { animate: true, duration: 1.5 });
+      if (targetMarker) {
+        setTimeout(() => targetMarker.openPopup(), 800);
       }
-    });
+    }
   }, 200);
 }
 
