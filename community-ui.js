@@ -55,6 +55,7 @@ function renderCommunity() {
     <!-- Nav pills -->
     <div class="comm-nav-pills" id="commNavPills">
       <button class="cnp-btn active" data-target="comm-alerts">🚨 Alerty Osiedlowe</button>
+      <button class="cnp-btn" data-target="comm-audio">🎧 Opowieści Gryfusa</button>
       <button class="cnp-btn" data-target="comm-sos">🆘 Apteki & Dyżury 24h</button>
       <button class="cnp-btn" data-target="comm-dogs">🐕 Psie Niebuszewo</button>
       <button class="cnp-btn" data-target="comm-badges">🎖️ Odznaki Gryfusa</button>
@@ -67,6 +68,22 @@ function renderCommunity() {
       <button class="cnp-btn" data-target="comm-surveys">🗳️ Ankiety</button>
       <button class="cnp-btn" data-target="comm-news">📰 Wiadomości</button>
       <button class="cnp-btn" data-target="comm-demo">📊 Statystyki</button>
+    </div>
+
+    <!-- Gryfus Audio Guide Section -->
+    <div id="comm-audio">
+      <div class="comm-section-title">
+        <span>🎧 Głosowy Przewodnik Gryfusa (Audio Guide)</span>
+        <span class="comm-refresh-hint">Web Speech API</span>
+      </div>
+      <div class="comm-audio-banner">
+        <div class="cab-icon">🦅</div>
+        <div class="cab-content">
+          <strong>Posłuchaj Gryfusa Szczecińskiego!</strong>
+          <p>Nasz przewodnik opowie Ci o fascynującej historii i sekretach Niebuszewa i Łuczniczej.</p>
+        </div>
+      </div>
+      <div id="audioStoriesList" class="comm-audio-grid"></div>
     </div>
 
     <!-- Citizen Alerts (Dziki / Awaria / Usterka) -->
@@ -1020,6 +1037,110 @@ function renderWasteCalendar() {
   }
 }
 
+// ===== GRYFUS AUDIO GUIDE =====
+const DEFAULT_AUDIO_STORIES = [
+  {
+    id: 'story-kadziak',
+    title: 'Tajemnice Parku Kadziaka',
+    locationName: 'Park Antoniego Kadziaka',
+    coords: [53.4530, 14.5520],
+    duration: 'ok. 20 sek',
+    desc: 'Odkryj historię zielonej oazy Niebuszewa, dawnego cmentarza ewangelickiego i współczesnego centrum rekreacji.'
+  },
+  {
+    id: 'story-dworzec',
+    title: 'Zabytkowy Dworzec Niebuszewo',
+    locationName: 'Stacja PKP Niebuszewo',
+    coords: [53.4554, 14.5587],
+    duration: 'ok. 18 sek',
+    desc: 'Wzniesiony w 1898 roku zabytkowy dworzec kolejowy odradza się jako węzeł Szczecińskiej Kolei Metropolitalnej.'
+  },
+  {
+    id: 'story-lucznicza',
+    title: 'Serce Osiedla: Ulica Łucznicza',
+    locationName: 'ulica Łucznicza',
+    coords: [53.4535, 14.5505],
+    duration: 'ok. 19 sek',
+    desc: 'Poznaj tradycję rzemieślniczą, urokliwe kamienice i drogę ku Parkowi Kasprowicza.'
+  },
+  {
+    id: 'story-kollataja',
+    title: 'Węzeł Kołłątaja i Manhattan',
+    locationName: 'Plac Kołłątaja / Manhattan',
+    coords: [53.4475, 14.5518],
+    duration: 'ok. 21 sek',
+    desc: 'Kultowe targowisko miejskie, brama do Niebuszewa i serce komunikacyjne dzielnicy.'
+  }
+];
+
+let currentlyPlayingStoryId = null;
+
+function renderAudioGuide() {
+  const container = document.getElementById('audioStoriesList');
+  if (!container) return;
+
+  const app = window.__SZCZECIN_APP__;
+  const stories = (app && app.audioGuide) ? app.audioGuide.getStories() : DEFAULT_AUDIO_STORIES;
+
+  container.innerHTML = stories.map(s => {
+    const isPlaying = currentlyPlayingStoryId === s.id;
+    return `
+      <div class="audio-story-card ${isPlaying ? 'playing' : ''}" id="card-${s.id}">
+        <div class="asc-top">
+          <div class="asc-badge">🎧 ${s.duration || 'ok. 20 sek'}</div>
+          <span class="asc-location">📍 ${s.locationName}</span>
+        </div>
+        <h4 class="asc-title">${s.title}</h4>
+        <p class="asc-desc">${s.desc || (s.narrativeText ? s.narrativeText.slice(0, 110) + '...' : '')}</p>
+        <div class="asc-actions">
+          <button class="asc-play-btn ${isPlaying ? 'active' : ''}" onclick="toggleAudioStory('${s.id}')">
+            ${isPlaying ? '⏹️ Zatrzymaj' : '▶️ Odtwórz opowieść Gryfusa'}
+          </button>
+          <button class="asc-map-btn" onclick="focusAlertOnMap(${s.coords[0]}, ${s.coords[1]})">
+            🗺️ Pokaż miejsce
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleAudioStory(id) {
+  const app = window.__SZCZECIN_APP__;
+
+  if (currentlyPlayingStoryId === id) {
+    if (app && app.audioGuide) {
+      app.audioGuide.stop();
+    } else if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    currentlyPlayingStoryId = null;
+    renderAudioGuide();
+    return;
+  }
+
+  currentlyPlayingStoryId = id;
+  renderAudioGuide();
+
+  if (app && app.audioGuide) {
+    app.audioGuide.playStory(id, () => {
+      currentlyPlayingStoryId = null;
+      renderAudioGuide();
+    });
+  } else if (window.speechSynthesis) {
+    const story = DEFAULT_AUDIO_STORIES.find(s => s.id === id);
+    if (story) {
+      const u = new SpeechSynthesisUtterance(story.desc);
+      u.lang = 'pl-PL';
+      u.onend = () => {
+        currentlyPlayingStoryId = null;
+        renderAudioGuide();
+      };
+      window.speechSynthesis.speak(u);
+    }
+  }
+}
+
 // ===== AUTO-REFRESH =====
 function setupCommunityRefresh() {
   setInterval(() => {
@@ -1037,6 +1158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCommunityRefresh();
     initCommunityAlertReporting();
     renderCommunityAlerts();
+    renderAudioGuide();
     renderSosContacts();
     renderDogZone();
     renderExplorerBadges();
@@ -1047,6 +1169,8 @@ document.addEventListener('DOMContentLoaded', () => {
 window.renderCommunity = renderCommunity;
 window.renderCommunityAlerts = renderCommunityAlerts;
 window.renderCommunityArtisans = renderCommunityArtisans;
+window.renderAudioGuide = renderAudioGuide;
+window.toggleAudioStory = toggleAudioStory;
 window.renderSosContacts = renderSosContacts;
 window.renderDogZone = renderDogZone;
 window.renderExplorerBadges = renderExplorerBadges;

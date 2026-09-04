@@ -135,12 +135,23 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
   - Kalendarz zbiórek gabarytów, zniczodzielnie, PSZOK i punkty eko (`waste-calendar.ts`).
 - [x] **3.5. Katalog Rzemieślników Niebuszewa ("Kupuj Lokalnie")**.
 
+#### ✅ SPRINT 4: Multimodalny Asystent Podróży & Głosowy Przewodnik Gryfusa [UKOŃCZONE 100%]
+- [x] **4.1. Multimodalny Nawigator (Pieszo + ZDiTM)**:
+  - Serwis `src/services/navigation-assistant.ts`: wyliczanie odległości haversine, czasu marszu, spalanych kalorii i najbliższego węzła transportowego.
+- [x] **4.2. Głosowy Przewodnik Gryfusa (Audio Guide)**:
+  - Serwis `src/services/audio-guide.ts`: opowieści historyczne o Niebuszewie (Park Kadziaka, Dworzec, Łucznicza, Kołłątaja) czytane głosem w Web Speech API.
+  - Zakładka "🎧 Opowieści Gryfusa" w `community-ui.js` oraz stylowanie kart i odtwarzacza w `style.css`.
+- [x] **4.3. Inteligentny Radar Bliskości (Geofencing)**:
+  - Serwis `src/services/geofence-radar.ts`: detekcja wejścia w strefę POI i ochrona przed spamem powiadomień (cooldown).
+- [x] **4.4. Testy automatyczne (Vitest: 49/49 zdanych)**:
+  - Utworzono pakiet `src/tests/navigation-and-guide.test.ts` weryfikujący nawigację, odtwarzanie audio i radar geofence.
+
 ---
 
-### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0 [UKOŃCZONE 100%]
-- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 39/39)**.
+### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0 & v1.1.0 [UKOŃCZONE 100%]
+- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 49/49)**.
 - [x] **6.2. Weryfikacja produkcyjnego bundle Vite (`tsc && vite build`)**.
-- [x] **6.3. Przygotowanie release tagu `v1.0.0` w Git**.
+- [x] **6.3. Wypchnięcie kodu i tagu `v1.0.0` do origin/main**.
 
 ---
 
@@ -155,5 +166,8 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Pasek szukania i Chipsy** | 🟢 Gotowy | Google Floating Searchbar & Filter Chips | Brak |
 | **Mobile Bottom Sheet** | 🟢 Gotowy | 3 stany wysuwania (Peek/Half/Full) | Czysty CSS/JS |
 | **Centralny Store** | 🟢 Gotowy | Reaktywny Pub/Sub, typowany TS | TypeScript |
-| **Testy jednostkowe** | 🟢 Gotowy | **35/35 testów przechodzi (Vitest)** | Vitest |
+| **Przewodnik Głosowy (Audio)**| 🟢 Gotowy | Opowieści Gryfusa (Web Speech API) | Web Speech API |
+| **Multimodalny Nawigator**| 🟢 Gotowy | Czas dojścia + węzły ZDiTM | TypeScript |
+| **Radar Bliskości (Geofence)**| 🟢 Gotowy | Alerty w promieniu 150-300m | TypeScript |
+| **Testy jednostkowe** | 🟢 Gotowy | **49/49 testów przechodzi (Vitest)** | Vitest |
 | **Migracja ESM / Vite** | 🟢 Gotowy | Zbudowano bundle produkcyjny (`dist/`) | Vite + TypeScript |

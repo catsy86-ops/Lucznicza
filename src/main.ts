@@ -9,6 +9,9 @@ import { communityAlertsService } from './services/community-alerts';
 import { sosPetsService } from './services/sos-pets';
 import { explorerBadgesService } from './services/explorer-badges';
 import { wasteCalendarService } from './services/waste-calendar';
+import { navigationAssistant } from './services/navigation-assistant';
+import { audioGuideService } from './services/audio-guide';
+import { geofenceRadar } from './services/geofence-radar';
 
 export * from './types';
 export * from './store';
@@ -19,6 +22,9 @@ export * from './services/community-alerts';
 export * from './services/sos-pets';
 export * from './services/explorer-badges';
 export * from './services/waste-calendar';
+export * from './services/navigation-assistant';
+export * from './services/audio-guide';
+export * from './services/geofence-radar';
 
 // Expose on global window object for interoperability with legacy components and console debugging
 if (typeof window !== 'undefined') {
@@ -34,7 +40,10 @@ if (typeof window !== 'undefined') {
     sosPets: sosPetsService,
     explorerBadges: explorerBadgesService,
     wasteCalendar: wasteCalendarService,
-    version: '1.1.0'
+    navigationAssistant,
+    audioGuide: audioGuideService,
+    geofenceRadar,
+    version: '1.2.0'
   };
 
   // Sync real-time transport arrivals on load
