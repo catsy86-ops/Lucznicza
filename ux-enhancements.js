@@ -31,13 +31,13 @@ const TIPS = [
 function initSplash() {
   const hour = new Date().getHours();
 
-  // Greeting based on time of day
+  // Greeting based on time of day (Pogoń Szczecin Royal Palette)
   const greetings = [
-    { range: [5, 12],  text: 'Dzień dobry! ☀️',    bg: 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)' },
-    { range: [12, 17], text: 'Dobry dzień! 🌤️',    bg: 'linear-gradient(135deg,#0f3460 0%,#16213e 50%,#1a1a2e 100%)' },
-    { range: [17, 21], text: 'Dobry wieczór! 🌅',   bg: 'linear-gradient(135deg,#2d1b69 0%,#11998e 100%)' },
-    { range: [21, 24], text: 'Dobranoc! 🌙',        bg: 'linear-gradient(135deg,#0f0f1a 0%,#1a1a2e 50%,#0d0d1a 100%)' },
-    { range: [0, 5],   text: 'Nocna pora... 🌙',    bg: 'linear-gradient(135deg,#0f0f1a 0%,#1a1a2e 50%,#0d0d1a 100%)' },
+    { range: [5, 12],  text: 'Dzień dobry! ☀️',    bg: 'radial-gradient(circle at 50% 38%, #002D62 0%, #001738 55%, #000a18 100%)' },
+    { range: [12, 17], text: 'Dobry dzień! 🌤️',    bg: 'radial-gradient(circle at 50% 38%, #003366 0%, #001a3d 55%, #000c1e 100%)' },
+    { range: [17, 21], text: 'Dobry wieczór! 🌅',   bg: 'radial-gradient(circle at 50% 38%, #700018 0%, #001738 55%, #000a18 100%)' },
+    { range: [21, 24], text: 'Dobranoc! 🌙',        bg: 'radial-gradient(circle at 50% 38%, #001a3d 0%, #001026 60%, #000612 100%)' },
+    { range: [0, 5],   text: 'Nocna pora... 🌙',    bg: 'radial-gradient(circle at 50% 38%, #001738 0%, #000d20 60%, #00040a 100%)' },
   ];
 
   const g = greetings.find(g => hour >= g.range[0] && hour < g.range[1]) || greetings[0];
@@ -70,9 +70,9 @@ function initSplash() {
       if (wTemp) wTemp.textContent = `${temp}°C`;
       if (wDesc) wDesc.textContent = 'Niebuszewo';
 
-      // Update splash icon to weather icon
+      // Update splash icon only if not SVG crest
       const splashIcon = document.getElementById('splashIcon');
-      if (splashIcon) splashIcon.textContent = icon;
+      if (splashIcon && !splashIcon.querySelector('svg')) splashIcon.textContent = icon;
     })
     .catch(() => {}); // silent fail — splash still works
 }

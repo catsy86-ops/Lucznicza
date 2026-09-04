@@ -83,21 +83,86 @@
   <!-- Skip to main content (accessibility) -->
   <a href="#main-content" class="skip-link">Przejdź do treści głównej</a>
 
-  <!-- ===== SPLASH SCREEN ===== -->
-  <div id="splash" role="status" aria-label="Ładowanie aplikacji">
-    <div class="splash-bg" id="splashBg"></div>
+  <!-- ===== SPLASH SCREEN (Pogoń Szczecin Theme & Animations) ===== -->
+  <div id="splash" class="pogon-splash" role="status" aria-label="Ładowanie aplikacji">
+    <div class="splash-bg" id="splashBg">
+      <div class="stadium-lights-shimmer"></div>
+    </div>
     <div class="splash-content">
-      <div class="splash-greeting" id="splashGreeting">Ładowanie...</div>
-      <div class="splash-icon" id="splashIcon">🏹</div>
+      <div class="splash-greeting" id="splashGreeting">Duma Pomorza · Szczecin</div>
+
+      <!-- Pogoń Szczecin Shield Crest with Radiant Aura -->
+      <div class="crest-stage">
+        <div class="crest-aura"></div>
+        <div class="gryfus-shield-svg" id="splashIcon">
+          <svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" class="pogon-crest">
+            <defs>
+              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFF3A8" />
+                <stop offset="45%" stop-color="#FFD700" />
+                <stop offset="100%" stop-color="#C59B27" />
+              </linearGradient>
+              <linearGradient id="crimsonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#C41230" />
+                <stop offset="60%" stop-color="#990024" />
+                <stop offset="100%" stop-color="#660018" />
+              </linearGradient>
+              <linearGradient id="shieldNavyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#002D62"/>
+                <stop offset="60%" stop-color="#001738"/>
+                <stop offset="100%" stop-color="#000d20"/>
+              </linearGradient>
+              <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
+            </defs>
+            <!-- Shield Outline -->
+            <path d="M 50 4 C 82 4, 94 16, 94 48 C 94 82, 50 104, 50 104 C 50 104, 6 82, 6 48 C 6 16, 18 4, 50 4 Z" 
+                  fill="url(#shieldNavyGrad)" stroke="url(#goldGrad)" stroke-width="3.5" />
+            
+            <!-- Golden Crown of Gryf -->
+            <path d="M 34 26 L 39 12 L 50 21 L 61 12 L 66 26 Z" 
+                  fill="url(#goldGrad)" stroke="#B8860B" stroke-width="1.2" filter="url(#goldGlow)" />
+            <circle cx="39" cy="12" r="1.5" fill="#FFF" />
+            <circle cx="50" cy="21" r="1.5" fill="#FFF" />
+            <circle cx="61" cy="12" r="1.5" fill="#FFF" />
+            
+            <!-- Karminowa Głowa Gryfa -->
+            <path d="M 36 36 C 39 24, 61 24, 64 36 C 68 44, 64 52, 57 55 L 55 59 C 60 64, 72 70, 70 80 C 67 90, 50 90, 50 90 C 50 90, 33 90, 30 80 C 28 70, 40 64, 45 59 L 43 55 C 36 52, 32 44, 36 36 Z" 
+                  fill="url(#crimsonGrad)" stroke="url(#goldGrad)" stroke-width="0.8" />
+            
+            <!-- Zakrzywiony Złoty Dziób -->
+            <path d="M 56 40 Q 72 42, 69 53 Q 60 50, 56 46 Z" fill="url(#goldGrad)" stroke="#B8860B" stroke-width="1" />
+            
+            <!-- Czujne Oko Gryfa -->
+            <circle cx="47" cy="38" r="4.5" fill="#FFD700" />
+            <circle cx="48" cy="38" r="2.2" fill="#000" />
+            <circle cx="49" cy="37" r="0.9" fill="#FFF" />
+            
+            <!-- Monogram Pogoni P -->
+            <circle cx="50" cy="74" r="8" fill="#002D62" stroke="url(#goldGrad)" stroke-width="1.8" />
+            <text x="50" y="78" text-anchor="middle" font-size="10" font-weight="900" fill="#FFD700" font-family="'Inter', sans-serif">P</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="splash-brand-badge">
+        <span class="pogon-star">★</span> DUMA POMORZA · SZCZECIN · 1948 <span class="pogon-star">★</span>
+      </div>
       <h1 class="splash-title">Niebuszewo Guide</h1>
       <p class="splash-sub">Szczecin · Przewodnik Interaktywny</p>
+
       <div class="splash-weather-row" id="splashWeather" style="display:none">
         <span id="splashWeatherIcon">🌡️</span>
         <span id="splashWeatherTemp">--°C</span>
         <span id="splashWeatherDesc"></span>
       </div>
+
       <div class="splash-loader">
-        <div class="loader-bar"></div>
+        <div class="loader-bar" id="splashProgressBar">
+          <div class="loader-shimmer"></div>
+        </div>
       </div>
       <div class="splash-tip" id="splashTip"></div>
     </div>
@@ -763,8 +828,10 @@
     </div>
 
     <!-- LIVE TRANSPORT BTN (on map) -->
-    <button class="live-transport-btn" id="liveTransportBtn" title="Odjazdy na żywo">
-      🚌 <span class="live-dot"></span>
+    <button class="live-transport-btn" id="liveTransportBtn" title="Odjazdy ZDiTM na żywo" aria-label="Odjazdy ZDiTM na żywo">
+      <span class="ltb-icon">🚌</span>
+      <span class="ltb-label">Odjazdy</span>
+      <span class="live-dot"></span>
     </button>
 
     <!-- MODERN MOBILE BOTTOM SHEET -->

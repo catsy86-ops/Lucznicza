@@ -54,8 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const app = document.getElementById('app');
     if (!splash || !app) return;
 
-    splash.style.opacity = '0';
-    splash.style.transition = 'opacity 0.5s ease';
+    const bar = document.getElementById('splashProgressBar') || splash.querySelector('.loader-bar');
+    if (bar) bar.style.width = '100%';
+
+    splash.classList.add('splash-exit');
     setTimeout(() => {
       splash.style.display = 'none';
       app.classList.remove('hidden');
@@ -296,15 +298,20 @@ function initMap() {
       if (typeof L.markerClusterGroup === 'function') {
         const cluster = L.markerClusterGroup({
           showCoverageOnHover: false,
-          maxClusterRadius: 45,
+          maxClusterRadius: 48,
           spiderfyOnMaxZoom: true,
+          spiderfyDistanceMultiplier: 1.5,
           disableClusteringAtZoom: 18,
           iconCreateFunction: c => {
             const count = c.getChildCount();
+            let tier = 'cluster-small';
+            if (count >= 25) tier = 'cluster-large';
+            else if (count >= 10) tier = 'cluster-medium';
             return L.divIcon({
-              html: `<div class="cluster-bubble">${count}</div>`,
+              html: `<div class="cluster-bubble ${tier}"><span>${count}</span></div>`,
               className: 'cluster-icon',
-              iconSize: [40, 40]
+              iconSize: [44, 44],
+              iconAnchor: [22, 22]
             });
           }
         });

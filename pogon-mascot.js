@@ -87,11 +87,13 @@ function initMascot() {
 }
 
 function dockMascotMobile(el) {
-  const bnavH = getComputedStyle(document.documentElement).getPropertyValue('--bnav-h') || '72px';
-  el.style.right = '16px';
-  el.style.bottom = `calc(${bnavH} + 12px)`;
-  el.style.left = 'auto';
+  // Dock on left side to completely avoid colliding with bottom-right Action Pod (GPS/Live/Alert)
+  el.style.left = '14px';
+  el.style.bottom = 'calc(var(--bnav-h, 64px) + var(--sheet-peek, 76px) + 70px)';
+  el.style.right = 'auto';
   el.style.top = 'auto';
+  el.style.width = '52px';
+  el.style.height = '52px';
 }
 
 function createGryfusSVG() {
