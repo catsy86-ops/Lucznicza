@@ -17,6 +17,9 @@ const state = {
   showFavoritesOnly: false
 };
 
+// Expose state globally for other modules
+window.state = state;
+
 // ===== CATEGORY COLORS =====
 const CAT_COLORS = {
   sport: '#ff6b6b',
@@ -167,11 +170,19 @@ function initMap() {
       maxZoom: 20
     });
 
-    // Esri satellite imagery — default layer for premium look
-    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: '© Esri',
-      maxZoom: 18
-    }).addTo(map);
+    // OpenStreetMap — default, crisp street map with full Niebuszewo labels & POIs
+    osmLayer.addTo(map);
+
+    // Esri satellite imagery with boundaries & street labels overlay
+    const satelliteLayer = L.layerGroup([
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '© Esri',
+        maxZoom: 18
+      }),
+      L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 18
+      })
+    ]);
 
     // If Voyager fails to load tiles, fall back to OSM
     let voyagerErrors = 0;
@@ -193,7 +204,7 @@ function initMap() {
       satellite: satelliteLayer,
       osm: osmLayer
     };
-    state.currentBaseLayer = 'satellite';
+    state.currentBaseLayer = 'osm';
 
     // Add controls
     L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -257,8 +268,11 @@ function initMap() {
       });
     }
 
-    // Store map in state
+    // Store map in state and window
     state.map = map;
+    window.map = map;
+    window.state = state;
+    initGoogleMapControls();
 
     // CRITICAL: force Leaflet to recalculate container size so tiles load.
     map.invalidateSize(true);
@@ -759,24 +773,34 @@ function initBottomSheet() {
       }
     }
   }, { passive: true });
+}
 
-  // Google Satellite / Map Toggle Thumbnail
+// ===== GOOGLE MAP EXPERIENCE CONTROLS =====
+function initGoogleMapControls() {
   const thumbBtn = document.getElementById('googleLayerThumbBtn');
   const thumbLabel = document.getElementById('googleLayerThumbLabel');
+
   if (thumbBtn && state.baseLayers) {
-    thumbBtn.addEventListener('click', () => {
+    thumbBtn.style.backgroundImage = "url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/10762/17709')";
+    if (thumbLabel) thumbLabel.textContent = 'SATELITA';
+
+    thumbBtn.onclick = () => {
       const map = state.map;
-      if (!map) return;
+      if (!map || !state.baseLayers) return;
+
       if (state.currentBaseLayer === 'satellite') {
-        map.removeLayer(state.baseLayers.satellite);
+        if (map.hasLayer(state.baseLayers.satellite)) {
+          map.removeLayer(state.baseLayers.satellite);
+        }
         state.baseLayers.osm.addTo(map);
         state.currentBaseLayer = 'osm';
         thumbBtn.style.backgroundImage = "url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/10762/17709')";
         if (thumbLabel) thumbLabel.textContent = 'SATELITA';
-        showToast('🗺️ Widok Mapy');
+        showToast('🗺️ Widok Mapy (OpenStreetMap)');
       } else {
-        if (state.baseLayers[state.currentBaseLayer] && map.hasLayer(state.baseLayers[state.currentBaseLayer])) {
-          map.removeLayer(state.baseLayers[state.currentBaseLayer]);
+        const currentLayer = state.baseLayers[state.currentBaseLayer];
+        if (currentLayer && map.hasLayer(currentLayer)) {
+          map.removeLayer(currentLayer);
         }
         state.baseLayers.satellite.addTo(map);
         state.currentBaseLayer = 'satellite';
@@ -784,7 +808,7 @@ function initBottomSheet() {
         if (thumbLabel) thumbLabel.textContent = 'MAPA';
         showToast('🛰️ Widok Satelitarny HD (Esri)');
       }
-    });
+    };
   }
 
   // Google Locate GPS Action Button with Blue Dot & Heading Tracking
@@ -794,7 +818,7 @@ function initBottomSheet() {
 
   const gLocateBtn = document.getElementById('googleLocateBtn');
   if (gLocateBtn) {
-    gLocateBtn.addEventListener('click', () => {
+    gLocateBtn.onclick = () => {
       const map = state.map;
       if (!map) return;
 
@@ -861,7 +885,7 @@ function initBottomSheet() {
         () => showToast('⚠️ Nie udało się pobrać lokalizacji GPS'),
         { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
       );
-    });
+    };
   }
 }
 
