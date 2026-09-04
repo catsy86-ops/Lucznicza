@@ -177,15 +177,72 @@
         <button class="menu-btn" id="menuBtn" aria-label="Menu">
           <span></span><span></span><span></span>
         </button>
-        <div class="header-title">
-          <span class="header-icon">🏹</span>
-          <div>
-            <h1>Niebuszewo Guide</h1>
-            <p>Szczecin</p>
+        <div class="header-brand-logo header-title" id="headerBrandLogo" role="banner" aria-label="Łucznicza Guide — Szczecin Duma Pomorza">
+          <div class="logo-emblem-wrap">
+            <svg class="pogon-crest-svg" viewBox="0 0 44 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="pogonNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#002D62" />
+                  <stop offset="100%" stop-color="#001433" />
+                </linearGradient>
+                <linearGradient id="pogonCrimson" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#B8002E" />
+                  <stop offset="100%" stop-color="#700018" />
+                </linearGradient>
+                <linearGradient id="pogonGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FFE770" />
+                  <stop offset="45%" stop-color="#FFD700" />
+                  <stop offset="100%" stop-color="#C98B00" />
+                </linearGradient>
+                <linearGradient id="pogonShine" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0)" />
+                  <stop offset="50%" stop-color="rgba(255,255,255,0.8)" />
+                  <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+                </linearGradient>
+                <clipPath id="shieldClip">
+                  <path d="M22 3 L39 8.5 C39 27.5 22 44.5 22 44.5 C22 44.5 5 27.5 5 8.5 Z" />
+                </clipPath>
+              </defs>
+              <!-- Outer Shield with Gold Rim -->
+              <path class="crest-shield-base" d="M22 2 L40 8 C40 28.5 22 46 22 46 C22 46 4 28.5 4 8 Z" fill="url(#pogonNavy)" stroke="url(#pogonGold)" stroke-width="2.6" stroke-linejoin="round" />
+              <!-- Split Right Half Crimson -->
+              <path d="M22 3.2 L38.8 8.6 C38.8 27.5 22 44.5 22 44.5 Z" fill="url(#pogonCrimson)" />
+              <!-- Inner Gold Contour -->
+              <path d="M22 5.5 L36.5 10 C36.5 26 22 41 22 41 C22 41 7.5 26 7.5 10 Z" fill="none" stroke="rgba(255,215,0,0.35)" stroke-width="1" />
+              <!-- Ducal Gold Crown -->
+              <path class="crest-crown" d="M14 12 L17 16 L22 10.5 L27 16 L30 12 L30 18 L14 18 Z" fill="url(#pogonGold)" stroke="#9A6B00" stroke-width="0.5" />
+              <circle class="crown-gem" cx="22" cy="10.5" r="1.5" fill="#FFF280" />
+              <circle cx="14" cy="12" r="1.1" fill="#FF4444" />
+              <circle cx="30" cy="12" r="1.1" fill="#4488FF" />
+              <!-- Pomeranian Gryf Silhouette -->
+              <path class="crest-gryf" d="M22 18 C20 18 18 20 18 22 C18 24 19.5 25 21 25.5 C19.5 27.5 17 30 16 32.5 C18.5 32.5 21 31.5 23 29.5 C24 31.5 26.5 32.5 28 32.5 C27 29.5 24.5 27.5 23 25.5 C24.5 25 26 24 26 22 C26 20 24 18 22 18 Z" fill="url(#pogonGold)" />
+              <!-- Nautical Gold Star -->
+              <path d="M22 36 L23.2 39.5 L27 39.5 L24 41.5 L25.2 45 L22 42.8 L18.8 45 L20 41.5 L17 39.5 L20.8 39.5 Z" fill="url(#pogonGold)" />
+              <!-- Shimmer light sweep -->
+              <g clip-path="url(#shieldClip)">
+                <rect class="crest-shimmer-ray" x="-50" y="0" width="32" height="50" fill="url(#pogonShine)" transform="skewX(-25)" />
+              </g>
+            </svg>
+            <div class="crest-glow-ring"></div>
+          </div>
+          <div class="logo-text-block">
+            <div class="logo-title-row">
+              <span class="logo-main-title">ŁUCZNICZA</span>
+              <span class="logo-guide-badge">GUIDE</span>
+            </div>
+            <div class="logo-sub-title">
+              <span class="pogon-flag-dot blue"></span>
+              <span class="sub-text">SZCZECIN · DUMA POMORZA</span>
+              <span class="pogon-flag-dot red"></span>
+            </div>
           </div>
         </div>
       </div>
       <div class="header-right">
+        <button class="icon-btn zen-btn" id="zenMapBtn" title="Tryb Czystej Mapy (Z)" aria-label="Włącz / wyłącz tryb czystej mapy">
+          <span class="zen-btn-icon">👁️</span>
+          <span class="zen-btn-badge">Zen</span>
+        </button>
         <button class="icon-btn" id="searchBtn" aria-label="Szukaj">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -265,6 +322,12 @@
           <!-- Leaflet Map Container -->
           <div id="map" class="map-main"></div>
 
+          <!-- Zen Mode Restore Button (floating pill in clean mode) -->
+          <button class="zen-restore-pill hidden" id="zenRestorePill" title="Przywróć pełny interfejs mapy (skrót: Z)" aria-label="Przywróć widżety mapy">
+            <span class="zrp-icon">👁️</span>
+            <span class="zrp-text">Przywróć widżety</span>
+          </button>
+
           <!-- Google Style Layer Toggle (Thumbnail in corner) -->
           <button class="google-layer-thumb-btn" id="googleLayerThumbBtn" title="Przełącz Satelita / Mapa" style="background-image: url('https://a.tile.openstreetmap.org/15/17709/10762.png');">
             <span class="google-layer-thumb-label" id="googleLayerThumbLabel">MAPA</span>
@@ -294,11 +357,12 @@
             <button class="cat-btn" data-cat="park">🌳 Parki</button>
             <button class="cat-btn" data-cat="service">🔧 Usługi</button>
             <button class="cat-btn" data-cat="edu">📚 Edukacja</button>
+            <button class="cat-btn cat-presets-toggle" id="catPresetsToggle" title="Pokaż / schowaj widoki kamery">🏙️ Widoki ▾</button>
             <button class="cat-btn" id="mapLayersModalBtn" title="Przełącz warstwy mapy">🎛️ Warstwy</button>
           </div>
 
-          <!-- Niebuszewo Camera Focus Presets -->
-          <div class="map-presets-bar" id="mapPresetsBar">
+          <!-- Niebuszewo Camera Focus Presets (collapsible) -->
+          <div class="map-presets-bar collapsed" id="mapPresetsBar">
             <button class="preset-btn active" onclick="flyToPreset('full-district')">🏙️ Całe Niebuszewo</button>
             <button class="preset-btn" onclick="flyToPreset('lucznicza-axis')">🏹 Oś Łucznicza</button>
             <button class="preset-btn" onclick="flyToPreset('kadziak-park')">🌳 Park Kadziaka</button>
@@ -764,15 +828,17 @@
     <div class="toast hidden" id="toast" role="alert" aria-live="polite" aria-atomic="true"></div>
 
     <!-- LIVE WEATHER WIDGET (on map) -->
-    <div class="weather-widget" id="weatherWidget">
+    <div class="weather-widget draggable-widget" id="weatherWidget">
       <div class="weather-loading" id="weatherLoading"><div class="w-spinner"></div></div>
       <div class="weather-data hidden" id="weatherData">
         <div class="w-top">
+          <span class="widget-drag-handle" title="Przeciągnij pogodę" aria-label="Przeciągnij">⠿</span>
           <span class="w-icon" id="wIcon">☀️</span>
           <div class="w-temps">
             <span class="w-temp" id="wTemp">--°</span>
             <span class="w-feels" id="wFeels">odczuwalna --°</span>
           </div>
+          <button class="w-minimize-btn widget-min-btn" id="weatherMinimizeBtn" title="Minimalizuj / rozwiń pogodę" aria-label="Minimalizuj widżet pogody">▾</button>
         </div>
         <div class="w-bottom">
           <span class="w-desc" id="wDesc">Ładowanie...</span>
@@ -788,7 +854,11 @@
     </div>
 
     <!-- LIVE CLOCK WIDGET -->
-    <div class="clock-widget" id="clockWidget">
+    <div class="clock-widget draggable-widget" id="clockWidget">
+      <div class="widget-header-controls">
+        <span class="widget-drag-handle" title="Przeciągnij zegar" aria-label="Przeciągnij">⠿</span>
+        <button class="widget-min-btn" id="clockMinimizeBtn" title="Zwiń / rozwiń zegar" aria-label="Zwiń zegar">▾</button>
+      </div>
       <div class="clock-time" id="clockTime">--:--:--</div>
       <div class="clock-date" id="clockDate">-- --- ----</div>
       <div class="clock-live"><span class="live-dot"></span> NA ŻYWO</div>
@@ -820,7 +890,11 @@
     </div>
 
     <!-- AIR QUALITY WIDGET -->
-    <div class="aqi-widget" id="aqiWidget">
+    <div class="aqi-widget draggable-widget" id="aqiWidget">
+      <div class="widget-header-controls">
+        <span class="widget-drag-handle" title="Przeciągnij jakość powietrza" aria-label="Przeciągnij">⠿</span>
+        <button class="widget-min-btn" id="aqiMinimizeBtn" title="Zwiń / rozwiń jakość powietrza" aria-label="Zwiń jakość powietrza">▾</button>
+      </div>
       <div class="aqi-label">Jakość powietrza</div>
       <div class="aqi-value" id="aqiValue">--</div>
       <div class="aqi-desc" id="aqiDesc">Ładowanie...</div>

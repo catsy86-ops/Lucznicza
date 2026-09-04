@@ -236,24 +236,43 @@ function buildLayerPanel() {
 
   const panel = document.createElement('div');
   panel.id = 'layerPanel';
-  panel.className = 'layer-panel';
+  panel.className = 'layer-panel collapsed';
   panel.innerHTML = `
-    <div class="lp-title">🗂️ Warstwy</div>
-    <button class="lp-btn" id="btnLayerStops"  onclick="toggleStops()">🚌 Przystanki</button>
-    <button class="lp-btn" id="btnLayerBike"   onclick="toggleBikePaths()">🚲 Ścieżki rowerowe</button>
-    <button class="lp-btn" id="btnLayerZones"  onclick="toggleZones()">🗺️ Strefy</button>
+    <button class="lp-toggle-pill" id="lpTogglePill" title="Zwiń / rozwiń warstwy mapy" aria-label="Warstwy mapy">
+      <span class="widget-drag-handle lp-drag-handle" title="Przeciągnij warstwy" aria-label="Przeciągnij">⠿</span>
+      <span>🗂️ Warstwy</span>
+      <span class="lp-chevron">▾</span>
+    </button>
+    <div class="lp-content" id="lpContent">
+      <div class="lp-title">🗂️ Warstwy Mapy</div>
+      <button class="lp-btn" id="btnLayerStops"  onclick="toggleStops()">🚌 Przystanki</button>
+      <button class="lp-btn" id="btnLayerBike"   onclick="toggleBikePaths()">🚲 Ścieżki rowerowe</button>
+      <button class="lp-btn" id="btnLayerZones"  onclick="toggleZones()">🗺️ Strefy</button>
+    </div>
   `;
   container.appendChild(panel);
+
+  panel.querySelector('#lpTogglePill')?.addEventListener('click', (e) => {
+    if (e.target?.classList?.contains('widget-drag-handle')) return;
+    e.stopPropagation();
+    panel.classList.toggle('collapsed');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!panel.contains(e.target) && !panel.classList.contains('collapsed')) {
+      panel.classList.add('collapsed');
+    }
+  });
 }
 
-// ===== MAP STATS PANEL =====
+// ===== MAP STATS & RIGHT HUB PANEL =====
 function buildMapStats() {
   const container = document.getElementById('map');
   if (!container || document.getElementById('mapStatsPanel')) return;
 
   const panel = document.createElement('div');
   panel.id = 'mapStatsPanel';
-  panel.className = 'map-stats-panel';
+  panel.className = 'map-stats-panel collapsed';
 
   const places = APP_DATA?.places || [];
   const byCat = {};
@@ -263,20 +282,127 @@ function buildMapStats() {
   const catLabels = { service:'Usługi', shop:'Sklepy', food:'Jedzenie', edu:'Edukacja', park:'Parki', sport:'Sport' };
 
   panel.innerHTML = `
-    <div class="msp-title">📊 Niebuszewo</div>
-    <div class="msp-total">${places.length} miejsc</div>
-    <div class="msp-cats">
-      ${Object.entries(byCat).map(([cat, count]) => `
-        <div class="msp-cat">
-          <span>${catIcons[cat] || '📍'}</span>
-          <span class="msp-count">${count}</span>
-          <span class="msp-label">${catLabels[cat] || cat}</span>
+    <!-- Floating pill trigger (always visible in top right) -->
+    <button class="msp-toggle-btn" id="mspToggleBtn" title="Menu z prawej: Statystyki i Opcje (M)" aria-label="Rozwiń menu i statystyki mapy">
+      <span class="widget-drag-handle msp-drag-handle" title="Przeciągnij menu" aria-label="Przeciągnij">⠿</span>
+      <span class="mst-icon">📊</span>
+      <span class="mst-title">Statystyki</span>
+      <span class="mst-count">(${places.length})</span>
+      <span class="mst-chevron">▾</span>
+    </button>
+
+    <!-- Expandable Glassmorphic Card -->
+    <div class="msp-card" id="mspCard">
+      <div class="msp-card-header">
+        <div class="msp-header-title">
+          <span class="msp-header-crest">🦅</span>
+          <div>
+            <h3>Centrum Dzielnicy</h3>
+            <p>Niebuszewo · Baza Miejsc</p>
+          </div>
         </div>
-      `).join('')}
+        <button class="msp-close-btn" id="mspCloseBtn" title="Zwiń panel" aria-label="Zamknij panel">✕</button>
+      </div>
+
+      <div class="msp-summary-badge">
+        <span class="msp-total-num">${places.length}</span>
+        <span class="msp-total-label">Zweryfikowanych punktów</span>
+      </div>
+
+      <div class="msp-section-label">Kategorie (kliknij, aby przefiltrować):</div>
+      <div class="msp-cats-grid">
+        ${Object.entries(byCat).map(([cat, count]) => `
+          <button class="msp-cat-chip" data-cat="${cat}" title="Pokaż: ${catLabels[cat] || cat}">
+            <span class="msp-cat-icon">${catIcons[cat] || '📍'}</span>
+            <span class="msp-cat-name">${catLabels[cat] || cat}</span>
+            <span class="msp-cat-pill">${count}</span>
+          </button>
+        `).join('')}
+      </div>
+
+      <div class="msp-stops-row" onclick="toggleStops()" style="cursor:pointer" title="Przełącz warstwę przystanków">
+        <div class="msp-stops-left">
+          <span>🚌</span>
+          <span>Przystanki ZDiTM</span>
+        </div>
+        <span class="msp-stops-badge">${STOPS_DATA.length} na mapie</span>
+      </div>
+
+      <div class="msp-quick-tools">
+        <button class="msp-tool-btn" id="mspBtnZen" title="Przełącz tryb czystej mapy">
+          👁️ Czysta mapa
+        </button>
+        <button class="msp-tool-btn" onclick="toggleBikePaths()" title="Ścieżki rowerowe">
+          🚲 Ścieżki
+        </button>
+        <button class="msp-tool-btn" onclick="toggleZones()" title="Granice stref">
+          🗺️ Strefy
+        </button>
+        <button class="msp-tool-btn" id="mspBtnResetWidgets" title="Resetuj układ widżetów do pozycji domyślnych">
+          🔄 Reset układu
+        </button>
+      </div>
     </div>
-    <div class="msp-stops">🚌 ${STOPS_DATA.length} przystanków</div>
   `;
   container.appendChild(panel);
+
+  // Toggle open/collapse
+  const toggleBtn = document.getElementById('mspToggleBtn');
+  const closeBtn = document.getElementById('mspCloseBtn');
+  const zenBtn = document.getElementById('mspBtnZen');
+  const resetBtn = document.getElementById('mspBtnResetWidgets');
+
+  const togglePanel = (e) => {
+    if (e?.target?.classList?.contains('widget-drag-handle')) return;
+    e?.stopPropagation();
+    panel.classList.toggle('collapsed');
+  };
+
+  toggleBtn?.addEventListener('click', togglePanel);
+  closeBtn?.addEventListener('click', (e) => {
+    e?.stopPropagation();
+    panel.classList.add('collapsed');
+  });
+
+  resetBtn?.addEventListener('click', (e) => {
+    e?.stopPropagation();
+    if (window.WidgetDragManager?.resetAllPositions) {
+      window.WidgetDragManager.resetAllPositions();
+    }
+  });
+
+  zenBtn?.addEventListener('click', (e) => {
+    e?.stopPropagation();
+    if (typeof window.toggleZenMode === 'function') {
+      window.toggleZenMode();
+    } else {
+      document.body.classList.toggle('zen-map-mode');
+    }
+  });
+
+  // Filter places on category chip click
+  panel.querySelectorAll('.msp-cat-chip').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const cat = btn.dataset.cat;
+      const filterBtn = document.querySelector(`.category-filter .cat-btn[data-cat="${cat}"]`);
+      if (filterBtn) {
+        filterBtn.click();
+      } else if (typeof window.filterCategory === 'function') {
+        window.filterCategory(cat);
+      }
+      if (window.innerWidth < 768) {
+        panel.classList.add('collapsed');
+      }
+    });
+  });
+
+  // Close when clicking outside on the map
+  document.addEventListener('click', (e) => {
+    if (!panel.contains(e.target) && !panel.classList.contains('collapsed')) {
+      panel.classList.add('collapsed');
+    }
+  });
 }
 
 // ===== INIT =====
@@ -287,10 +413,6 @@ function initMapLayers() {
       setTimeout(() => {
         buildLayerPanel();
         buildMapStats();
-        // Auto-show stops layer
-        setTimeout(() => {
-          if (!MAP_LAYERS.stopsVisible) toggleStops();
-        }, 800);
       }, 600);
     }
   }, 300);

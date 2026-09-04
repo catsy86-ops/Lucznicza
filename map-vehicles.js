@@ -234,15 +234,19 @@ function updateLayerButtons2() {
 
 // ===== ADD BUTTON TO LAYER PANEL =====
 function addVehicleButton() {
-  const panel = document.getElementById('layerPanel');
-  if (!panel || document.getElementById('btnLayerVehicles')) return;
+  const target = document.getElementById('lpContent') || document.getElementById('layerPanel');
+  if (!target || document.getElementById('btnLayerVehicles')) return;
   const btn = document.createElement('button');
   btn.className = 'lp-btn';
   btn.id = 'btnLayerVehicles';
   btn.innerHTML = '🚌 Pojazdy LIVE';
   btn.addEventListener('click', toggleVehicles);
-  // Insert as first button
-  panel.insertBefore(btn, panel.querySelector('.lp-btn'));
+  const firstBtn = target.querySelector('.lp-btn');
+  if (firstBtn) {
+    target.insertBefore(btn, firstBtn);
+  } else {
+    target.appendChild(btn);
+  }
 }
 
 // ===== INIT =====
@@ -251,8 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.state?.map && document.getElementById('layerPanel')) {
       clearInterval(wait);
       addVehicleButton();
-      // Auto-enable vehicles after 1.5s for the wow effect
-      setTimeout(() => { if (!VEHICLES.enabled) toggleVehicles(); }, 1500);
     }
   }, 400);
 });

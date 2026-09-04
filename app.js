@@ -340,7 +340,7 @@ function initMap() {
       APP_DATA.routes.forEach(route => {
         const polyline = L.polyline(
           route.coords.map(coord => [coord[1], coord[0]]),
-          { color: route.color, weight: 4, opacity: 0.8, dashArray: '8, 4', lineCap: 'round', lineJoin: 'round' }
+          { color: route.color, weight: 2.5, opacity: 0.15, dashArray: '6, 4', lineCap: 'round', lineJoin: 'round' }
         );
         polyline.routeId = route.id;
         polyline.addTo(map);
@@ -2233,3 +2233,98 @@ function showToast(msg, type = 'info') {
 
 // ===== RENDER COMMUNITY (handled by community-ui.js auto-init) =====
 // community-ui.js defines and exports window.renderCommunity — do not redefine here
+
+// ===== ZEN MAP MODE (CZYSTA MAPA) =====
+function toggleZenMode(explicitState) {
+  const isCurrentlyZen = document.body.classList.contains('zen-map-mode');
+  const targetState = typeof explicitState === 'boolean' ? explicitState : !isCurrentlyZen;
+
+  document.body.classList.toggle('zen-map-mode', targetState);
+  
+  const restorePill = document.getElementById('zenRestorePill');
+  if (restorePill) {
+    restorePill.classList.toggle('hidden', !targetState);
+  }
+  
+  const zenBtn = document.getElementById('zenMapBtn');
+  if (zenBtn) {
+    zenBtn.classList.toggle('active', targetState);
+    const badge = zenBtn.querySelector('.zen-btn-badge');
+    if (badge) badge.textContent = targetState ? 'ON' : 'Zen';
+  }
+
+  // Handle map overlay layers in Zen mode
+  const map = window.state?.map;
+  if (map) {
+    if (targetState) {
+      if (window.VEHICLES?.layer && map.hasLayer(window.VEHICLES.layer)) {
+        map.removeLayer(window.VEHICLES.layer);
+        window.VEHICLES._hiddenForZen = true;
+      }
+      if (window.MAP_LAYERS?.stopsLayer && map.hasLayer(window.MAP_LAYERS.stopsLayer)) {
+        map.removeLayer(window.MAP_LAYERS.stopsLayer);
+        window.MAP_LAYERS._hiddenForZen = true;
+      }
+    } else {
+      if (window.VEHICLES?._hiddenForZen && window.VEHICLES?.layer) {
+        window.VEHICLES.layer.addTo(map);
+        window.VEHICLES._hiddenForZen = false;
+      }
+      if (window.MAP_LAYERS?._hiddenForZen && window.MAP_LAYERS?.stopsLayer) {
+        window.MAP_LAYERS.stopsLayer.addTo(map);
+        window.MAP_LAYERS._hiddenForZen = false;
+      }
+    }
+  }
+
+  localStorage.setItem('lucznicza_zen_mode', targetState ? '1' : '0');
+  showToast(targetState ? '👁️ Tryb czystej mapy włączony (skrót: Z)' : '👁️ Przywrócono pełny interfejs', 'info');
+}
+
+window.toggleZenMode = toggleZenMode;
+
+// Initialize Zen mode and widget minimization listeners
+document.addEventListener('DOMContentLoaded', () => {
+  const zenBtn = document.getElementById('zenMapBtn');
+  const restorePill = document.getElementById('zenRestorePill');
+  const weatherMinimizeBtn = document.getElementById('weatherMinimizeBtn');
+  const weatherWidget = document.getElementById('weatherWidget');
+
+  zenBtn?.addEventListener('click', () => toggleZenMode());
+  restorePill?.addEventListener('click', () => toggleZenMode(false));
+
+  weatherMinimizeBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (window.WidgetDragManager?.toggleMinimize) {
+      window.WidgetDragManager.toggleMinimize('weatherWidget');
+    } else if (weatherWidget) {
+      const isMin = weatherWidget.classList.toggle('minimized');
+      weatherMinimizeBtn.textContent = isMin ? '▸' : '▾';
+    }
+  });
+
+  const catPresetsToggle = document.getElementById('catPresetsToggle');
+  const presetsBar = document.getElementById('mapPresetsBar');
+  catPresetsToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (presetsBar) {
+      const isCollapsed = presetsBar.classList.toggle('collapsed');
+      catPresetsToggle.textContent = isCollapsed ? '🏙️ Widoki ▾' : '🏙️ Widoki ▴';
+      catPresetsToggle.classList.toggle('active', !isCollapsed);
+    }
+  });
+
+  // Keyboard shortcut: 'Z' or 'z' toggles Zen Map Mode
+  document.addEventListener('keydown', (e) => {
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target?.tagName)) return;
+    if (e.key === 'z' || e.key === 'Z') {
+      e.preventDefault();
+      toggleZenMode();
+    }
+  });
+
+  // Restore saved Zen state
+  if (localStorage.getItem('lucznicza_zen_mode') === '1') {
+    setTimeout(() => toggleZenMode(true), 800);
+  }
+});

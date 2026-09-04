@@ -377,7 +377,7 @@ function drawSimplifiedBuildings() {
 // ============================================================
 
 function buildExtras2Panel() {
-  const panel = document.getElementById('layerPanel');
+  const panel = document.getElementById('lpContent') || document.getElementById('layerPanel');
   if (!panel || document.getElementById('btnTour')) return;
 
   const div = document.createElement('div');

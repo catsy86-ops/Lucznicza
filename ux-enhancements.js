@@ -447,6 +447,326 @@ document.addEventListener('input', e => {
 window.placeNotes = { getNote, saveNote, renderNoteSection };
 
 // ============================================================
+// 9. WIDGET DRAG & MINIMIZE SYSTEM (Tryb Przeciągania i Zmniejszania Widżetów)
+// ============================================================
+
+const WidgetDragManager = {
+  registeredWidgets: [
+    { id: 'weatherWidget', minClass: 'minimized', hasMinBtn: true },
+    { id: 'clockWidget', minClass: 'minimized', hasMinBtn: true },
+    { id: 'aqiWidget', minClass: 'minimized', hasMinBtn: true },
+    { id: 'mapStatsPanel', minClass: 'collapsed', hasMinBtn: false },
+    { id: 'layerPanel', minClass: 'collapsed', hasMinBtn: false }
+  ],
+
+  init() {
+    this.bindWidgets();
+    // Re-check for dynamically created widgets (mapStatsPanel, layerPanel)
+    let checks = 0;
+    const checkInterval = setInterval(() => {
+      this.bindWidgets();
+      checks++;
+      if (checks > 20) clearInterval(checkInterval);
+    }, 600);
+
+    // Keep widgets inside screen on window resize
+    window.addEventListener('resize', () => this.handleResize());
+  },
+
+  bindWidgets() {
+    this.registeredWidgets.forEach(wConfig => {
+      const el = document.getElementById(wConfig.id);
+      if (!el) return;
+
+      if (!el.dataset.dragInitialized) {
+        el.dataset.dragInitialized = 'true';
+        el.classList.add('draggable-widget');
+
+        // Inject handle and minimize button if not present
+        this.ensureControls(el, wConfig);
+
+        // Restore saved position
+        this.restorePosition(el);
+
+        // Restore saved minimize state
+        this.restoreMinimizeState(el, wConfig);
+
+        // Attach pointer drag listeners
+        this.attachDragEvents(el);
+      }
+    });
+  },
+
+  ensureControls(el, config) {
+    // If widget doesn't have a drag handle yet, prepend or inject one
+    if (!el.querySelector('.widget-drag-handle')) {
+      const handle = document.createElement('span');
+      handle.className = 'widget-drag-handle';
+      handle.title = 'Przeciągnij widżet';
+      handle.setAttribute('aria-label', 'Przeciągnij widżet');
+      handle.textContent = '⠿';
+
+      const targetHeader = el.querySelector('.w-top, .msp-toggle-btn, .lp-toggle-pill, .widget-header-controls');
+      if (targetHeader) {
+        targetHeader.prepend(handle);
+      } else {
+        const topRow = document.createElement('div');
+        topRow.className = 'widget-header-controls';
+        topRow.appendChild(handle);
+        el.prepend(topRow);
+      }
+    }
+
+    // If widget should have a minimize button and doesn't have one
+    if (config.hasMinBtn && !el.querySelector('.widget-min-btn, .w-minimize-btn')) {
+      const minBtn = document.createElement('button');
+      minBtn.className = 'widget-min-btn';
+      minBtn.title = 'Zwiń / rozwiń widżet';
+      minBtn.setAttribute('aria-label', 'Zwiń lub rozwiń');
+      minBtn.textContent = '▾';
+      minBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleMinimize(config.id);
+      });
+
+      const topRow = el.querySelector('.widget-header-controls') || el.querySelector('.w-top');
+      if (topRow) {
+        topRow.appendChild(minBtn);
+      }
+    }
+
+    // Double click header or handle to toggle minimize
+    el.addEventListener('dblclick', (e) => {
+      if (['BUTTON', 'INPUT', 'SELECT', 'A', 'TEXTAREA'].includes(e.target.tagName)) return;
+      e.stopPropagation();
+      this.toggleMinimize(config.id);
+    });
+  },
+
+  attachDragEvents(el) {
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let startLeft = 0, startTop = 0;
+    let pointerId = null;
+    let hasMoved = false;
+
+    const onPointerDown = (e) => {
+      // Don't drag if clicking buttons, links, inputs, or interactive items
+      const isInteractive = e.target.closest('button:not(.msp-toggle-btn):not(.lp-toggle-pill), a, input, select, textarea, .msp-cat-chip, .msp-close-btn, .cat-btn, .w-minimize-btn, .widget-min-btn');
+      const isHandle = e.target.closest('.widget-drag-handle');
+
+      if (isInteractive && !isHandle) return;
+
+      // Only primary mouse button or touch
+      if (e.button !== undefined && e.button !== 0) return;
+
+      isDragging = true;
+      hasMoved = false;
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+
+      const rect = el.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+
+      try {
+        el.setPointerCapture(pointerId);
+      } catch {}
+
+      el.classList.add('is-dragging');
+    };
+
+    const onPointerMove = (e) => {
+      if (!isDragging || e.pointerId !== pointerId) return;
+
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      if (!hasMoved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+        hasMoved = true;
+      }
+
+      if (!hasMoved) return;
+
+      e.preventDefault();
+
+      let newLeft = startLeft + dx;
+      let newTop = startTop + dy;
+
+      // Viewport bounds
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, window.innerWidth - el.offsetWidth - 8);
+      const minTop = 56; // beneath header
+      const maxTop = Math.max(minTop, window.innerHeight - el.offsetHeight - 56);
+
+      newLeft = Math.min(Math.max(minLeft, newLeft), maxLeft);
+      newTop = Math.min(Math.max(minTop, newTop), maxTop);
+
+      el.style.position = 'fixed';
+      el.style.left = `${Math.round(newLeft)}px`;
+      el.style.top = `${Math.round(newTop)}px`;
+      el.style.right = 'auto';
+      el.style.bottom = 'auto';
+    };
+
+    const onPointerUp = (e) => {
+      if (!isDragging || e.pointerId !== pointerId) return;
+
+      isDragging = false;
+      el.classList.remove('is-dragging');
+
+      try {
+        el.releasePointerCapture(pointerId);
+      } catch {}
+
+      if (hasMoved) {
+        // Save position to localStorage
+        const pos = {
+          left: parseFloat(el.style.left),
+          top: parseFloat(el.style.top)
+        };
+        try {
+          localStorage.setItem(`widget_pos_${el.id}`, JSON.stringify(pos));
+        } catch {}
+      }
+    };
+
+    el.addEventListener('pointerdown', onPointerDown);
+    el.addEventListener('pointermove', onPointerMove);
+    el.addEventListener('pointerup', onPointerUp);
+    el.addEventListener('pointercancel', onPointerUp);
+  },
+
+  toggleMinimize(widgetId, forceState) {
+    const config = this.registeredWidgets.find(w => w.id === widgetId);
+    const el = document.getElementById(widgetId);
+    if (!el || !config) return;
+
+    const minClass = config.minClass || 'minimized';
+    const isMin = forceState !== undefined ? forceState : !el.classList.contains(minClass);
+
+    el.classList.toggle(minClass, isMin);
+    try {
+      localStorage.setItem(`widget_min_${widgetId}`, isMin ? '1' : '0');
+    } catch {}
+
+    // Update minimize button text/symbol
+    const btn = el.querySelector('.widget-min-btn, .w-minimize-btn');
+    if (btn) {
+      btn.textContent = isMin ? '▸' : '▾';
+    }
+
+    if (typeof showToast === 'function') {
+      const nameMap = {
+        weatherWidget: 'Pogoda',
+        clockWidget: 'Zegar',
+        aqiWidget: 'Jakość powietrza',
+        mapStatsPanel: 'Statystyki',
+        layerPanel: 'Warstwy'
+      };
+      const label = nameMap[widgetId] || 'Widżet';
+      showToast(`${label}: ${isMin ? 'zwinięty' : 'rozwinięty'}`);
+    }
+  },
+
+  restorePosition(el) {
+    try {
+      const raw = localStorage.getItem(`widget_pos_${el.id}`);
+      if (!raw) return;
+      const pos = JSON.parse(raw);
+      if (typeof pos.left === 'number' && typeof pos.top === 'number') {
+        const minLeft = 8;
+        const maxLeft = Math.max(minLeft, window.innerWidth - (el.offsetWidth || 150) - 8);
+        const minTop = 56;
+        const maxTop = Math.max(minTop, window.innerHeight - (el.offsetHeight || 60) - 56);
+
+        const left = Math.min(Math.max(minLeft, pos.left), maxLeft);
+        const top = Math.min(Math.max(minTop, pos.top), maxTop);
+
+        el.style.position = 'fixed';
+        el.style.left = `${Math.round(left)}px`;
+        el.style.top = `${Math.round(top)}px`;
+        el.style.right = 'auto';
+        el.style.bottom = 'auto';
+      }
+    } catch {}
+  },
+
+  restoreMinimizeState(el, config) {
+    try {
+      const raw = localStorage.getItem(`widget_min_${el.id}`);
+      if (raw === null) return;
+      const isMin = raw === '1';
+      const minClass = config.minClass || 'minimized';
+      el.classList.toggle(minClass, isMin);
+      const btn = el.querySelector('.widget-min-btn, .w-minimize-btn');
+      if (btn) btn.textContent = isMin ? '▸' : '▾';
+    } catch {}
+  },
+
+  handleResize() {
+    this.registeredWidgets.forEach(config => {
+      const el = document.getElementById(config.id);
+      if (!el || el.style.position !== 'fixed') return;
+
+      const rect = el.getBoundingClientRect();
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, window.innerWidth - rect.width - 8);
+      const minTop = 56;
+      const maxTop = Math.max(minTop, window.innerHeight - rect.height - 56);
+
+      let curLeft = parseFloat(el.style.left) || rect.left;
+      let curTop = parseFloat(el.style.top) || rect.top;
+
+      let adjusted = false;
+      if (curLeft > maxLeft) { curLeft = maxLeft; adjusted = true; }
+      if (curLeft < minLeft) { curLeft = minLeft; adjusted = true; }
+      if (curTop > maxTop) { curTop = maxTop; adjusted = true; }
+      if (curTop < minTop) { curTop = minTop; adjusted = true; }
+
+      if (adjusted) {
+        el.style.left = `${Math.round(curLeft)}px`;
+        el.style.top = `${Math.round(curTop)}px`;
+      }
+    });
+  },
+
+  resetAllPositions() {
+    this.registeredWidgets.forEach(config => {
+      try {
+        localStorage.removeItem(`widget_pos_${config.id}`);
+        localStorage.removeItem(`widget_min_${config.id}`);
+      } catch {}
+      const el = document.getElementById(config.id);
+      if (el) {
+        el.style.position = '';
+        el.style.left = '';
+        el.style.top = '';
+        el.style.right = '';
+        el.style.bottom = '';
+
+        // Default collapse/minimize
+        if (config.id === 'mapStatsPanel' || config.id === 'layerPanel') {
+          el.classList.add('collapsed');
+        } else {
+          el.classList.remove('minimized');
+        }
+
+        const btn = el.querySelector('.widget-min-btn, .w-minimize-btn');
+        if (btn) btn.textContent = '▾';
+      }
+    });
+
+    if (typeof showToast === 'function') {
+      showToast('🔄 Przywrócono domyślny układ widżetów na mapie');
+    }
+  }
+};
+
+window.WidgetDragManager = WidgetDragManager;
+
+// ============================================================
 // INIT — wire everything up after app loads
 // ============================================================
 
@@ -457,7 +777,13 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         addSurpriseButton();
         buildTodayWidget();
+        WidgetDragManager.init();
       }, 800);
     }
   }, 300);
+
+  // Also initialize WidgetDragManager right away for static widgets
+  setTimeout(() => {
+    WidgetDragManager.init();
+  }, 500);
 });

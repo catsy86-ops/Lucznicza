@@ -312,7 +312,7 @@ function initSwipeReclip() {
 // ============================================================
 
 function buildExtrasPanel() {
-  const panel = document.getElementById('layerPanel');
+  const panel = document.getElementById('lpContent') || document.getElementById('layerPanel');
   if (!panel || document.getElementById('btnExtraRain')) return;
 
   const extras = document.createElement('div');
