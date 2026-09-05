@@ -1,6 +1,6 @@
 // Service Worker — Szczecin Guide PWA v6
 // Network-first for code, cache-first for tiles, IndexedDB for API data, offline fallback
-const CACHE_VERSION = 'v6';
+const CACHE_VERSION = 'v7';
 const CACHE_NAME = `niebuszewo-guide-${CACHE_VERSION}`;
 const TILE_CACHE = `map-tiles-${CACHE_VERSION}`;
 const API_CACHE = `api-data-${CACHE_VERSION}`;
@@ -22,6 +22,7 @@ const APP_SHELL = [
   '/community-data.js', '/community-ui.js',
   '/routes-meetup.js', '/user-profile.js',
   '/place-images.js', '/ux-enhancements.js', '/pogon-mascot.js',
+  '/bike-routes.js', '/events-live-sync.js',
   '/google-maps.js', '/manifest.json'
 ];
 

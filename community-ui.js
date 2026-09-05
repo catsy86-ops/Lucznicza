@@ -744,18 +744,155 @@ function syncCommunityAlertsOnMap(alerts) {
   });
   communityAlertMarkers = [];
 
+  // Web Audio Synthesizer: Autorski osiedlowy "Chrumkacz Dzika"
+  window.playDzikGruntSound = function() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+
+      // Oscylator 1: niski chrumkający ton z modulacją częstotliwości (FM)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(320, ctx.currentTime);
+
+      osc.type = 'sawtooth';
+      // Częstotliwość zaczyna się od ~140Hz i szybko opada jak prawdziwe chrumknięcie
+      const now = ctx.currentTime;
+      osc.frequency.setValueAtTime(145, now);
+      osc.frequency.exponentialRampToValueAtTime(65, now + 0.18);
+      osc.frequency.exponentialRampToValueAtTime(110, now + 0.26);
+      osc.frequency.exponentialRampToValueAtTime(50, now + 0.45);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.4, now + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.48);
+
+      // Dodaj delikatny szum w tle symulujący charknięcie
+      const bufferSize = ctx.sampleRate * 0.45;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.setValueAtTime(450, now);
+      noiseFilter.Q.setValueAtTime(3, now);
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.12, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      noise.start(now);
+      osc.stop(now + 0.5);
+      noise.stop(now + 0.45);
+
+      if (typeof showToast === 'function') {
+        showToast('🐗 Chrum! Dźwiękowy radar dzika aktywny!');
+      }
+    } catch (e) {
+      console.warn('Web Audio Dzik sound error:', e);
+    }
+  };
+
+  let activeRadarLayers = [];
+  window.showBoarRadarAndEscapePath = function(alertLat, alertLng) {
+    const map = window.state?.map;
+    if (!map) return;
+
+    // Remove previous radar/escape overlays
+    activeRadarLayers.forEach(l => {
+      try { map.removeLayer(l); } catch {}
+    });
+    activeRadarLayers = [];
+
+    // Odtwórz dźwięk dzika
+    window.playDzikGruntSound();
+
+    // 1. Radar zagrożenia wokół dzika (pulsujący zasięg 120m)
+    const radarCircleOuter = L.circle([alertLat, alertLng], {
+      radius: 140,
+      color: '#ef4444',
+      weight: 2,
+      opacity: 0.8,
+      fillColor: '#ef4444',
+      fillOpacity: 0.18,
+      dashArray: '6, 6'
+    }).addTo(map);
+
+    const radarCircleInner = L.circle([alertLat, alertLng], {
+      radius: 50,
+      color: '#b91c1c',
+      weight: 3,
+      opacity: 0.9,
+      fillColor: '#b91c1c',
+      fillOpacity: 0.35
+    }).addTo(map);
+
+    activeRadarLayers.push(radarCircleOuter, radarCircleInner);
+
+    // 2. Bezpieczna ścieżka ucieczki do Pub Klatka (ul. Łucznicza 43)
+    const pubCoords = [53.45330, 14.54980];
+    const escapeRouteCoords = [
+      [alertLat, alertLng],
+      [(alertLat + pubCoords[0]) / 2 + 0.0004, (alertLng + pubCoords[1]) / 2],
+      pubCoords
+    ];
+
+    const escapePolylineShadow = L.polyline(escapeRouteCoords, {
+      color: '#002D62',
+      weight: 7,
+      opacity: 0.5
+    }).addTo(map);
+
+    const escapePolyline = L.polyline(escapeRouteCoords, {
+      color: '#10b981',
+      weight: 4,
+      dashArray: '8, 6',
+      opacity: 0.95
+    }).addTo(map);
+
+    escapePolyline.bindTooltip('🍺 <strong>Korytarz Ucieczki: Prosto do Pub Klatka (Łucznicza 43)!</strong>', {
+      permanent: true,
+      direction: 'top',
+      className: 'escape-tooltip'
+    }).openTooltip();
+
+    activeRadarLayers.push(escapePolylineShadow, escapePolyline);
+
+    // Fly to encompass both alert & safe haven
+    const bounds = L.latLngBounds([ [alertLat, alertLng], pubCoords ]);
+    map.fitBounds(bounds, { padding: [60, 60], maxZoom: 17 });
+  };
+
   alerts.forEach(a => {
+    const isDzik = a.type === 'dzik';
     const iconHtml = `
-      <div class="alert-map-marker alert-type-${a.type}" title="${a.title}">
+      <div class="alert-map-marker alert-type-${a.type} ${isDzik ? 'is-dzik-marker' : ''}" title="${a.title}">
         <span>${a.icon}</span>
-        <div class="alert-pulse-ring"></div>
+        <div class="alert-pulse-ring ${isDzik ? 'dzik-pulse' : ''}"></div>
       </div>
     `;
     const customIcon = L.divIcon({
       html: iconHtml,
       className: 'custom-alert-icon',
-      iconSize: [38, 38],
-      iconAnchor: [19, 19]
+      iconSize: [40, 40],
+      iconAnchor: [20, 20]
     });
 
     const marker = L.marker(a.coords, { icon: customIcon }).addTo(map);
@@ -771,9 +908,25 @@ function syncCommunityAlertsOnMap(alerts) {
           <span>Potwierdzenia: <b>${a.confirmations}</b></span>
           <button class="ap-confirm-btn" onclick="confirmCommunityAlert('${a.id}')">👍 Potwierdzam</button>
         </div>
+        ${isDzik ? `
+          <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;">
+            <button class="dzik-sound-btn" onclick="window.playDzikGruntSound()" style="
+              background: linear-gradient(135deg, #78350f, #92400e); color: #fff; border: none; border-radius: 6px;
+              padding: 6px 10px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+            ">
+              🔊 Odtwórz Chrumkacz (Synthezator)
+            </button>
+            <button class="dzik-escape-btn" onclick="window.showBoarRadarAndEscapePath(${a.coords[0]}, ${a.coords[1]})" style="
+              background: #10b981; color: #fff; border: none; border-radius: 6px;
+              padding: 6px 10px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+            ">
+              🛡️ Radar & Droga Ucieczki do Pub Klatka 🍺
+            </button>
+          </div>
+        ` : ''}
       </div>
     `;
-    marker.bindPopup(popupContent);
+    marker.bindPopup(popupContent, { maxWidth: 280 });
     communityAlertMarkers.push(marker);
   });
 }

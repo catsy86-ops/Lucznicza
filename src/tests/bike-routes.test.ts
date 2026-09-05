@@ -50,4 +50,30 @@ describe('Szczecin Bike Router & Section', () => {
     expect(styleCss).toContain('.curated-routes-grid');
     expect(styleCss).toContain('.station-card');
   });
+
+  it('integrates Bike_S stations & IBOMBO in map-layers.js', () => {
+    const mapLayersJs = fs.readFileSync(path.join(rootDir, 'map-layers.js'), 'utf-8');
+    expect(mapLayersJs).toContain('BIKE_STATIONS');
+    expect(mapLayersJs).toContain('bike-station-marker');
+    expect(mapLayersJs).toContain('window.toggleBikesLayer');
+    expect(mapLayersJs).toContain('window.toggleTransitLayer');
+  });
+
+  it('implements Web Audio Dzik Grunt sound and boar radar with escape route to Pub Klatka', () => {
+    const commUiJs = fs.readFileSync(path.join(rootDir, 'community-ui.js'), 'utf-8');
+    expect(commUiJs).toContain('playDzikGruntSound');
+    expect(commUiJs).toContain('showBoarRadarAndEscapePath');
+    expect(commUiJs).toContain('Pub Klatka');
+    expect(styleCss).toContain('.dzik-pulse');
+    expect(styleCss).toContain('.escape-tooltip');
+  });
+
+  it('registers bike-routes.js and manifest shortcuts in PWA v7', () => {
+    const swJs = fs.readFileSync(path.join(rootDir, 'sw.js'), 'utf-8');
+    const manifestJson = fs.readFileSync(path.join(rootDir, 'manifest.json'), 'utf-8');
+    expect(swJs).toContain("const CACHE_VERSION = 'v7'");
+    expect(swJs).toContain("'/bike-routes.js'");
+    expect(manifestJson).toContain('"short_name": "Rower"');
+  });
 });
+

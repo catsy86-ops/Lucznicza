@@ -22,10 +22,15 @@ async function fetchVehicles() {
   if (window.ZDiTM) {
     try {
       const all = await ZDiTM.getVehicles();
-      // Filtruj do okolicy Łuczniczej (promień 1.5 km) dla wydajności i sensu
-      const nearby = ZDiTM.filterNearby(all, 53.4540, 14.5477, 1500);
-      VEHICLES.lastData = nearby;
-      renderVehicles(nearby, all.length);
+      // Filtruj do obszaru Niebuszewa i okolic (promień 2.8 km lub kluczowe linie 12, 11, 2, 87, 89, B, 69, 51)
+      const keyLines = new Set(['12', '11', '2', '87', '89', 'B', '69', '51', '75', '76']);
+      const nearby = all.filter(v => {
+        const isKeyLine = keyLines.has(String(v.line));
+        const distOk = ZDiTM.filterNearby([v], 53.4540, 14.5477, 2800).length > 0;
+        return distOk && (isKeyLine || !VEHICLES.lineFilter);
+      });
+      VEHICLES.lastData = nearby.length > 0 ? nearby : ZDiTM.filterNearby(all, 53.4540, 14.5477, 3000);
+      renderVehicles(VEHICLES.lastData, all.length);
       return;
     } catch (err) {
       console.warn('Vehicles fetch failed:', err.message);
@@ -33,7 +38,7 @@ async function fetchVehicles() {
       if (window.OfflineStore) {
         const cached = await OfflineStore.getStale('zditm_vehicles');
         if (cached && cached.length) {
-          const nearby = ZDiTM.filterNearby(cached, 53.4540, 14.5477, 1500);
+          const nearby = ZDiTM.filterNearby(cached, 53.4540, 14.5477, 2800);
           VEHICLES.lastData = nearby;
           renderVehicles(nearby, cached.length);
           return;

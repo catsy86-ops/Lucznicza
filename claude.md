@@ -104,4 +104,30 @@ Ten plik gromadzi wdrożone oraz planowane usprawnienia **Quality of Life (QoL)*
    - W sekcji *Wydarzenia* dodano pasek statusu (`.events-sync-bar`) z pulsującą diodą stanu (zielona = aktualne, żółta = pobieranie), źródłem feedu, czasem ostatniej synchronizacji oraz przyciskiem wymuszenia pobrania (`🔄 Synchronizuj`).
    - Bezpieczny mechanizm łączenia danych zachowujący specyficzne osiedlowe tradycje i wzbogacający je o najświeższe imprezy ze Szczecina.
 5. **Zgodność i testy:**
-   - Wszystkie 19 zestawów testów (104 testy w Vitest) przechodzą w 100% na zielono.
+   - Wszystkie 19 zestawów testów (107 testów w Vitest) przechodzą w 100% na zielono.
+
+---
+
+## 🚴 🐗 🚊 📱 Nowe Moduły i Usprawnienia z Roadmapy (Wdrożone)
+
+### 1. 🚲 Interaktywny Szlak Rowerowy & Stacje Bike_S na Mapie
+- **Warstwa Rowerowa:** W `map-layers.js` rozbudowano warstwę ścieżek rowerowych o pełną sieć korytarzy Niebuszewa (`BIKE_PATHS` i `BIKE_EDGES`).
+- **Stacje Bike_S & IBOMBO:** Pinezki stacji rowerów miejskich Bike_S (Pętla Kołłątaja, SKM Niebuszewo, Park Kadziaka, Przyjaciół Żołnierza, Jasne Błonia) oraz stacji naprawczych IBOMBO z liczbą rowerów, stojaków i listą narzędzi.
+- **Interakcja z Planerem:** Bezpośrednie przekierowanie z popupu stacji do sekcji `#section-bikes` z inteligentnym dopasowywaczem trasy (Dijkstra/A* dla profili: Bezpieczna DDR, Szybka Asfalt, Płaska, Gravel).
+- **Zarządzanie:** Obsługa przełączania w modalu warstw (`#layerToggleBikes`), w Control Hub Pro (`#mchLyrBike`) oraz panelu warstw.
+
+### 2. 🐗 Interaktywny Alert Dzika z Radarem & Syntezatorem Web Audio API ("Chrumkacz")
+- **Autorski Syntezator Web Audio:** Zaimplementowano funkcję `window.playDzikGruntSound()` wykorzystującą oscylator sawtooth z modulacją FM (145 Hz → 65 Hz → 110 Hz → 50 Hz) i generator szumu z filtrem pasmowym. Działa bez zewnętrznych plików MP3 na dowolnym urządzeniu!
+- **Dynamiczny Radar Zagrożenia:** Kliknięcie alertu dzika rysuje pulsujący okrąg radaru o promieniu 140 m wokół wykrytego stada.
+- **Korytarz Ucieczki do Pub Klatka:** Wyrysowywana na mapie neonowa zielona polilinia ewakuacyjna prowadząca z miejsca spotkania dzika prosto pod bezpieczne drzwi **Pub Klatka (ul. Łucznicza 43)** z tooltipem ratunkowym.
+
+### 3. 🚊 Radar Tramwajowy i Autobusowy na Żywo (ZDiTM Live GPS na Mapie)
+- **Karta w Control Hub Pro:** Do zakładki warstw Control Hub dodano dedykowany przycisk `mchLyrVehicles` umożliwiający natychmiastowe włączenie floty ZDiTM.
+- **Zoptymalizowany Zasięg:** Rozszerzono promień filtrowania do 2.8 km wokół Niebuszewa z priorytetyzacją kluczowych linii: tramwaje 12, 11, 2 oraz autobusy 87, 89, B, 69, 51, 75, 76.
+- **Płynna Animacja:** Markery pojazdów płynnie przesuwają się na mapie (`requestAnimationFrame`) z informacją o opóźnieniu (+/- min), prędkości, niskiej podłodze i obrotem markerów w kierunku jazdy (`bearing`).
+
+### 4. 📱 PWA & Usprawnienie Offline Cache (v7)
+- **Aktualizacja Cache Service Workera:** Podbito wersję pamięci podręcznej do `v7` w `sw.js`.
+- **Pre-caching nowych skryptów:** Dodano `bike-routes.js` oraz `events-live-sync.js` do zasobów `APP_SHELL`.
+- **Skróty Aplikacji:** Dodano skrót *Rower & Bike_S* (`/#bikes`) do `manifest.json`.
+

@@ -128,22 +128,95 @@ function buildStopsLayer(map) {
   MAP_LAYERS.stopsLayer = group;
 }
 
-// ===== BUILD BIKE PATHS LAYER =====
+// ===== BUILD BIKE PATHS & BIKE_S LAYER =====
 function buildBikeLayer(map) {
   if (MAP_LAYERS.bikeLayer) return;
 
   const group = L.layerGroup();
 
+  // 1. Ścieżki i korytarze rowerowe (BIKE_PATHS)
   BIKE_PATHS.forEach(path => {
     const line = L.polyline(path.coords, {
-      color: '#43e97b',
-      weight: 4,
-      opacity: 0.8,
-      dashArray: '8, 4',
+      color: '#10b981',
+      weight: 5,
+      opacity: 0.88,
+      dashArray: '8, 5',
       lineCap: 'round'
     });
     line.bindTooltip(`🚲 ${path.name}`, { sticky: true });
     group.addLayer(line);
+  });
+
+  // 2. Dodatkowe krawędzie z sieci rowerowej Niebuszewa (BIKE_EDGES)
+  if (typeof BIKE_EDGES !== 'undefined' && Array.isArray(BIKE_EDGES)) {
+    BIKE_EDGES.forEach(edge => {
+      const edgeLine = L.polyline(edge.path, {
+        color: edge.type === 'ddr' ? '#059669' : edge.surface === 'gravel' ? '#d97706' : '#10b981',
+        weight: 4,
+        opacity: 0.75,
+        lineCap: 'round'
+      });
+      edgeLine.bindTooltip(`🚲 <strong>${edge.name}</strong><br><small>Długość: ${edge.distKm} km · Nawierzchnia: ${edge.surface}</small>`, { sticky: true });
+      group.addLayer(edgeLine);
+    });
+  }
+
+  // 3. Stacje Szczecińskiego Roweru Miejskiego Bike_S oraz IBOMBO (BIKE_STATIONS)
+  const stationsList = (typeof BIKE_STATIONS !== 'undefined' && Array.isArray(BIKE_STATIONS)) ? BIKE_STATIONS : [
+    { id: 'bs-1', name: 'BikeS #104 — Pętla Kołłątaja', bikes: 7, racks: 14, type: 'BikeS', coords: [53.4476, 14.5492] },
+    { id: 'bs-2', name: 'BikeS #112 — SKM Niebuszewo', bikes: 5, racks: 10, type: 'BikeS', coords: [53.4562, 14.5483] },
+    { id: 'bs-3', name: 'BikeS #118 — Park Kadziaka / Łucznicza', bikes: 6, racks: 12, type: 'BikeS', coords: [53.4512, 14.5445] },
+    { id: 'bs-4', name: 'BikeS #130 — Przyjaciół Żołnierza / Obotrycka', bikes: 4, racks: 10, type: 'BikeS', coords: [53.4548, 14.5608] },
+    { id: 'bs-5', name: 'BikeS #145 — Jasne Błonia (Pomnik Czynu Polaków)', bikes: 11, racks: 20, type: 'BikeS', coords: [53.4422, 14.5398] },
+    { id: 'ib-1', name: 'IBOMBO — Stacja Naprawcza Park Kadziaka', tools: 'Klucze, łyżki, pompka z manometrem', type: 'IBOMBO', coords: [53.4508, 14.5442] },
+    { id: 'ib-2', name: 'IBOMBO — Stacja Naprawcza SKM Niebuszewo', tools: 'Pompka DV/SV/AV, imbusy 2-8mm', type: 'IBOMBO', coords: [53.4568, 14.5486] }
+  ];
+
+  stationsList.forEach(st => {
+    const isBikeS = st.type === 'BikeS';
+    const markerIcon = L.divIcon({
+      html: `
+        <div class="bike-station-marker ${isBikeS ? 'bikes' : 'ibombo'}" style="
+          width: 32px; height: 32px; border-radius: 50%;
+          background: ${isBikeS ? '#10b981' : '#f59e0b'};
+          color: #fff; display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 3px 10px rgba(0,0,0,0.35); border: 2.5px solid #fff; font-size: 15px; cursor: pointer;
+        ">
+          <span>${isBikeS ? '🚲' : '🔧'}</span>
+        </div>
+      `,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      className: 'bike-station-marker-wrap'
+    });
+
+    const popupHtml = `
+      <div style="min-width: 200px; font-family: inherit;">
+        <div style="font-weight: 800; font-size: 13px; margin-bottom: 4px; color: ${isBikeS ? '#059669' : '#d97706'};">
+          ${isBikeS ? '🚲 Stacja Bike_S' : '🔧 Stacja Naprawcza IBOMBO'}
+        </div>
+        <div style="font-weight: 700; font-size: 14px; margin-bottom: 6px;">${st.name}</div>
+        ${isBikeS ? `
+          <div style="background: rgba(16,185,129,0.12); padding: 8px; border-radius: 8px; font-size: 12px; margin-bottom: 8px;">
+            Dostępne rowery: <strong style="color: #10b981; font-size: 14px;">${st.bikes}</strong> / ${st.racks} stojaków
+          </div>
+        ` : `
+          <div style="background: rgba(245,158,11,0.12); padding: 8px; border-radius: 8px; font-size: 12px; margin-bottom: 8px;">
+            Wyposażenie: <strong>${st.tools}</strong>
+          </div>
+        `}
+        <button style="
+          width: 100%; background: #10b981; color: #fff; border: none; border-radius: 8px;
+          padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+        " onclick="if(typeof navigateTo==='function') navigateTo('bikes')">
+          🚴 Otwórz Planer Rowerowy
+        </button>
+      </div>
+    `;
+
+    const marker = L.marker(st.coords, { icon: markerIcon, zIndexOffset: 250 });
+    marker.bindPopup(popupHtml, { maxWidth: 260 });
+    group.addLayer(marker);
   });
 
   MAP_LAYERS.bikeLayer = group;
@@ -424,6 +497,15 @@ function buildMapStats() {
       <div class="mch-tab-pane" id="mchPane_layers" role="tabpanel">
         <div class="msp-section-label">Warstwy i dane na żywo:</div>
         <div class="mch-layers-grid">
+          <button class="mch-layer-card" id="mchLyrVehicles" onclick="if(window.mapVehicles?.toggle){window.mapVehicles.toggle();}else if(typeof toggleVehicles==='function'){toggleVehicles();}" title="Włącz / wyłącz pojazdy ZDiTM GPS na żywo">
+            <div class="mch-lc-head">
+              <span class="mch-lc-icon">🚊</span>
+              <span class="mch-lc-status" id="mchBadgeVehicles">OFF</span>
+            </div>
+            <strong>Pojazdy ZDiTM LIVE</strong>
+            <small>Tramwaje i autobusy GPS</small>
+          </button>
+
           <button class="mch-layer-card" id="mchLyrStops" onclick="toggleStops()" title="Włącz / wyłącz przystanki ZDiTM">
             <div class="mch-lc-head">
               <span class="mch-lc-icon">🚌</span>
@@ -433,7 +515,7 @@ function buildMapStats() {
             <small>Live odjazdy i linie</small>
           </button>
 
-          <button class="mch-layer-card" id="mchLyrBike" onclick="toggleBikePaths()" title="Włącz / wyłącz ścieżki rowerowe">
+          <button class="mch-layer-card" id="mchLyrBike" onclick="toggleBikePaths()" title="Włącz / wyłącz ścieżki rowerowe i Bike_S">
             <div class="mch-lc-head">
               <span class="mch-lc-icon">🚲</span>
               <span class="mch-lc-status" id="mchBadgeBike">OFF</span>
@@ -689,6 +771,7 @@ function buildMapStats() {
       }
     };
 
+    updateBadge('mchBadgeVehicles', 'mchLyrVehicles', isLyrActive('btnLayerVehicles', () => window.mapVehicles?.isEnabled?.()));
     updateBadge('mchBadgeStops', 'mchLyrStops', isLyrActive('btnLayerStops'));
     updateBadge('mchBadgeBike', 'mchLyrBike', isLyrActive('btnLayerBike'));
     updateBadge('mchBadgeZones', 'mchLyrZones', isLyrActive('btnLayerZones'));
@@ -813,3 +896,41 @@ window.mapLayers = {
   toggleStops, toggleBikePaths, toggleZones,
   STOPS_DATA, BIKE_PATHS
 };
+
+// Global hooks for mapLayersModal checkboxes in index.html
+window.toggleBikesLayer = function(visible) {
+  const map = window.state?.map;
+  if (!map) return;
+  buildBikeLayer(map);
+  if (visible !== undefined) {
+    if (visible && !MAP_LAYERS.bikeVisible) {
+      MAP_LAYERS.bikeLayer.addTo(map);
+      MAP_LAYERS.bikeVisible = true;
+    } else if (!visible && MAP_LAYERS.bikeVisible) {
+      map.removeLayer(MAP_LAYERS.bikeLayer);
+      MAP_LAYERS.bikeVisible = false;
+    }
+  } else {
+    toggleBikePaths();
+  }
+  updateLayerButtons();
+};
+
+window.toggleTransitLayer = function(visible) {
+  const map = window.state?.map;
+  if (!map) return;
+  buildStopsLayer(map);
+  if (visible !== undefined) {
+    if (visible && !MAP_LAYERS.stopsVisible) {
+      MAP_LAYERS.stopsLayer.addTo(map);
+      MAP_LAYERS.stopsVisible = true;
+    } else if (!visible && MAP_LAYERS.stopsVisible) {
+      map.removeLayer(MAP_LAYERS.stopsLayer);
+      MAP_LAYERS.stopsVisible = false;
+    }
+  } else {
+    toggleStops();
+  }
+  updateLayerButtons();
+};
+
