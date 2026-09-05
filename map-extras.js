@@ -7,6 +7,8 @@
  */
 'use strict';
 
+window.mapExtras = window.mapExtras || {};
+
 // ============================================================
 // #2 — FILTR POJAZDÓW PO LINII
 // ============================================================
@@ -312,7 +314,7 @@ function initSwipeReclip() {
 // ============================================================
 
 function buildExtrasPanel() {
-  const panel = document.getElementById('lpContent') || document.getElementById('layerPanel');
+  const panel = document.getElementById('lpGrid') || document.getElementById('lpContent') || document.getElementById('layerPanel');
   if (!panel || document.getElementById('btnExtraRain')) return;
 
   const extras = document.createElement('div');

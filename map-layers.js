@@ -244,13 +244,20 @@ function buildLayerPanel() {
       <span class="lp-chevron">▾</span>
     </button>
     <div class="lp-content" id="lpContent">
-      <div class="lp-title">🗂️ Warstwy Mapy</div>
-      <button class="lp-btn" id="btnLayerStops"  onclick="toggleStops()">🚌 Przystanki</button>
-      <button class="lp-btn" id="btnLayerBike"   onclick="toggleBikePaths()">🚲 Ścieżki rowerowe</button>
-      <button class="lp-btn" id="btnLayerZones"  onclick="toggleZones()">🗺️ Strefy</button>
+      <div class="lp-title">🗂️ Warstwy & Narzędzia</div>
+      <div class="lp-grid" id="lpGrid">
+        <button class="lp-btn" id="btnLayerStops"  onclick="toggleStops()">🚌 Przystanki</button>
+        <button class="lp-btn" id="btnLayerBike"   onclick="toggleBikePaths()">🚲 Ścieżki</button>
+        <button class="lp-btn" id="btnLayerZones"  onclick="toggleZones()">🗺️ Strefy</button>
+      </div>
     </div>
   `;
   container.appendChild(panel);
+
+  if (window.L?.DomEvent) {
+    L.DomEvent.disableClickPropagation(panel);
+    L.DomEvent.disableScrollPropagation(panel);
+  }
 
   panel.querySelector('#lpTogglePill')?.addEventListener('click', (e) => {
     if (e.target?.classList?.contains('widget-drag-handle')) return;
@@ -345,6 +352,11 @@ function buildMapStats() {
     </div>
   `;
   container.appendChild(panel);
+
+  if (window.L?.DomEvent) {
+    L.DomEvent.disableClickPropagation(panel);
+    L.DomEvent.disableScrollPropagation(panel);
+  }
 
   // Toggle open/collapse
   const toggleBtn = document.getElementById('mspToggleBtn');

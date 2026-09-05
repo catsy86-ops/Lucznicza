@@ -7,6 +7,8 @@
  */
 'use strict';
 
+window.mapExtras2 = window.mapExtras2 || {};
+
 // ============================================================
 // #8 — CINEMATYCZNY PRZELOT NAD DZIELNICĄ
 // ============================================================
@@ -377,7 +379,7 @@ function drawSimplifiedBuildings() {
 // ============================================================
 
 function buildExtras2Panel() {
-  const panel = document.getElementById('lpContent') || document.getElementById('layerPanel');
+  const panel = document.getElementById('lpGrid') || document.getElementById('lpContent') || document.getElementById('layerPanel');
   if (!panel || document.getElementById('btnTour')) return;
 
   const div = document.createElement('div');

@@ -161,31 +161,33 @@ function initMap() {
       maxZoom: 19
     });
 
-    // CARTO Voyager — colourful, modern optional layer
-    const voyagerLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap © CARTO',
-      subdomains: 'abcd',
-      maxZoom: 20
+    // CyclOSM — 100% Free, modern urban & cycling map without any API keys
+    const cyclosmLayer = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+      attribution: '© CyclOSM contributors, © OpenStreetMap',
+      maxZoom: 19
     });
 
-    // CARTO Dark — for night / dark theme
-    const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap © CARTO',
-      subdomains: 'abcd',
-      maxZoom: 20
-    });
+    // Esri Dark Gray Canvas — 100% Free, zero API key required, beautiful dark theme
+    const darkLayer = L.layerGroup([
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '© Esri',
+        maxZoom: 16
+      }),
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 16
+      })
+    ]);
 
-    // CARTO Light — clean, minimal
-    const lightLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap © CARTO',
-      subdomains: 'abcd',
-      maxZoom: 20
+    // OpenStreetMap standard light layer — clean, crisp, 100% free
+    const lightLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 19
     });
 
     // OpenStreetMap — default, crisp street map with full Niebuszewo labels & POIs
     osmLayer.addTo(map);
 
-    // Esri satellite imagery with boundaries & street labels overlay
+    // Esri satellite imagery with boundaries & street labels overlay (100% Free, 0 API keys)
     const satelliteLayer = L.layerGroup([
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: '© Esri',
@@ -196,30 +198,18 @@ function initMap() {
       })
     ]);
 
-    // If Voyager fails to load tiles, fall back to OSM
-    let voyagerErrors = 0;
-    voyagerLayer.on('tileerror', () => {
-      voyagerErrors++;
-      if (voyagerErrors === 4 && !map.hasLayer(osmLayer)) {
-        console.warn('⚠️ CARTO tiles failing, switching to OpenStreetMap');
-        map.removeLayer(voyagerLayer);
-        osmLayer.addTo(map);
-        state.currentBaseLayer = 'osm';
-      }
-    });
-
-    // Store layers for switching (keys used by the style switcher UI)
+    // Store layers for switching (100% free, zero API key required)
     state.baseLayers = {
-      voyager: voyagerLayer,
-      dark: darkLayer,
-      light: lightLayer,
+      osm: osmLayer,
       satellite: satelliteLayer,
-      osm: osmLayer
+      dark: darkLayer,
+      voyager: cyclosmLayer,
+      cyclosm: cyclosmLayer,
+      light: lightLayer
     };
     state.currentBaseLayer = 'osm';
 
-    // Add controls
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
+    // Scale control (bottom-left)
     L.control.scale({ position: 'bottomleft', metric: true, imperial: false }).addTo(map);
 
     // Inverted Spotlight Mask — Dims everything outside Niebuszewo so the neighborhood stands out

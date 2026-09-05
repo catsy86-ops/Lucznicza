@@ -23,10 +23,10 @@ const MapDarkMode = (() => {
   // Tile layer URL configs — layers are created lazily inside init()
   // to avoid calling L.tileLayer before the map exists
   const LAYER_URLS = {
-    darkMode:  { name: 'Ciemny',               url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' },
-    lightMode: { name: 'Jasny',                url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png' },
-    softDark:  { name: 'Miękki ciemny (noc)',  url: 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png' },
-    softLight: { name: 'Miękki jasny (dzień)', url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png' }
+    darkMode:  { name: 'Ciemny',               url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', attribution: '© Esri' },
+    lightMode: { name: 'Jasny',                url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '© OpenStreetMap contributors' },
+    softDark:  { name: 'Miękki ciemny (noc)',  url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', attribution: '© Esri' },
+    softLight: { name: 'Miękki jasny (dzień)', url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '© OpenStreetMap contributors' }
   };
 
   // Actual L.tileLayer instances — populated in init()
@@ -37,9 +37,8 @@ const MapDarkMode = (() => {
     console.log('🌙 Inicjalizacja trybu ciemnego...');
 
     // Create tile layers now that the map exists (lazy init)
-    const tileOpts = { attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 20, detectRetina: true };
     Object.entries(LAYER_URLS).forEach(([key, val]) => {
-      mapLayers[key] = { name: val.name, layer: L.tileLayer(val.url, tileOpts) };
+      mapLayers[key] = { name: val.name, layer: L.tileLayer(val.url, { attribution: val.attribution, maxZoom: 19 }) };
     });
 
     // Listen to app theme changes

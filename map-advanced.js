@@ -282,9 +282,8 @@ const MAP_ADVANCED = (() => {
           <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"><\/script>
           <script>
             const map = L.map('map').setView([53.4530, 14.5520], 15);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-              attribution: '© OpenStreetMap © CARTO',
-              subdomains: 'abcd'
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '© OpenStreetMap contributors'
             }).addTo(map);
             setTimeout(() => window.print(), 1000);
           <\/script>

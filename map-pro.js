@@ -12,11 +12,12 @@ const MAP_PRO = {
   viewHistoryIndex: -1,
   searchTimeout: null,
   styleNames: {
-    voyager:   { label: 'Kolorowa',  icon: '🗺️' },
-    dark:      { label: 'Ciemna',    icon: '🌙' },
-    light:     { label: 'Jasna',     icon: '☀️' },
-    satellite: { label: 'Satelita',  icon: '🛰️' },
-    osm:       { label: 'Klasyczna', icon: '🌍' }
+    osm:       { label: 'OpenStreetMap', icon: '🌍' },
+    satellite: { label: 'Satelita HD',  icon: '🛰️' },
+    dark:      { label: 'Ciemna (Esri)', icon: '🌙' },
+    cyclosm:   { label: 'Rowerowa',     icon: '🚲' },
+    voyager:   { label: 'Rowerowa',     icon: '🚲' },
+    light:     { label: 'Jasna',        icon: '☀️' }
   }
 };
 
@@ -36,15 +37,15 @@ function mapProInit(map) {
 // ===== STYLE SWITCHER =====
 function buildStyleSwitcher() {
   const container = document.getElementById('map');
-  if (!container) return;
+  if (!container || document.getElementById('styleSwitcher')) return;
   const panel = document.createElement('div');
   panel.id = 'styleSwitcher';
   panel.className = 'style-switcher collapsed';
   panel.innerHTML = `
     <button class="ss-toggle" id="ssToggle" title="Zmień styl mapy (S)">🎨</button>
     <div class="ss-options" id="ssOptions">
-      ${Object.keys(MAP_PRO.styleNames).map(key => `
-        <button class="ss-opt ${key === 'voyager' ? 'active' : ''}" data-style="${key}">
+      ${Object.keys(MAP_PRO.styleNames).filter(k => k !== 'voyager').map(key => `
+        <button class="ss-opt ${key === 'osm' ? 'active' : ''}" data-style="${key}">
           <span class="ss-icon">${MAP_PRO.styleNames[key].icon}</span>
           <span class="ss-label">${MAP_PRO.styleNames[key].label}</span>
         </button>
@@ -67,22 +68,28 @@ function buildStyleSwitcher() {
 function setMapStyle(styleKey) {
   const st = window.state;
   if (!st || !st.baseLayers || !st.baseLayers[styleKey]) return;
-  const map = MAP_PRO.map;
+  const map = MAP_PRO.map || st.map;
+  if (!map) return;
   if (st.baseLayers[st.currentBaseLayer] && map.hasLayer(st.baseLayers[st.currentBaseLayer])) {
     map.removeLayer(st.baseLayers[st.currentBaseLayer]);
   }
   st.baseLayers[styleKey].addTo(map);
   st.currentBaseLayer = styleKey;
-  st.baseLayers[styleKey].bringToBack();
-  showToast(`${MAP_PRO.styleNames[styleKey].icon} Styl: ${MAP_PRO.styleNames[styleKey].label}`);
+  if (st.baseLayers[styleKey].bringToBack) {
+    st.baseLayers[styleKey].bringToBack();
+  }
+  const label = MAP_PRO.styleNames[styleKey]?.label || styleKey;
+  const icon = MAP_PRO.styleNames[styleKey]?.icon || '🗺️';
+  showToast(`${icon} Styl: ${label}`);
 }
 
 // ===== FLOATING CONTROLS =====
 function buildFloatingControls() {
   const container = document.getElementById('map');
-  if (!container) return;
+  if (!container || document.getElementById('mapFabGroup')) return;
   const fc = document.createElement('div');
   fc.className = 'map-fab-group';
+  fc.id = 'mapFabGroup';
   fc.innerHTML = `
     <button class="map-fab" id="fabFullscreen" title="Pełny ekran (F)">⛶</button>
     <button class="map-fab" id="fabReset"      title="Wyśrodkuj na Łucznicza 43">🏹</button>`;
@@ -476,8 +483,10 @@ function viewHistoryForward() {
 // ===== AUTO DAY/NIGHT =====
 function applyAutoDayNight() {
   if (sessionStorage.getItem('mapStyleManual')) return;
-  const h = new Date().getHours();
-  if (h >= 20 || h < 6) setMapStyle('dark');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  if (isDark) {
+    setMapStyle('dark');
+  }
 }
 
 // ===== KEYBOARD SHORTCUTS =====

@@ -234,7 +234,7 @@ function updateLayerButtons2() {
 
 // ===== ADD BUTTON TO LAYER PANEL =====
 function addVehicleButton() {
-  const target = document.getElementById('lpContent') || document.getElementById('layerPanel');
+  const target = document.getElementById('lpGrid') || document.getElementById('lpContent') || document.getElementById('layerPanel');
   if (!target || document.getElementById('btnLayerVehicles')) return;
   const btn = document.createElement('button');
   btn.className = 'lp-btn';

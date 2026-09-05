@@ -177,9 +177,8 @@ const MapHistory = (() => {
           center: map.getCenter(),
           zoom: map.getZoom() - 3,
           layers: [
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-              attribution: '',
-              subdomains: 'abcd'
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: ''
             })
           ],
           zoomControl: false,
