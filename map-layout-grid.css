@@ -171,9 +171,9 @@
     box-shadow: 0 4px 20px rgba(0,0,0,.4)   !important;
   }
 
-  /* ── CATEGORY FILTER: hidden on desktop by default ─ */
+  /* ── CATEGORY FILTER: styled flexibly ─── */
   .category-filter {
-    display: none !important;
+    /* visible & scrollable */
   }
 
   /* ── LIVE TICKER: hidden (too much noise) ─── */
@@ -264,7 +264,6 @@
     border-radius: 12px !important;
   }
 
-  .category-filter { display: none !important; }
   .live-ticker     { display: none !important; }
   .map-controls    { display: none !important; }
 }
@@ -337,9 +336,6 @@
     overflow-y: auto !important;
     border-radius: 12px !important;
   }
-
-  /* Category filter — hidden on mobile */
-  .category-filter { display: none !important; }
 
   /* Live ticker — hidden */
   .live-ticker { display: none !important; }

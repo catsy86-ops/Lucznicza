@@ -480,5 +480,80 @@ export const ROUTES: WalkingRoute[] = [
         53.45059
       ]
     ]
+  },
+  {
+    "id": 7,
+    "name": "Szlak Przemarszu Dzików",
+    "emoji": "🐗",
+    "type": "walk",
+    "color": "#e67e22",
+    "distance": "1.9 km",
+    "distanceNum": 1.9,
+    "time": "25 min",
+    "timeMin": 25,
+    "difficulty": "Średnia (uwaga na chrumkanie)",
+    "difficultyLevel": 2,
+    "calories": 110,
+    "terrain": "Chodnik i parkowe alejki",
+    "bestTime": "Zmierzch (19:00–22:00)",
+    "tags": [
+      "dziki",
+      "przygoda",
+      "humor",
+      "park",
+      "Niebuszewo",
+      "legenda"
+    ],
+    "desc": "Kultowa trasa spacerowa omijająca nocne żerowiska niebuszewskich dzików. Przewodnik po krzakach, gdzie chrumkanie słychać głośniej niż dzwonki tramwajów, z bezpieczną metą przy Pubie Klatka.",
+    "highlights": [
+      "Strefa Żołędzi w Parku Kadziaka",
+      "Krzaki przy ul. Tarczowej",
+      "Ławeczka Filozofów",
+      "Bezpieczna Przystań: Pub Klatka"
+    ],
+    "stops": [
+      {
+        "name": "Start: Park Antoniego Kadziaka",
+        "addr": "ul. Łucznicza",
+        "emoji": "🌳"
+      },
+      {
+        "name": "Ławeczka Filozofów (narada strategiczna)",
+        "addr": "Park Kadziaka",
+        "emoji": "🧐"
+      },
+      {
+        "name": "Skwer przy Tarczowej (strefa podsłuchu chrumkania)",
+        "addr": "ul. Tarczowa",
+        "emoji": "🐗"
+      },
+      {
+        "name": "Meta: Pub Klatka (schronienie i zimne piwo)",
+        "addr": "ul. Łucznicza 43",
+        "emoji": "🍻"
+      }
+    ],
+    "coords": [
+      [
+        14.54365,
+        53.45100
+      ],
+      [
+        14.54420,
+        53.45140
+      ],
+      [
+        14.54794,
+        53.45296
+      ],
+      [
+        14.55100,
+        53.45200
+      ],
+      [
+        14.54752,
+        53.45405
+      ]
+    ]
   }
 ];

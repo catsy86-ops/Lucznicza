@@ -981,5 +981,56 @@ export const PLACES: PlacePOI[] = [
       "convenience",
       "Rapackiego"
     ]
+  },
+  {
+    "id": 46,
+    "cat": "food",
+    "name": "Pub Klatka",
+    "addr": "ul. Łucznicza 43, Szczecin",
+    "emoji": "🍻",
+    "desc": "Wpadaj tam na piwo! Legendarne osiedlowe centrum integracji na klatce schodowej pod 43. Oficjalny napój to zimny browar z pianką na dwa palce, a nieoficjalny sport narodowy to debaty o tym, kto znowu nie zgasił światła w piwnicy i dlaczego dziki na Niebuszewie mają lepszy GPS niż kurierzy z paczkami.",
+    "hours": "Otwarte: 16:00–23:00 (lub dopóki sąsiad z góry nie zapuka w rurę od kaloryfera)",
+    "phone": "500-KLATKA",
+    "website": null,
+    "coords": [
+      14.54752,
+      53.45405
+    ],
+    "rating": 5,
+    "tags": [
+      "pub",
+      "piwo",
+      "Łucznicza 43",
+      "integracja",
+      "klatka",
+      "humor",
+      "lokalne",
+      "piwko"
+    ]
+  },
+  {
+    "id": 47,
+    "cat": "park",
+    "name": "Ławeczka Filozofów",
+    "addr": "Park Antoniego Kadziaka, Niebuszewo",
+    "emoji": "🧐",
+    "desc": "Kultowa ławka w cieniu starych dębów. Miejsce debat osiedlowych myślicieli o sensie życia, taktyce Pogoni Szczecin i przyczynach opóźnień linii 89. Podobno jeśli usiądziesz tu na 5 minut, rozwiążesz każdy problem.",
+    "hours": "Czynne całą dobę (najgorętsze debaty: 14:00–21:00)",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.54420,
+      53.45140
+    ],
+    "rating": 4.9,
+    "tags": [
+      "park",
+      "filozofia",
+      "relaks",
+      "Park Kadziaka",
+      "debata",
+      "legenda",
+      "humor"
+    ]
   }
 ];

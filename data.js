@@ -575,6 +575,34 @@ const APP_DATA = {
       coords: [14.54785, 53.45000],
       rating: 3.8,
       tags: ['żabka', 'convenience', 'Rapackiego']
+    },
+
+    // ===== PUB KLATKA — ŁUCZNICZA 43 =====
+    {
+      id: 46, cat: 'food',
+      name: 'Pub Klatka',
+      addr: 'ul. Łucznicza 43, Szczecin',
+      emoji: '🍻',
+      desc: 'Wpadaj tam na piwo! Legendarne osiedlowe centrum integracji na klatce schodowej pod 43. Oficjalny napój to zimny browar z pianką na dwa palce, a nieoficjalny sport narodowy to debaty o tym, kto znowu nie zgasił światła w piwnicy i dlaczego dziki na Niebuszewie mają lepszy GPS niż kurierzy z paczkami.',
+      hours: 'Otwarte: 16:00–23:00 (lub dopóki sąsiad z góry nie zapuka w rurę od kaloryfera)',
+      phone: '500-KLATKA', website: null,
+      coords: [14.54752, 53.45405],
+      rating: 5.0,
+      tags: ['pub', 'piwo', 'Łucznicza 43', 'integracja', 'klatka', 'humor', 'lokalne', 'piwko']
+    },
+
+    // ===== ŁAWECZKA FILOZOFÓW — PARK KADZIAKA =====
+    {
+      id: 47, cat: 'park',
+      name: 'Ławeczka Filozofów',
+      addr: 'Park Antoniego Kadziaka, Niebuszewo',
+      emoji: '🧐',
+      desc: 'Kultowa ławka w cieniu starych dębów. Miejsce debat osiedlowych myślicieli o sensie życia, taktyce Pogoni Szczecin i przyczynach opóźnień linii 89. Podobno jeśli usiądziesz tu na 5 minut, rozwiążesz każdy problem.',
+      hours: 'Czynne całą dobę (najgorętsze debaty: 14:00–21:00)',
+      phone: null, website: null,
+      coords: [14.54420, 53.45140],
+      rating: 4.9,
+      tags: ['park', 'filozofia', 'relaks', 'Park Kadziaka', 'debata', 'legenda', 'humor']
     }
   ],
 
@@ -780,6 +808,38 @@ const APP_DATA = {
         [14.56807, 53.45297],
         [14.56575, 53.45356],
         [14.56531, 53.45059]
+      ]
+    },
+    {
+      id: 7,
+      name: 'Szlak Przemarszu Dzików',
+      emoji: '🐗',
+      type: 'walk',
+      color: '#e67e22',
+      distance: '1.9 km',
+      distanceNum: 1.9,
+      time: '25 min',
+      timeMin: 25,
+      difficulty: 'Średnia (uwaga na chrumkanie)',
+      difficultyLevel: 2,
+      calories: 110,
+      terrain: 'Chodnik i parkowe alejki',
+      bestTime: 'Zmierzch (19:00–22:00)',
+      tags: ['dziki', 'przygoda', 'humor', 'park', 'Niebuszewo', 'legenda'],
+      desc: 'Kultowa trasa spacerowa omijająca nocne żerowiska niebuszewskich dzików. Przewodnik po krzakach, gdzie chrumkanie słychać głośniej niż dzwonki tramwajów, z bezpieczną metą przy Pubie Klatka.',
+      highlights: ['Strefa Żołędzi w Parku Kadziaka', 'Krzaki przy ul. Tarczowej', 'Ławeczka Filozofów', 'Bezpieczna Przystań: Pub Klatka'],
+      stops: [
+        { name: 'Start: Park Antoniego Kadziaka', addr: 'ul. Łucznicza', emoji: '🌳' },
+        { name: 'Ławeczka Filozofów (narada strategiczna)', addr: 'Park Kadziaka', emoji: '🧐' },
+        { name: 'Skwer przy Tarczowej (strefa podsłuchu chrumkania)', addr: 'ul. Tarczowa', emoji: '🐗' },
+        { name: 'Meta: Pub Klatka (schronienie i zimne piwo)', addr: 'ul. Łucznicza 43', emoji: '🍻' }
+      ],
+      coords: [
+        [14.54365, 53.45100],
+        [14.54420, 53.45140],
+        [14.54794, 53.45296],
+        [14.55100, 53.45200],
+        [14.54752, 53.45405]
       ]
     }
   ],
@@ -1023,6 +1083,58 @@ const APP_DATA = {
       place: 'Start: ul. Łucznicza',
       desc: 'Lokalny bieg uliczny na dystansie 5 km i 10 km. Trasa przez dzielnicę i okoliczne parki. Zapisy online.',
       tag: 'Sport'
+    },
+    {
+      day: '05', month: 'WRZ',
+      name: 'Piknik lotniczy Fly Day 2026',
+      place: 'Lotnisko w Dąbiu',
+      desc: 'Pokazy podniebne, stoiska modelarskie i rodzinna strefa rekreacyjna w Szczecinie.',
+      tag: 'Festyn',
+      source: 'wSzczecinie.pl'
+    },
+    {
+      day: '05', month: 'WRZ',
+      name: 'ZATRZYMANE W LOCIE | wernisaż',
+      place: 'Muzeum Techniki i Komunikacji',
+      desc: 'Wystawa i wernisaż w zabytkowej zajezdni przy ul. Niemierzyńskiej na Niebuszewie.',
+      tag: 'Kultura',
+      source: 'wSzczecinie.pl'
+    },
+    {
+      day: '05', month: 'WRZ',
+      name: 'Unia Obu Brzegów | Fukaj & Hubert.',
+      place: 'Wyspa Grodzka',
+      desc: 'Koncert plenerowy nad Odrą z widokiem na Wały Chrobrego.',
+      tag: 'Koncert',
+      source: 'wSzczecinie.pl'
+    },
+    {
+      day: '05', month: 'WRZ',
+      name: 'Bazar Szafa Piwnica Garaż',
+      place: 'Przecław 150',
+      desc: 'Sąsiedzki pchli targ i giełda rękodzieła oraz skarbów vintage.',
+      tag: 'Festyn',
+      source: 'wSzczecinie.pl'
+    },
+    {
+      day: '05', month: 'WRZ',
+      name: 'Joga w chmurach | Lato na Tarasach',
+      place: 'Zamek Książąt Pomorskich w Szczecinie',
+      desc: 'Poranna relaksacja i ćwiczenia jogi na tarasach renesansowego zamku.',
+      tag: 'Sport',
+      source: 'wSzczecinie.pl'
+    },
+    {
+      day: '05', month: 'WRZ',
+      name: 'Biegowe Bulwarowe 2026',
+      place: 'Bulwary / Łasztownia',
+      desc: 'Biegi rekreacyjne, strefa foodtrucków i leżaki nad Odrą.',
+      tag: 'Sport',
+      source: 'wSzczecinie.pl'
     }
   ]
 };
+
+if (typeof window !== 'undefined') {
+  window.APP_DATA = APP_DATA;
+}

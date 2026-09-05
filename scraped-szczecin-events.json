@@ -1,0 +1,218 @@
+[
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Piknik lotniczy Fly Day 2026",
+    "place": "lotnisko w Dąbiu",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (lotnisko w Dąbiu). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Dla dzieci",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "ZATRZYMANE W LOCIE | wernisaż",
+    "place": "Muzeum Techniki i Komunikacji",
+    "desc": "Wystawa kulturalna w Szczecinie (Muzeum Techniki i Komunikacji). Sztuka współczesna i inspirujące wernisaże.",
+    "tag": "Wernisaże",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Unia Obu Brzegów | Fukaj & Hubert.",
+    "place": "Wyspa Grodzka",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Wyspa Grodzka). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Koncerty",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Bazar Szafa Piwnica Garaż",
+    "place": "Przecław 150",
+    "desc": "Lokalne spotkanie sąsiedzkie i plenerowe: Bazar Szafa Piwnica Garaż. Wstęp wolny dla mieszkańców!",
+    "tag": "Jarmarki, festyny, pchle targi",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Sobotni Bazarek na Bronowickiej",
+    "place": "ul. Bronowicka 41",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (ul. Bronowicka 41). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Imprezy cykliczne",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Charytatywne regaty w obronie zdrowia: Gents Cup 2026 dla dzieci w depresji",
+    "place": "Centrum Żeglarskie, ul. Przestrzenna 19",
+    "desc": "Aktywność sportowo-rekreacyjna: Charytatywne regaty w obronie zdrowia: Gents Cup 2026 dla dzieci w depresji. Zadbaj o formę w sercu Szczecina!",
+    "tag": "Sport",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Joga w chmurach | Lato na Tarasach",
+    "place": "Zamek Książąt Pomorskich w Szczecinie",
+    "desc": "Aktywność sportowo-rekreacyjna: Joga w chmurach | Lato na Tarasach. Zadbaj o formę w sercu Szczecina!",
+    "tag": "Sport",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Biegowe Bulwarowe",
+    "place": "Łasztownia",
+    "desc": "Aktywność sportowo-rekreacyjna: Biegowe Bulwarowe. Zadbaj o formę w sercu Szczecina!",
+    "tag": "Sport",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Na rowerze i piechotą – integracja Słonecznego",
+    "place": "Staw Rubinowy",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Staw Rubinowy). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Inne",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Pracownia otwarta | warsztaty ceramiczne",
+    "place": "Miejski Ośrodek Kultury",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Miejski Ośrodek Kultury). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Warsztaty",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Szczecińskie Spacery Miejskie [lipiec-wrzesień]",
+    "place": "różne miejsca w Szczecinie",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (różne miejsca w Szczecinie). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Spacery i oprowadzania",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Dzień Otwarty: poznaj ofertę zajęć edukacyjnych",
+    "place": "Dom Kultury „Krzemień”",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Dom Kultury „Krzemień”). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Inne",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "FESTYN SĄSIEDZKI „OSIEDLE W DOBREJ FORMIE”",
+    "place": "Szkoła Podstawowa nr 14, ul. Strzałowska 27A",
+    "desc": "Lokalne spotkanie sąsiedzkie i plenerowe: FESTYN SĄSIEDZKI „OSIEDLE W DOBREJ FORMIE”. Wstęp wolny dla mieszkańców!",
+    "tag": "Jarmarki, festyny, pchle targi",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Narodowe Czytanie 2026 w Książnicy Pomorskiej",
+    "place": "Książnica Pomorska",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Książnica Pomorska). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Inne",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Piknik",
+    "place": "Klub 12. Szczecińskiej Dywizji Zmechanizowanej, ul. Wawrzyniaka 5",
+    "desc": "Lokalne spotkanie sąsiedzkie i plenerowe: Piknik. Wstęp wolny dla mieszkańców!",
+    "tag": "Jarmarki, festyny, pchle targi",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Piknik rodzinny „Poznajmy się!”",
+    "place": "ul. Zygmunta Starego 1A",
+    "desc": "Lokalne spotkanie sąsiedzkie i plenerowe: Piknik rodzinny „Poznajmy się!”. Wstęp wolny dla mieszkańców!",
+    "tag": "Jarmarki, festyny, pchle targi",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "WARSZTATY PLASTYCZNO-EKOLOGICZNE",
+    "place": "Miejski Ośrodek Kultury",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Miejski Ośrodek Kultury). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Dla dzieci",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Łapa w łapę – psia strona miasta",
+    "place": "Miejski Ośrodek Kultury",
+    "desc": "Lokalne spotkanie sąsiedzkie i plenerowe: Łapa w łapę – psia strona miasta. Wstęp wolny dla mieszkańców!",
+    "tag": "Jarmarki, festyny, pchle targi",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "BAJKI NA ROWERZE",
+    "place": "Miejski Ośrodek Kultury",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Miejski Ośrodek Kultury). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Spektakle i opery",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Warsztaty Literackie | Warsztaty czytania na głos",
+    "place": "Scena Waleriana Pawłowskiego, ul. K. Brodzińskiego",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Scena Waleriana Pawłowskiego, ul. K. Brodzińskiego). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Warsztaty",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Bulwarowe 2026",
+    "place": "Łasztownia",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Łasztownia). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Imprezy cykliczne",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Narodowe Czytanie",
+    "place": "Scena Waleriana Pawłowskiego, ul. K. Brodzińskiego",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Scena Waleriana Pawłowskiego, ul. K. Brodzińskiego). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Inne",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Narodowe Czytanie",
+    "place": "Zamek Książąt Pomorskich w Szczecinie",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Zamek Książąt Pomorskich w Szczecinie). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Spotkania, wykłady, konferencje",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Weekend z charlestonem: warsztaty tańca i oprowadzanie",
+    "place": "Muzeum Narodowe w Szczecinie – Muzeum Historii Szczecina",
+    "desc": "Prawdziwe wydarzenie ze Szczecina (Muzeum Narodowe w Szczecinie – Muzeum Historii Szczecina). Szczegóły i relacje w serwisie wSzczecinie.pl.",
+    "tag": "Spotkania, wykłady, konferencje",
+    "source": "wSzczecinie.pl"
+  }
+]

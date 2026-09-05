@@ -8,8 +8,8 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     expect(APP_CENTER[1]).toBeCloseTo(53.4559, 3); // Latitude
   });
 
-  it('contains all 45 POI places with required schema and coordinates', () => {
-    expect(PLACES.length).toBe(45);
+  it('contains all 47 POI places with required schema and coordinates', () => {
+    expect(PLACES.length).toBe(47);
     for (const place of PLACES) {
       expect(place.id).toBeDefined();
       expect(place.name.length).toBeGreaterThan(0);
@@ -20,10 +20,20 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
       expect(place.coords[1]).toBeGreaterThan(53.3); // Latitude range for Szczecin
       expect(place.coords[1]).toBeLessThan(53.6);
     }
+
+    const pubKlatka = PLACES.find(p => p.name === 'Pub Klatka');
+    expect(pubKlatka).toBeDefined();
+    expect(pubKlatka?.addr).toContain('Łucznicza 43');
+    expect(pubKlatka?.desc).toContain('Wpadaj tam na piwo!');
+    expect(pubKlatka?.cat).toBe('food');
+
+    const laweczka = PLACES.find(p => p.name === 'Ławeczka Filozofów');
+    expect(laweczka).toBeDefined();
+    expect(laweczka?.cat).toBe('park');
   });
 
-  it('contains all 6 walking routes with stops and coordinates path', () => {
-    expect(ROUTES.length).toBe(6);
+  it('contains walking routes with stops and coordinates path', () => {
+    expect(ROUTES.length).toBe(7);
     for (const route of ROUTES) {
       expect(route.id).toBeGreaterThanOrEqual(1);
       expect(route.name.length).toBeGreaterThan(0);
@@ -31,10 +41,13 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
       expect(route.stops.length).toBeGreaterThan(0);
       expect(route.coords.length).toBeGreaterThan(1);
     }
+    const szlakDzikow = ROUTES.find(r => r.name === 'Szlak Przemarszu Dzików');
+    expect(szlakDzikow).toBeDefined();
+    expect(szlakDzikow?.emoji).toBe('🐗');
   });
 
   it('contains verified community events', () => {
-    expect(EVENTS.length).toBe(6);
+    expect(EVENTS.length).toBeGreaterThanOrEqual(6);
     for (const ev of EVENTS) {
       expect(ev.name.length).toBeGreaterThan(0);
       expect(ev.place.length).toBeGreaterThan(0);

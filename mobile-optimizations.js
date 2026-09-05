@@ -226,11 +226,12 @@ const MobileOptimizations = (() => {
       });
     });
 
-    // Reduce 300ms tap delay on mobile
+    // Reduce 300ms tap delay on mobile with feedback
     document.addEventListener('click', (e) => {
-      if (e.target.matches('.bnav-btn, button, a')) {
-        e.target.classList.add('active');
-        setTimeout(() => e.target.classList.remove('active'), 100);
+      const btn = e.target.closest('button:not(.bnav-btn):not(.nav-item), a:not(.bnav-btn):not(.nav-item)');
+      if (btn) {
+        btn.classList.add('active');
+        setTimeout(() => btn.classList.remove('active'), 120);
       }
     });
 

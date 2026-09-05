@@ -60,6 +60,7 @@ export interface CommunityEvent {
   place: string;
   desc: string;
   tag: string;
+  source?: string | undefined;
 }
 
 export interface AppDataModel {

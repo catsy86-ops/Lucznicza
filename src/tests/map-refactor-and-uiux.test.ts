@@ -1,4 +1,4 @@
-﻿import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 
@@ -46,10 +46,10 @@ describe('Map Refactoring & UI/UX Designer Upgrade Test Suite', () => {
     expect(styleCss).toContain('top: 92px;');
 
     // Top-left: Weather widget compact
-    expect(styleCss).toContain('top: 10px; left: 14px;');
+    expect(styleCss).toContain('calc(var(--header-h, 64px) + 12px); left: 14px;');
 
     // Top-right: Clock widget compact & Stats panel
-    expect(styleCss).toContain('top: 10px; right: 14px;');
+    expect(styleCss).toContain('calc(var(--header-h, 64px) + 12px); right: 14px;');
     expect(styleCss).toContain('top: 48px;');
 
     // Bottom-left: Layer panel & AQI

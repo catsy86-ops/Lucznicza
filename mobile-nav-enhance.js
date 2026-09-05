@@ -177,28 +177,13 @@ const MobileNavEnhance = (() => {
   }
 
   /**
-   * Handle swipe gestures
+   * Handle swipe gestures - keeps nav always visible and accessible
    */
   function handleSwipe() {
-    const swipeDistance = touchStart - touchEnd;
-    const swipeThreshold = 50;
-
-    if (Math.abs(swipeDistance) > swipeThreshold) {
-      if (swipeDistance > 0) {
-        // Swiped up - hide nav
-        const nav = document.querySelector('.bottom-nav');
-        if (nav && !isNavHidden) {
-          hideNav(nav);
-          isNavHidden = true;
-        }
-      } else {
-        // Swiped down - show nav
-        const nav = document.querySelector('.bottom-nav');
-        if (nav && isNavHidden) {
-          showNav(nav);
-          isNavHidden = false;
-        }
-      }
+    const nav = document.querySelector('.bottom-nav');
+    if (nav && isNavHidden) {
+      showNav(nav);
+      isNavHidden = false;
     }
   }
 

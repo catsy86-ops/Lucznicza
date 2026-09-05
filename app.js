@@ -41,12 +41,9 @@ const CAT_BG = {
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
-  // Restore theme from localStorage
-  const savedTheme = localStorage.getItem('lucznicza_theme');
-  if (savedTheme) {
-    state.isDark = savedTheme === 'dark';
-    document.documentElement.setAttribute('data-theme', state.isDark ? 'dark' : 'light');
-  }
+  // Restore theme from localStorage (dark, light, pogon)
+  const savedTheme = localStorage.getItem('lucznicza_theme') || 'dark';
+  applyTheme(savedTheme);
 
   // Splash screen — use requestAnimationFrame to avoid forced reflow
   setTimeout(() => {
@@ -184,9 +181,6 @@ function initMap() {
       maxZoom: 19
     });
 
-    // OpenStreetMap — default, crisp street map with full Niebuszewo labels & POIs
-    osmLayer.addTo(map);
-
     // Esri satellite imagery with boundaries & street labels overlay (100% Free, 0 API keys)
     const satelliteLayer = L.layerGroup([
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -198,6 +192,15 @@ function initMap() {
       })
     ]);
 
+    // OpenTopoMap layer — topographic contours, elevation and forests (100% Free)
+    const topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenTopoMap (CC-BY-SA)',
+      maxZoom: 17
+    });
+
+    // Set Satellite as default base layer for rich, high-resolution aerial experience
+    satelliteLayer.addTo(map);
+
     // Store layers for switching (100% free, zero API key required)
     state.baseLayers = {
       osm: osmLayer,
@@ -205,14 +208,15 @@ function initMap() {
       dark: darkLayer,
       voyager: cyclosmLayer,
       cyclosm: cyclosmLayer,
-      light: lightLayer
+      light: lightLayer,
+      topo: topoLayer
     };
-    state.currentBaseLayer = 'osm';
+    state.currentBaseLayer = 'satellite';
 
     // Scale control (bottom-left)
     L.control.scale({ position: 'bottomleft', metric: true, imperial: false }).addTo(map);
 
-    // Inverted Spotlight Mask — Dims everything outside Niebuszewo so the neighborhood stands out
+    // Inverted Spotlight Mask — Dims outer area subtly so Niebuszewo satellite imagery stays crisp
     const worldOuter = [
       [-90, -180],
       [90, -180],
@@ -235,20 +239,29 @@ function initMap() {
       [53.4470, 14.5445]
     ];
 
-    // Inverted mask polygon (outer world filled with subtle dark tint, Niebuszewo left bright & crisp)
+    // Inverted mask polygon (outer world with gentle dark tint, keeping Niebuszewo vibrant)
     L.polygon([worldOuter, niebuszewoBoundaryCoords], {
       stroke: false,
-      fillColor: '#0b111e',
-      fillOpacity: 0.38,
+      fillColor: '#070f1e',
+      fillOpacity: 0.22,
       interactive: false
     }).addTo(map);
 
-    // Glowing boundary contour of Niebuszewo in Pogoń / Szczecin navy & gold
+    // Outer glow polyline for crisp contrast on satellite
     L.polyline(niebuszewoBoundaryCoords, {
-      color: '#002D62',
-      weight: 3.5,
+      color: '#001a3d',
+      weight: 5,
       opacity: 0.85,
-      dashArray: '8, 4',
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(map);
+
+    // Glowing boundary contour of Niebuszewo in Pogoń gold
+    L.polyline(niebuszewoBoundaryCoords, {
+      color: '#FFD700',
+      weight: 2.5,
+      opacity: 0.95,
+      dashArray: '8, 5',
       lineCap: 'round',
       lineJoin: 'round'
     }).addTo(map);
@@ -715,12 +728,9 @@ function initUI() {
     renderPlaces(state.searchQuery);
   });
 
-  // Theme toggle
+  // Theme toggle with Pogoń Szczecin theme
   document.getElementById('themeBtn').addEventListener('click', () => {
-    state.isDark = !state.isDark;
-    document.documentElement.setAttribute('data-theme', state.isDark ? 'dark' : 'light');
-    localStorage.setItem('lucznicza_theme', state.isDark ? 'dark' : 'light');
-    showToast(state.isDark ? '🌙 Tryb ciemny' : '☀️ Tryb jasny');
+    cycleTheme();
   });
 
   // Keyboard shortcuts
@@ -728,19 +738,17 @@ function initUI() {
     // Don't trigger shortcuts when typing in inputs
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
     
-    // Number keys 1-7 for section navigation
+    // Number keys 1-8 for section navigation
     if (!e.ctrlKey && !e.metaKey && !e.altKey) {
-      const sections = ['map', 'places', 'routes', 'info', 'transport', 'events', 'live'];
+      const sections = ['map', 'places', 'routes', 'bikes', 'info', 'transport', 'events', 'live'];
       const num = parseInt(e.key);
-      if (num >= 1 && num <= 7) {
+      if (num >= 1 && num <= sections.length) {
         navigateTo(sections[num - 1]);
         return;
       }
       // 't' for theme toggle
       if (e.key === 't' || e.key === 'T') {
-        state.isDark = !state.isDark;
-        document.documentElement.setAttribute('data-theme', state.isDark ? 'dark' : 'light');
-        showToast(state.isDark ? '🌙 Tryb ciemny' : '☀️ Tryb jasny');
+        cycleTheme();
       }
     }
   });
@@ -753,6 +761,126 @@ function initUI() {
 
   initPlacesToolbar();
   initBottomSheet();
+  initSzczecinIsland();
+}
+
+// ===== THEME CONTROLLER (Dark / Light / Pogoń Szczecin) =====
+function applyTheme(themeName) {
+  state.currentTheme = themeName;
+  state.isDark = themeName !== 'light';
+  document.documentElement.setAttribute('data-theme', themeName);
+  localStorage.setItem('lucznicza_theme', themeName);
+  
+  const themeBtn = document.getElementById('themeBtn');
+  if (themeBtn) {
+    if (themeName === 'pogon') {
+      themeBtn.innerHTML = `<span style="font-size: 15px; line-height: 1;">🛡️</span>`;
+      themeBtn.setAttribute('title', 'Motyw Pogoń Szczecin (Duma Pomorza)');
+    } else if (themeName === 'light') {
+      themeBtn.innerHTML = `<svg class="island-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+      themeBtn.setAttribute('title', 'Tryb jasny');
+    } else {
+      themeBtn.innerHTML = `<svg class="island-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+      themeBtn.setAttribute('title', 'Tryb ciemny');
+    }
+  }
+}
+
+function cycleTheme() {
+  const current = state.currentTheme || (state.isDark ? 'dark' : 'light');
+  let next = 'dark';
+  if (current === 'dark') next = 'light';
+  else if (current === 'light') next = 'pogon';
+  else next = 'dark';
+
+  applyTheme(next);
+  if (next === 'pogon') {
+    showToast('🛡️ Motyw Pogoń Szczecin — Duma Pomorza!');
+  } else if (next === 'light') {
+    showToast('☀️ Tryb jasny');
+  } else {
+    showToast('🌙 Tryb ciemny');
+  }
+}
+
+window.applyTheme = applyTheme;
+window.cycleTheme = cycleTheme;
+
+// ===== SZCZECIN ISLAND ACTION CAPSULE LOGIC =====
+function initSzczecinIsland() {
+  const menuBtn = document.getElementById('islandMenuBtn');
+  const dropdown = document.getElementById('islandDropdownMenu');
+  if (!menuBtn || !dropdown) return;
+
+  menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isHidden = dropdown.classList.contains('hidden');
+    dropdown.classList.toggle('hidden');
+    menuBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+  });
+
+  dropdown.querySelectorAll('.idm-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const action = item.dataset.action;
+      dropdown.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+
+      switch (action) {
+        case 'bikes':
+          navigateTo('bikes');
+          showToast('🚲 Wybrano ścieżki i trasy rowerowe Szczecina');
+          break;
+        case 'zditm':
+          navigateTo('transport');
+          showToast('🚏 Odjazdy ZDiTM na żywo');
+          break;
+        case 'alert':
+          const alertFab = document.querySelector('.community-alert-fab');
+          if (alertFab) {
+            alertFab.click();
+          } else {
+            showToast('🐗 Ostrzeżenia osiedlowe i alerty dzików');
+          }
+          break;
+        case 'widgets':
+          if (window.WidgetDragManager && typeof window.WidgetDragManager.restoreAllWidgets === 'function') {
+            window.WidgetDragManager.restoreAllWidgets();
+            showToast('🧩 Przywrócono wszystkie widżety');
+          } else {
+            const dock = document.getElementById('widgetRestoreDock');
+            if (dock) dock.classList.toggle('open');
+          }
+          break;
+        case 'pogon':
+          applyTheme('pogon');
+          navigateTo('pogon');
+          showToast('🛡️ Aktywowano motyw Pogoń Szczecin — Duma Pomorza!');
+          break;
+      }
+    });
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (!dropdown.classList.contains('hidden') && !dropdown.contains(e.target) && !menuBtn.contains(e.target)) {
+      dropdown.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Keyboard shortcut Ctrl+K / Cmd+K and Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !dropdown.classList.contains('hidden')) {
+      dropdown.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      const searchBtn = document.getElementById('searchBtn');
+      if (searchBtn) searchBtn.click();
+    }
+  });
 }
 
 // ===== MODERN BOTTOM SHEET LOGIC =====
@@ -851,8 +979,14 @@ function initGoogleMapControls() {
   const thumbLabel = document.getElementById('googleLayerThumbLabel');
 
   if (thumbBtn && state.baseLayers) {
-    thumbBtn.style.backgroundImage = "url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/10762/17709')";
-    if (thumbLabel) thumbLabel.textContent = 'SATELITA';
+    // Initial state: satellite is active, so thumbnail shows alternate 'MAPA' layer
+    if (state.currentBaseLayer === 'satellite') {
+      thumbBtn.style.backgroundImage = "url('https://a.tile.openstreetmap.org/15/17709/10762.png')";
+      if (thumbLabel) thumbLabel.textContent = 'MAPA';
+    } else {
+      thumbBtn.style.backgroundImage = "url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/10762/17709')";
+      if (thumbLabel) thumbLabel.textContent = 'SATELITA';
+    }
 
     thumbBtn.onclick = () => {
       const map = state.map;
@@ -957,7 +1091,133 @@ function initGoogleMapControls() {
       );
     };
   }
+
+  // Centralized Center button (Łucznicza 43)
+  const centerBtn = document.getElementById('btnCenterLucznicza');
+  if (centerBtn) {
+    centerBtn.onclick = () => {
+      const map = state.map;
+      if (!map) return;
+      map.flyTo([53.4530, 14.5520], 15, { animate: true, duration: 1.2 });
+      showToast('🏹 Powrót do centrum (Łucznicza 43)');
+    };
+  }
+
+  // Wire fabReset to center function
+  const fabReset = document.getElementById('fabReset');
+  if (fabReset) {
+    fabReset.onclick = () => {
+      const map = state.map;
+      if (!map) return;
+      map.flyTo([53.4530, 14.5520], 15, { animate: true, duration: 1.2 });
+      showToast('🏹 Powrót do centrum (Łucznicza 43)');
+    };
+  }
+
+  // Fullscreen button
+  const fsBtn = document.getElementById('fabFullscreen');
+  if (fsBtn) {
+    fsBtn.onclick = () => {
+      if (typeof toggleFullscreen === 'function') {
+        toggleFullscreen();
+      } else {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen?.();
+        } else {
+          document.exitFullscreen?.();
+        }
+      }
+    };
+  }
+
+  // Wire Map Style Quick Button and Modes Popover
+  const styleQuickBtn = document.getElementById('mapStyleQuickBtn');
+  const modesPopover = document.getElementById('mapModesPopover');
+  const modesClose = document.getElementById('mapModesClose');
+
+  if (styleQuickBtn && modesPopover) {
+    styleQuickBtn.onclick = (e) => {
+      e.stopPropagation();
+      modesPopover.classList.toggle('hidden');
+    };
+
+    if (modesClose) {
+      modesClose.onclick = (e) => {
+        e.stopPropagation();
+        modesPopover.classList.add('hidden');
+      };
+    }
+
+    document.querySelectorAll('.map-mode-chip').forEach(chip => {
+      chip.onclick = (e) => {
+        e.stopPropagation();
+        const style = chip.dataset.style;
+        if (style) {
+          switchMapLayer(style);
+          modesPopover.classList.add('hidden');
+        }
+      };
+    });
+
+    document.addEventListener('click', (e) => {
+      if (modesPopover && !modesPopover.contains(e.target) && e.target !== styleQuickBtn) {
+        modesPopover.classList.add('hidden');
+      }
+    });
+  }
 }
+
+// Global base layer switcher supporting 6 modes
+function switchMapLayer(styleKey) {
+  const map = state.map;
+  if (!map || !state.baseLayers || !state.baseLayers[styleKey]) return;
+
+  if (state.baseLayers[state.currentBaseLayer] && map.hasLayer(state.baseLayers[state.currentBaseLayer])) {
+    map.removeLayer(state.baseLayers[state.currentBaseLayer]);
+  }
+  state.baseLayers[styleKey].addTo(map);
+  if (state.baseLayers[styleKey].bringToBack) {
+    state.baseLayers[styleKey].bringToBack();
+  }
+  state.currentBaseLayer = styleKey;
+  try {
+    localStorage.setItem('lucznicza_map_style', styleKey);
+  } catch {}
+
+  const thumbBtn = document.getElementById('googleLayerThumbBtn');
+  const thumbLabel = document.getElementById('googleLayerThumbLabel');
+  if (thumbBtn && thumbLabel) {
+    if (styleKey === 'satellite') {
+      thumbBtn.style.backgroundImage = "url('https://a.tile.openstreetmap.org/15/17709/10762.png')";
+      thumbLabel.textContent = 'MAPA';
+    } else {
+      thumbBtn.style.backgroundImage = "url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/10762/17709')";
+      thumbLabel.textContent = 'SATELITA';
+    }
+  }
+
+  const styleNames = {
+    satellite: { icon: '🛰️', label: 'Satelita HD' },
+    osm:       { icon: '🗺️', label: 'Standard' },
+    cyclosm:   { icon: '🚲', label: 'Rowerowa' },
+    dark:      { icon: '🌙', label: 'Nocna' },
+    light:     { icon: '☀️', label: 'Jasna' },
+    topo:      { icon: '🏔️', label: 'Topograficzna' }
+  };
+  const iconEl = document.getElementById('mapStyleQuickIcon');
+  const labelEl = document.getElementById('mapStyleQuickLabel');
+  if (iconEl && styleNames[styleKey]) iconEl.textContent = styleNames[styleKey].icon;
+  if (labelEl && styleNames[styleKey]) labelEl.textContent = styleNames[styleKey].label;
+
+  document.querySelectorAll('.map-mode-chip').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.style === styleKey);
+  });
+
+  const name = styleNames[styleKey]?.label || styleKey;
+  const icon = styleNames[styleKey]?.icon || '🗺️';
+  showToast(`${icon} Styl mapy: ${name}`);
+}
+window.switchMapLayer = switchMapLayer;
 
 // ===== NIEBUSZEWO CAMERA FOCUS PRESETS =====
 function flyToPreset(presetId) {
@@ -1047,6 +1307,8 @@ function requestUserLocation(callback) {
 // ===== NAVIGATION =====
 function navigateTo(section) {
   state.currentSection = section;
+  document.body.classList.toggle('is-map-view', section === 'map');
+  document.body.setAttribute('data-active-section', section);
 
   document.querySelectorAll('.section').forEach(s => {
     s.classList.remove('active');
@@ -1066,6 +1328,31 @@ function navigateTo(section) {
   document.querySelectorAll('.bnav-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.section === section);
   });
+
+  // Bottom sheet only appears on map section
+  const sheet = document.getElementById('modernBottomSheet');
+  if (sheet) {
+    if (section === 'map') {
+      sheet.classList.remove('hidden');
+    } else {
+      sheet.classList.add('hidden');
+      sheet.classList.remove('state-half', 'state-full');
+      const toggleBtn = document.getElementById('sheetToggleBtn');
+      if (toggleBtn) toggleBtn.textContent = 'Rozwiń 🔼';
+    }
+  }
+
+  // Restore dock visibility
+  const restoreDock = document.getElementById('widgetRestoreDock');
+  if (restoreDock) {
+    if (section === 'map') {
+      if (window.WidgetDragManager && window.WidgetDragManager.getClosedCount() > 0) {
+        restoreDock.classList.remove('hidden');
+      }
+    } else {
+      restoreDock.classList.add('hidden');
+    }
+  }
 
   // If map section, invalidate size so Leaflet redraws tiles
   if (section === 'map' && state.map) {
@@ -1893,6 +2180,7 @@ function renderEventCards(filter = 'all') {
         <div class="event-desc">${e.desc}</div>
         <div class="event-footer">
           <span class="event-tag">${e.tag}</span>
+          ${e.source ? `<span class="event-tag" style="background:rgba(65,175,187,0.15);color:#41afbb;border:1px solid rgba(65,175,187,0.3)">🌐 ${e.source}</span>` : ''}
           <button class="event-remind-btn ${hasReminder ? 'active' : ''}"
             onclick="toggleEventReminder('${eventId}','${e.name.replace(/'/g,"\\'")}','${e.day}','${e.month}');this.classList.toggle('active')"
             title="${hasReminder ? 'Usuń przypomnienie' : 'Przypomnij mi'}">

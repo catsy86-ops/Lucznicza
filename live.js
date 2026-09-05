@@ -72,7 +72,8 @@ function initLive() {
   // Batch initial API calls (parallel fetch for better performance)
   Promise.allSettled([
     fetchWeather(),
-    fetchAqi()
+    fetchAqi(),
+    fetchImgw()
   ]).then(() => {
     buildTicker();
   });
@@ -224,6 +225,16 @@ function renderWeatherWidget(c) {
   document.getElementById('wHumidity').textContent = `💧 ${c.relative_humidity_2m}%`;
   document.getElementById('wPressure').textContent = `🌡️ ${Math.round(c.surface_pressure)} hPa`;
   document.getElementById('wUV').textContent = `☀️ UV ${c.uv_index}`;
+
+  const hydroEl = document.getElementById('wHydro');
+  if (hydroEl) {
+    if (live.imgw && live.imgw.hydro && live.imgw.hydro.waterLevel) {
+      hydroEl.textContent = `🌊 Odra: ${live.imgw.hydro.waterLevel} cm`;
+      hydroEl.style.display = 'inline';
+    } else {
+      hydroEl.style.display = 'none';
+    }
+  }
 
   const now = new Date();
   document.getElementById('wUpdated').textContent =

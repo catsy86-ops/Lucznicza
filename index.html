@@ -78,7 +78,7 @@
 
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="is-map-view">
 
   <!-- Skip to main content (accessibility) -->
   <a href="#main-content" class="skip-link">Przejdź do treści głównej</a>
@@ -178,8 +178,8 @@
           <span></span><span></span><span></span>
         </button>
         <div class="header-brand-logo header-title" id="headerBrandLogo" role="banner" aria-label="Łucznicza Guide — Szczecin Duma Pomorza">
-          <div class="logo-emblem-wrap">
-            <svg class="pogon-crest-svg" viewBox="0 0 44 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <div class="logo-emblem-wrap" style="width: 40px; height: 44px; flex-shrink: 0;">
+            <svg class="pogon-crest-svg" width="40" height="44" viewBox="0 0 44 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width: 40px; height: 44px; display: block;">
               <defs>
                 <linearGradient id="pogonNavy" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#002D62" />
@@ -239,20 +239,86 @@
         </div>
       </div>
       <div class="header-right">
-        <button class="icon-btn zen-btn" id="zenMapBtn" title="Tryb Czystej Mapy (Z)" aria-label="Włącz / wyłącz tryb czystej mapy">
-          <span class="zen-btn-icon">👁️</span>
-          <span class="zen-btn-badge">Zen</span>
-        </button>
-        <button class="icon-btn" id="searchBtn" aria-label="Szukaj">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-          </svg>
-        </button>
-        <button class="icon-btn" id="themeBtn" aria-label="Zmień motyw">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
+        <!-- Szczecin Island Action Capsule -->
+        <div class="szczecin-island" id="szczecinIsland">
+          <!-- Quick Search Pill -->
+          <button class="szczecin-island-btn search-pill-btn" id="searchBtn" aria-label="Szukaj (Ctrl+K)">
+            <svg class="island-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <span class="search-pill-text">Szukaj...</span>
+            <kbd class="search-pill-kbd">⌘K</kbd>
+          </button>
+          
+          <div class="island-divider"></div>
+
+          <!-- Zen Mode -->
+          <button class="szczecin-island-btn zen-btn" id="zenMapBtn" title="Tryb Czystej Mapy (Z)" aria-label="Włącz / wyłącz tryb czystej mapy">
+            <span class="zen-btn-icon">👁️</span>
+            <span class="zen-btn-badge">Zen</span>
+          </button>
+
+          <div class="island-divider"></div>
+
+          <!-- Theme Toggle -->
+          <button class="szczecin-island-btn icon-only-btn" id="themeBtn" aria-label="Zmień motyw">
+            <svg class="island-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+
+          <div class="island-divider"></div>
+
+          <!-- Quick Dzielnica Menu Overflow -->
+          <button class="szczecin-island-btn icon-only-btn island-menu-trigger" id="islandMenuBtn" aria-label="Szybkie menu dzielnicy" aria-expanded="false" aria-haspopup="true">
+            <span class="island-dots">⋯</span>
+          </button>
+        </div>
+
+        <!-- Szczecin Island Dropdown Menu -->
+        <div class="island-dropdown-menu hidden" id="islandDropdownMenu" role="menu" aria-label="Menu szybkich akcji">
+          <div class="idm-header">
+            <span class="idm-title">⚔️ Łucznicza & Niebuszewo</span>
+            <span class="idm-badge">Szybki Dostęp</span>
+          </div>
+          <div class="idm-list">
+            <button class="idm-item" data-action="bikes">
+              <span class="idm-icon">🚲</span>
+              <div class="idm-text">
+                <strong>Ścieżki Rowerowe</strong>
+                <small>Trasy, nawierzchnie i stacje BikeS</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="zditm">
+              <span class="idm-icon">🚏</span>
+              <div class="idm-text">
+                <strong>Odjazdy ZDiTM</strong>
+                <small>Tablice przystankowe na żywo</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="alert">
+              <span class="idm-icon">🐗</span>
+              <div class="idm-text">
+                <strong>Alert Dzik / Bezpieczeństwo</strong>
+                <small>Zgłoś zdarzenie na osiedlu</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="widgets">
+              <span class="idm-icon">🧩</span>
+              <div class="idm-text">
+                <strong>Zarządzaj Widżetami</strong>
+                <small>Przywróć lub ukryj pogodę, zegar i AQI</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="pogon">
+              <span class="idm-icon">🛡️</span>
+              <div class="idm-text">
+                <strong>Motyw Pogoń Szczecin</strong>
+                <small>Duma Pomorza — barwy klubowe i historia</small>
+              </div>
+            </button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -277,6 +343,10 @@
         </a>
         <a href="#" class="nav-item" data-section="routes">
           <span class="nav-icon">🚶</span> Trasy
+        </a>
+        <a href="#" class="nav-item" data-section="bikes">
+          <span class="nav-icon">🚲</span> Ścieżki rowerowe
+          <span class="nav-badge" style="background:#10b981; color:#fff; font-size:9px; padding:1px 6px; border-radius:10px; font-weight:700;">NOWOŚĆ</span>
         </a>
         <a href="#" class="nav-item" data-section="info">
           <span class="nav-icon">ℹ️</span> O dzielnicy
@@ -328,14 +398,94 @@
             <span class="zrp-text">Przywróć widżety</span>
           </button>
 
+          <!-- HIGH-VISIBILITY MAP CONTROLS DOCK (LEWY PANEL NARZĘDZI MAPY) -->
+          <div class="map-left-dock" id="mapLeftDock" role="toolbar" aria-label="Narzędzia mapy">
+            <!-- Przełącznik trybów mapy (Satelita, Standard, Rower, Noc, Topo) -->
+            <button class="mld-btn" id="mapStyleQuickBtn" title="Zmień styl mapy (Satelita, Rower, Noc, Topo...)" aria-label="Zmień styl mapy">
+              <span class="mld-icon" id="mapStyleQuickIcon">🛰️</span>
+              <span class="mld-label" id="mapStyleQuickLabel">Satelita</span>
+            </button>
+
+            <!-- Powrót do centrum (Łucznicza 43) -->
+            <button class="mld-btn" id="fabReset" title="Wyśrodkuj na Łucznicza 43 / Centrum Osiedla" aria-label="Powrót do centrum">
+              <span class="mld-icon">🏹</span>
+              <span class="mld-label">Centrum</span>
+            </button>
+
+            <!-- Twoja lokalizacja GPS -->
+            <button class="mld-btn" id="googleLocateBtn" title="Twoja lokalizacja (GPS)" aria-label="Twoja lokalizacja">
+              <span class="mld-icon">🎯</span>
+              <span class="mld-label">GPS</span>
+            </button>
+
+            <!-- Pełny ekran -->
+            <button class="mld-btn" id="fabFullscreen" title="Pełny ekran (F)" aria-label="Pełny ekran">
+              <span class="mld-icon">⛶</span>
+              <span class="mld-label">Ekran</span>
+            </button>
+          </div>
+
+          <!-- MAP MODES SELECTOR POPOVER (6 trybów mapy) -->
+          <div class="map-modes-popover hidden" id="mapModesPopover" role="dialog" aria-label="Wybierz styl mapy">
+            <div class="mmp-header">
+              <span>🗺️ Wybierz Styl Mapy</span>
+              <button class="mmp-close" id="mapModesClose" type="button" aria-label="Zamknij">✕</button>
+            </div>
+            <div class="mmp-grid">
+              <button class="map-mode-chip active" data-style="satellite" type="button">
+                <span class="mmc-icon">🛰️</span>
+                <div class="mmc-info">
+                  <span class="mmc-title">Satelita HD</span>
+                  <span class="mmc-desc">Zdjęcia lotnicze Esri + ulice</span>
+                </div>
+                <span class="mmc-check">✓</span>
+              </button>
+              <button class="map-mode-chip" data-style="osm" type="button">
+                <span class="mmc-icon">🗺️</span>
+                <div class="mmc-info">
+                  <span class="mmc-title">Standardowa</span>
+                  <span class="mmc-desc">Klasyczna mapa OSM</span>
+                </div>
+                <span class="mmc-check">✓</span>
+              </button>
+              <button class="map-mode-chip" data-style="cyclosm" type="button">
+                <span class="mmc-icon">🚲</span>
+                <div class="mmc-info">
+                  <span class="mmc-title">Rowerowa</span>
+                  <span class="mmc-desc">Trasy i stojaki BikeS</span>
+                </div>
+                <span class="mmc-check">✓</span>
+              </button>
+              <button class="map-mode-chip" data-style="dark" type="button">
+                <span class="mmc-icon">🌙</span>
+                <div class="mmc-info">
+                  <span class="mmc-title">Nocna / Pogoń</span>
+                  <span class="mmc-desc">Ciemny motyw osiedlowy</span>
+                </div>
+                <span class="mmc-check">✓</span>
+              </button>
+              <button class="map-mode-chip" data-style="light" type="button">
+                <span class="mmc-icon">☀️</span>
+                <div class="mmc-info">
+                  <span class="mmc-title">Jasna</span>
+                  <span class="mmc-desc">Minimalistyczna dzienna</span>
+                </div>
+                <span class="mmc-check">✓</span>
+              </button>
+              <button class="map-mode-chip" data-style="topo" type="button">
+                <span class="mmc-icon">🏔️</span>
+                <div class="mmc-info">
+                  <span class="mmc-title">Topograficzna</span>
+                  <span class="mmc-desc">Poziomice i ukształtowanie</span>
+                </div>
+                <span class="mmc-check">✓</span>
+              </button>
+            </div>
+          </div>
+
           <!-- Google Style Layer Toggle (Thumbnail in corner) -->
           <button class="google-layer-thumb-btn" id="googleLayerThumbBtn" title="Przełącz Satelita / Mapa" style="background-image: url('https://a.tile.openstreetmap.org/15/17709/10762.png');">
             <span class="google-layer-thumb-label" id="googleLayerThumbLabel">MAPA</span>
-          </button>
-
-          <!-- Google Floating GPS Button -->
-          <button class="google-locate-btn" id="googleLocateBtn" title="Twoja lokalizacja">
-            🎯
           </button>
 
           <!-- Citizen Alert FAB: Dzik / Awaria / Usterka -->
@@ -422,6 +572,9 @@
           <div class="routes-list" id="routesList"></div>
         </div>
       </section>
+
+      <!-- BICYCLE ROUTES & NETWORK SECTION -->
+      <section id="section-bikes" class="section hidden"></section>
 
       <!-- INFO SECTION -->
       <section id="section-info" class="section hidden">
@@ -643,53 +796,40 @@
     </main>
 
     <!-- BOTTOM NAV (mobile) -->
-    <nav class="bottom-nav" aria-label="Nawigacja główna">
-      <button class="bnav-btn active" data-section="map">
+    <nav class="bottom-nav" id="bottomNav" aria-label="Główna nawigacja mobilna">
+      <button class="bnav-btn active" data-section="map" aria-label="Mapa">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
         </svg>
         <span>Mapa</span>
       </button>
-      <button class="bnav-btn" data-section="places">
+      <button class="bnav-btn" data-section="places" aria-label="Miejsca">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
           <circle cx="12" cy="10" r="3"/>
         </svg>
         <span>Miejsca</span>
       </button>
-      <button class="bnav-btn" data-section="routes">
+      <button class="bnav-btn" data-section="routes" aria-label="Trasy">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M3 3h6l6 18h6"/><path d="M14 3h7"/>
         </svg>
         <span>Trasy</span>
       </button>
-      <button class="bnav-btn" data-section="info">
+      <button class="bnav-btn" data-section="transport" aria-label="Odjazdy ZDiTM">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 16v-4m0-4h.01"/>
+          <rect x="3" y="3" width="18" height="16" rx="2"/>
+          <path d="M3 9h18"/>
+          <circle cx="7.5" cy="15" r="1"/><circle cx="16.5" cy="15" r="1"/>
         </svg>
-        <span>Info</span>
+        <span>Odjazdy</span>
       </button>
-      <button class="bnav-btn" data-section="transport">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="1" y="3" width="15" height="13" rx="2"/>
-          <path d="M16 8h4l3 3v5h-7V8z"/>
-          <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-        </svg>
-        <span>Transport</span>
-      </button>
-      <button class="bnav-btn" data-section="live">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
-        </svg>
-        <span class="bnav-live">Na żywo</span>
-      </button>
-      <button class="bnav-btn" data-section="community">
+      <button class="bnav-btn" data-section="community" aria-label="Społeczność osiedla">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
           <path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/>
         </svg>
-        <span>Społeczność</span>
+        <span>Osiedle</span>
       </button>
     </nav>
 
@@ -838,7 +978,10 @@
             <span class="w-temp" id="wTemp">--°</span>
             <span class="w-feels" id="wFeels">odczuwalna --°</span>
           </div>
-          <button class="w-minimize-btn widget-min-btn" id="weatherMinimizeBtn" title="Minimalizuj / rozwiń pogodę" aria-label="Minimalizuj widżet pogody">▾</button>
+          <div class="widget-controls-group">
+            <button class="w-minimize-btn widget-min-btn" id="weatherMinimizeBtn" title="Minimalizuj / rozwiń pogodę" aria-label="Minimalizuj widżet pogody">▾</button>
+            <button class="widget-close-btn" id="weatherCloseBtn" title="Zamknij widżet pogody" aria-label="Zamknij widżet pogody">✕</button>
+          </div>
         </div>
         <div class="w-bottom">
           <span class="w-desc" id="wDesc">Ładowanie...</span>
@@ -848,6 +991,7 @@
           <span id="wHumidity">💧 --%</span>
           <span id="wPressure">🌡️ -- hPa</span>
           <span id="wUV">☀️ UV --</span>
+          <span id="wHydro" title="Poziom Odry (stacja Szczecin Most Długi / IMGW)">🌊 Odra: --</span>
         </div>
         <div class="w-updated" id="wUpdated">-- : --</div>
       </div>
@@ -858,6 +1002,7 @@
       <div class="widget-header-controls">
         <span class="widget-drag-handle" title="Przeciągnij zegar" aria-label="Przeciągnij">⠿</span>
         <button class="widget-min-btn" id="clockMinimizeBtn" title="Zwiń / rozwiń zegar" aria-label="Zwiń zegar">▾</button>
+        <button class="widget-close-btn" id="clockCloseBtn" title="Zamknij zegar" aria-label="Zamknij zegar">✕</button>
       </div>
       <div class="clock-time" id="clockTime">--:--:--</div>
       <div class="clock-date" id="clockDate">-- --- ----</div>
@@ -894,11 +1039,28 @@
       <div class="widget-header-controls">
         <span class="widget-drag-handle" title="Przeciągnij jakość powietrza" aria-label="Przeciągnij">⠿</span>
         <button class="widget-min-btn" id="aqiMinimizeBtn" title="Zwiń / rozwiń jakość powietrza" aria-label="Zwiń jakość powietrza">▾</button>
+        <button class="widget-close-btn" id="aqiCloseBtn" title="Zamknij jakość powietrza" aria-label="Zamknij jakość powietrza">✕</button>
       </div>
       <div class="aqi-label">Jakość powietrza</div>
       <div class="aqi-value" id="aqiValue">--</div>
       <div class="aqi-desc" id="aqiDesc">Ładowanie...</div>
       <div class="aqi-bar"><div class="aqi-fill" id="aqiFill" style="width:0%"></div></div>
+    </div>
+
+    <!-- WIDGET RESTORE DOCK -->
+    <div class="widget-restore-dock hidden" id="widgetRestoreDock" aria-label="Przywróć zamknięte widżety">
+      <button class="wrd-trigger-btn" id="wrdTriggerBtn" title="Zarządzaj widżetami na mapie">
+        <span class="wrd-icon">🧩</span>
+        <span class="wrd-label">Widżety</span>
+        <span class="wrd-badge" id="wrdBadge">0</span>
+      </button>
+      <div class="wrd-dropdown hidden" id="wrdDropdown">
+        <div class="wrd-header">
+          <span>Ukryte widżety</span>
+          <button class="wrd-restore-all-btn" id="wrdRestoreAllBtn" type="button">Przywróć wszystkie</button>
+        </div>
+        <div class="wrd-list" id="wrdList"></div>
+      </div>
     </div>
 
     <!-- LIVE TRANSPORT BTN (on map) -->
@@ -967,42 +1129,7 @@
       </div>
     </div>
 
-    <!-- BOTTOM NAV (Mobile First, Thumb Zone Ergonomics) -->
-    <nav class="bottom-nav" id="bottomNav" aria-label="Główna nawigacja mobilna">
-      <button class="bnav-btn active" data-section="map" aria-label="Mapa">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-          <line x1="8" y1="2" x2="8" y2="18"></line>
-          <line x1="16" y1="6" x2="16" y2="22"></line>
-        </svg>
-        <span>Mapa</span>
-      </button>
-      <button class="bnav-btn" data-section="places" aria-label="Miejsca">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-          <circle cx="12" cy="10" r="3"></circle>
-        </svg>
-        <span>Miejsca</span>
-      </button>
-      <button class="bnav-btn" data-section="transport" aria-label="Odjazdy ZDiTM">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="18" height="16" rx="2"></rect>
-          <path d="M3 9h18"></path>
-          <circle cx="7.5" cy="15" r="1"></circle>
-          <circle cx="16.5" cy="15" r="1"></circle>
-        </svg>
-        <span>Odjazdy</span>
-      </button>
-      <button class="bnav-btn" data-section="community" aria-label="Społeczność">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-        <span>Osiedle</span>
-      </button>
-    </nav>
+
 
   </div><!-- /#app -->
 
@@ -1033,10 +1160,12 @@
   <script src="user-profile.js"></script>
   <script src="routes-meetup.js"></script>
   <script src="ux-enhancements.js"></script>
+  <script src="bike-routes.js"></script>
   <script src="pwa.js"></script>
   <script src="pull-refresh.js"></script>
   <script src="pogon-mascot.js"></script>
   <script src="app.js"></script>
+  <script src="events-live-sync.js"></script>
   <script src="live.js"></script>
   <!-- Modern TypeScript / ESM Bundle Entrypoint -->
   <script type="module" src="/src/main.ts"></script>

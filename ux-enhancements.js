@@ -452,15 +452,17 @@ window.placeNotes = { getNote, saveNote, renderNoteSection };
 
 const WidgetDragManager = {
   registeredWidgets: [
-    { id: 'weatherWidget', minClass: 'minimized', hasMinBtn: true },
-    { id: 'clockWidget', minClass: 'minimized', hasMinBtn: true },
-    { id: 'aqiWidget', minClass: 'minimized', hasMinBtn: true },
-    { id: 'mapStatsPanel', minClass: 'collapsed', hasMinBtn: false },
-    { id: 'layerPanel', minClass: 'collapsed', hasMinBtn: false }
+    { id: 'weatherWidget', name: 'Pogoda', icon: '☀️', minClass: 'minimized', hasMinBtn: true, canClose: true },
+    { id: 'clockWidget', name: 'Zegar', icon: '⏰', minClass: 'minimized', hasMinBtn: true, canClose: true },
+    { id: 'aqiWidget', name: 'Jakość powietrza', icon: '🌿', minClass: 'minimized', hasMinBtn: true, canClose: true },
+    { id: 'mapStatsPanel', name: 'Centrum Dzielnicy', icon: '📊', minClass: 'collapsed', hasMinBtn: false, canClose: true },
+    { id: 'layerPanel', name: 'Warstwy', icon: '🗺️', minClass: 'collapsed', hasMinBtn: false, canClose: false }
   ],
 
   init() {
+    this.initRestoreDock();
     this.bindWidgets();
+    this.initCategoryFilterScroll();
     // Re-check for dynamically created widgets (mapStatsPanel, layerPanel)
     let checks = 0;
     const checkInterval = setInterval(() => {
@@ -473,14 +475,57 @@ const WidgetDragManager = {
     window.addEventListener('resize', () => this.handleResize());
   },
 
+  initRestoreDock() {
+    const dock = document.getElementById('widgetRestoreDock');
+    const trigger = document.getElementById('wrdTriggerBtn');
+    const dropdown = document.getElementById('wrdDropdown');
+    const restoreAllBtn = document.getElementById('wrdRestoreAllBtn');
+
+    if (trigger && dropdown) {
+      trigger.onclick = (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('hidden');
+      };
+
+      document.addEventListener('click', (e) => {
+        if (dock && !dock.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
+      });
+    }
+
+    if (restoreAllBtn) {
+      restoreAllBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.restoreAllWidgets();
+        if (dropdown) dropdown.classList.add('hidden');
+      };
+    }
+
+    this.updateRestoreDock();
+  },
+
   bindWidgets() {
     this.registeredWidgets.forEach(wConfig => {
       const el = document.getElementById(wConfig.id);
       if (!el) return;
 
+      // Check if closed in localStorage
+      const isClosed = localStorage.getItem(`widget_closed_${wConfig.id}`) === '1';
+      if (isClosed) {
+        el.classList.add('widget-hidden');
+      }
+
       if (!el.dataset.dragInitialized) {
         el.dataset.dragInitialized = 'true';
         el.classList.add('draggable-widget');
+
+        if (window.L?.DomEvent) {
+          try {
+            L.DomEvent.disableClickPropagation(el);
+            L.DomEvent.disableScrollPropagation(el);
+          } catch {}
+        }
 
         // Inject handle and minimize button if not present
         this.ensureControls(el, wConfig);
@@ -495,6 +540,8 @@ const WidgetDragManager = {
         this.attachDragEvents(el);
       }
     });
+
+    this.updateRestoreDock();
   },
 
   ensureControls(el, config) {
@@ -524,16 +571,35 @@ const WidgetDragManager = {
       minBtn.title = 'Zwiń / rozwiń widżet';
       minBtn.setAttribute('aria-label', 'Zwiń lub rozwiń');
       minBtn.textContent = '▾';
-      minBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.toggleMinimize(config.id);
-      });
-
       const topRow = el.querySelector('.widget-header-controls') || el.querySelector('.w-top');
       if (topRow) {
         topRow.appendChild(minBtn);
       }
     }
+
+    // Attach robust listeners to all minimize buttons on this widget
+    el.querySelectorAll('.widget-min-btn, .w-minimize-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.toggleMinimize(config.id);
+      };
+      btn.onpointerdown = (e) => e.stopPropagation();
+      btn.ontouchstart = (e) => e.stopPropagation();
+      btn.onmousedown = (e) => e.stopPropagation();
+    });
+
+    // Attach robust listeners to all close buttons on this widget
+    el.querySelectorAll('.widget-close-btn, .msp-close-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.closeWidget(config.id);
+      };
+      btn.onpointerdown = (e) => e.stopPropagation();
+      btn.ontouchstart = (e) => e.stopPropagation();
+      btn.onmousedown = (e) => e.stopPropagation();
+    });
 
     // Double click header or handle to toggle minimize
     el.addEventListener('dblclick', (e) => {
@@ -541,6 +607,100 @@ const WidgetDragManager = {
       e.stopPropagation();
       this.toggleMinimize(config.id);
     });
+  },
+
+  closeWidget(widgetId) {
+    const config = this.registeredWidgets.find(w => w.id === widgetId);
+    const el = document.getElementById(widgetId);
+    if (!el || !config) return;
+
+    el.classList.add('widget-hidden');
+    try {
+      localStorage.setItem(`widget_closed_${widgetId}`, '1');
+    } catch {}
+
+    this.updateRestoreDock();
+
+    if (typeof showToast === 'function') {
+      showToast(`Ukryto widżet: ${config.name}. Możesz go przywrócić w doku widżetów.`);
+    }
+  },
+
+  restoreWidget(widgetId) {
+    const config = this.registeredWidgets.find(w => w.id === widgetId);
+    const el = document.getElementById(widgetId);
+    if (!el || !config) return;
+
+    el.classList.remove('widget-hidden');
+    try {
+      localStorage.removeItem(`widget_closed_${widgetId}`);
+    } catch {}
+
+    this.updateRestoreDock();
+
+    if (typeof showToast === 'function') {
+      showToast(`Przywrócono widżet: ${config.name}`);
+    }
+  },
+
+  restoreAllWidgets() {
+    this.registeredWidgets.forEach(config => {
+      const el = document.getElementById(config.id);
+      if (el) {
+        el.classList.remove('widget-hidden');
+      }
+      try {
+        localStorage.removeItem(`widget_closed_${config.id}`);
+      } catch {}
+    });
+
+    this.updateRestoreDock();
+
+    if (typeof showToast === 'function') {
+      showToast('Wszystkie widżety zostały przywrócone');
+    }
+  },
+
+  getClosedCount() {
+    return this.registeredWidgets.filter(w => {
+      const el = document.getElementById(w.id);
+      return el && el.classList.contains('widget-hidden');
+    }).length;
+  },
+
+  updateRestoreDock() {
+    const dock = document.getElementById('widgetRestoreDock');
+    const badge = document.getElementById('wrdBadge');
+    const list = document.getElementById('wrdList');
+    if (!dock) return;
+
+    const closedWidgets = this.registeredWidgets.filter(w => {
+      const el = document.getElementById(w.id);
+      return el && el.classList.contains('widget-hidden');
+    });
+
+    const count = closedWidgets.length;
+    if (badge) badge.textContent = count;
+
+    if (list) {
+      if (count === 0) {
+        list.innerHTML = '<div class="wrd-empty">Wszystkie widżety są widoczne</div>';
+      } else {
+        list.innerHTML = closedWidgets.map(w => `
+          <div class="wrd-item">
+            <span class="wrd-item-name">${w.icon || '📌'} ${w.name}</span>
+            <button class="wrd-item-restore-btn" onclick="WidgetDragManager.restoreWidget('${w.id}')">Przywróć</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    const currentSection = window.state?.currentSection || 'map';
+    if (count > 0 && currentSection === 'map') {
+      dock.classList.remove('hidden');
+    } else {
+      dock.classList.add('hidden');
+    }
   },
 
   attachDragEvents(el) {
@@ -552,13 +712,18 @@ const WidgetDragManager = {
 
     const onPointerDown = (e) => {
       // Don't drag if clicking buttons, links, inputs, or interactive items
-      const isInteractive = e.target.closest('button:not(.msp-toggle-btn):not(.lp-toggle-pill), a, input, select, textarea, .msp-cat-chip, .msp-close-btn, .cat-btn, .w-minimize-btn, .widget-min-btn');
+      const isInteractive = e.target.closest('button, a, input, select, textarea, .msp-cat-chip, .msp-close-btn, .widget-close-btn, .cat-btn, .w-minimize-btn, .widget-min-btn');
       const isHandle = e.target.closest('.widget-drag-handle');
 
       if (isInteractive && !isHandle) return;
 
       // Only primary mouse button or touch
       if (e.button !== undefined && e.button !== 0) return;
+
+      e.stopPropagation();
+      if (window.L?.DomEvent) {
+        try { L.DomEvent.stopPropagation(e); } catch {}
+      }
 
       isDragging = true;
       hasMoved = false;
@@ -573,8 +738,6 @@ const WidgetDragManager = {
       try {
         el.setPointerCapture(pointerId);
       } catch {}
-
-      el.classList.add('is-dragging');
     };
 
     const onPointerMove = (e) => {
@@ -585,29 +748,34 @@ const WidgetDragManager = {
 
       if (!hasMoved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
         hasMoved = true;
+        el.classList.add('is-dragging');
       }
 
       if (!hasMoved) return;
 
-      e.preventDefault();
+      e.stopPropagation();
+      if (window.L?.DomEvent) {
+        try { L.DomEvent.stopPropagation(e); } catch {}
+      }
+      if (e.cancelable) e.preventDefault();
 
       let newLeft = startLeft + dx;
       let newTop = startTop + dy;
 
       // Viewport bounds
-      const minLeft = 8;
-      const maxLeft = Math.max(minLeft, window.innerWidth - el.offsetWidth - 8);
-      const minTop = 56; // beneath header
-      const maxTop = Math.max(minTop, window.innerHeight - el.offsetHeight - 56);
+      const minLeft = 6;
+      const maxLeft = Math.max(minLeft, window.innerWidth - el.offsetWidth - 6);
+      const minTop = 52; // beneath header
+      const maxTop = Math.max(minTop, window.innerHeight - el.offsetHeight - 52);
 
       newLeft = Math.min(Math.max(minLeft, newLeft), maxLeft);
       newTop = Math.min(Math.max(minTop, newTop), maxTop);
 
-      el.style.position = 'fixed';
-      el.style.left = `${Math.round(newLeft)}px`;
-      el.style.top = `${Math.round(newTop)}px`;
-      el.style.right = 'auto';
-      el.style.bottom = 'auto';
+      el.style.setProperty('position', 'fixed', 'important');
+      el.style.setProperty('left', `${Math.round(newLeft)}px`, 'important');
+      el.style.setProperty('top', `${Math.round(newTop)}px`, 'important');
+      el.style.setProperty('right', 'auto', 'important');
+      el.style.setProperty('bottom', 'auto', 'important');
     };
 
     const onPointerUp = (e) => {
@@ -684,11 +852,11 @@ const WidgetDragManager = {
         const left = Math.min(Math.max(minLeft, pos.left), maxLeft);
         const top = Math.min(Math.max(minTop, pos.top), maxTop);
 
-        el.style.position = 'fixed';
-        el.style.left = `${Math.round(left)}px`;
-        el.style.top = `${Math.round(top)}px`;
-        el.style.right = 'auto';
-        el.style.bottom = 'auto';
+        el.style.setProperty('position', 'fixed', 'important');
+        el.style.setProperty('left', `${Math.round(left)}px`, 'important');
+        el.style.setProperty('top', `${Math.round(top)}px`, 'important');
+        el.style.setProperty('right', 'auto', 'important');
+        el.style.setProperty('bottom', 'auto', 'important');
       }
     } catch {}
   },
@@ -726,8 +894,8 @@ const WidgetDragManager = {
       if (curTop < minTop) { curTop = minTop; adjusted = true; }
 
       if (adjusted) {
-        el.style.left = `${Math.round(curLeft)}px`;
-        el.style.top = `${Math.round(curTop)}px`;
+        el.style.setProperty('left', `${Math.round(curLeft)}px`, 'important');
+        el.style.setProperty('top', `${Math.round(curTop)}px`, 'important');
       }
     });
   },
@@ -737,14 +905,16 @@ const WidgetDragManager = {
       try {
         localStorage.removeItem(`widget_pos_${config.id}`);
         localStorage.removeItem(`widget_min_${config.id}`);
+        localStorage.removeItem(`widget_closed_${config.id}`);
       } catch {}
       const el = document.getElementById(config.id);
       if (el) {
-        el.style.position = '';
-        el.style.left = '';
-        el.style.top = '';
-        el.style.right = '';
-        el.style.bottom = '';
+        el.classList.remove('widget-hidden');
+        el.style.removeProperty('position');
+        el.style.removeProperty('left');
+        el.style.removeProperty('top');
+        el.style.removeProperty('right');
+        el.style.removeProperty('bottom');
 
         // Default collapse/minimize
         if (config.id === 'mapStatsPanel' || config.id === 'layerPanel') {
@@ -758,9 +928,53 @@ const WidgetDragManager = {
       }
     });
 
+    this.updateRestoreDock();
+
     if (typeof showToast === 'function') {
       showToast('🔄 Przywrócono domyślny układ widżetów na mapie');
     }
+  },
+
+  initCategoryFilterScroll() {
+    const filter = document.querySelector('.category-filter');
+    if (!filter || filter.dataset.scrollBound) return;
+    filter.dataset.scrollBound = 'true';
+
+    // Horizontal mouse wheel scrolling
+    filter.addEventListener('wheel', (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        filter.scrollBy({ left: e.deltaY * 1.6, behavior: 'smooth' });
+      }
+    }, { passive: false });
+
+    // Smooth drag-to-scroll on desktop mouse
+    let isDown = false;
+    let startX = 0;
+    let scrollStartLeft = 0;
+
+    filter.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.cat-btn')) return;
+      isDown = true;
+      filter.classList.add('is-panning');
+      startX = e.pageX - filter.offsetLeft;
+      scrollStartLeft = filter.scrollLeft;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - filter.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      filter.scrollLeft = scrollStartLeft - walk;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDown) {
+        isDown = false;
+        filter.classList.remove('is-panning');
+      }
+    });
   }
 };
 

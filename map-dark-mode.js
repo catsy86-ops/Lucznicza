@@ -49,8 +49,10 @@ const MapDarkMode = (() => {
       startAutoSwitch();
     }
 
-    // Apply initial mode
-    applyMode(cfg.mode);
+    // Apply initial mode only if explicitly enabled (default basemap is satellite)
+    if (cfg.enabled) {
+      applyMode(cfg.mode);
+    }
   }
 
   function toggle() {

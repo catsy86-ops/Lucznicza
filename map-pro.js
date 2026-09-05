@@ -60,7 +60,7 @@ function buildStyleSwitcher() {
       panel.querySelectorAll('.ss-opt').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       panel.classList.add('collapsed');
-      sessionStorage.setItem('mapStyleManual', '1');
+      localStorage.setItem('lucznicza_map_style', btn.dataset.style);
     });
   });
 }
@@ -78,6 +78,20 @@ function setMapStyle(styleKey) {
   if (st.baseLayers[styleKey].bringToBack) {
     st.baseLayers[styleKey].bringToBack();
   }
+
+  // Synchronize Google Corner Thumbnail if present
+  const thumbBtn = document.getElementById('googleLayerThumbBtn');
+  const thumbLabel = document.getElementById('googleLayerThumbLabel');
+  if (thumbBtn && thumbLabel) {
+    if (styleKey === 'satellite') {
+      thumbBtn.style.backgroundImage = "url('https://a.tile.openstreetmap.org/15/17709/10762.png')";
+      thumbLabel.textContent = 'MAPA';
+    } else {
+      thumbBtn.style.backgroundImage = "url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/10762/17709')";
+      thumbLabel.textContent = 'SATELITA';
+    }
+  }
+
   const label = MAP_PRO.styleNames[styleKey]?.label || styleKey;
   const icon = MAP_PRO.styleNames[styleKey]?.icon || '🗺️';
   showToast(`${icon} Styl: ${label}`);
@@ -480,12 +494,11 @@ function viewHistoryForward() {
   updateHistoryButtons();
 }
 
-// ===== AUTO DAY/NIGHT =====
+// ===== AUTO DAY/NIGHT / SAVED STYLE =====
 function applyAutoDayNight() {
-  if (sessionStorage.getItem('mapStyleManual')) return;
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  if (isDark) {
-    setMapStyle('dark');
+  const savedStyle = localStorage.getItem('lucznicza_map_style');
+  if (savedStyle && window.state?.baseLayers?.[savedStyle]) {
+    setMapStyle(savedStyle);
   }
 }
 

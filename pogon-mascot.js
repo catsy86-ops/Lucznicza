@@ -283,6 +283,19 @@ function showGryfusBubble(text) {
   }, 3200);
 }
 
+function dockMascotMobile(mascot) {
+  if (!mascot) return;
+  mascot.style.position = 'fixed';
+  mascot.style.left = 'auto';
+  mascot.style.right = '14px';
+  mascot.style.bottom = '204px';
+  mascot.style.top = 'auto';
+  mascot.style.width = '46px';
+  mascot.style.height = '46px';
+  mascot.style.transform = 'none';
+  mascot.style.zIndex = '1010';
+}
+
 function toggleGryfus() {
   const mascot = document.getElementById('pogonMascot');
   if (mascot) {

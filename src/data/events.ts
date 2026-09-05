@@ -48,5 +48,59 @@ export const EVENTS: CommunityEvent[] = [
     "place": "Start: ul. Łucznicza",
     "desc": "Lokalny bieg uliczny na dystansie 5 km i 10 km. Trasa przez dzielnicę i okoliczne parki. Zapisy online.",
     "tag": "Sport"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Piknik lotniczy Fly Day 2026",
+    "place": "Lotnisko w Dąbiu",
+    "desc": "Pokazy podniebne, stoiska modelarskie i rodzinna strefa rekreacyjna w Szczecinie.",
+    "tag": "Festyn",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "ZATRZYMANE W LOCIE | wernisaż",
+    "place": "Muzeum Techniki i Komunikacji",
+    "desc": "Wystawa i wernisaż w zabytkowej zajezdni przy ul. Niemierzyńskiej na Niebuszewie.",
+    "tag": "Kultura",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Unia Obu Brzegów | Fukaj & Hubert.",
+    "place": "Wyspa Grodzka",
+    "desc": "Koncert plenerowy nad Odrą z widokiem na Wały Chrobrego.",
+    "tag": "Koncert",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Bazar Szafa Piwnica Garaż",
+    "place": "Przecław 150",
+    "desc": "Sąsiedzki pchli targ i giełda rękodzieła oraz skarbów vintage.",
+    "tag": "Festyn",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Joga w chmurach | Lato na Tarasach",
+    "place": "Zamek Książąt Pomorskich w Szczecinie",
+    "desc": "Poranna relaksacja i ćwiczenia jogi na tarasach renesansowego zamku.",
+    "tag": "Sport",
+    "source": "wSzczecinie.pl"
+  },
+  {
+    "day": "05",
+    "month": "WRZ",
+    "name": "Biegowe Bulwarowe 2026",
+    "place": "Bulwary / Łasztownia",
+    "desc": "Biegi rekreacyjne, strefa foodtrucków i leżaki nad Odrą.",
+    "tag": "Sport",
+    "source": "wSzczecinie.pl"
   }
 ];

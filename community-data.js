@@ -40,12 +40,12 @@ const COMMUNITY_DATA = {
   ],
 
   events: [
-    { id: 'ev1', date: 'Dziś',     time: '17:00', icon: '🏛️', title: 'Spotkanie Rady Osiedla',      desc: 'Cotygodniowe spotkanie — omówienie spraw dzielnicy i planów inwestycyjnych.',  location: 'Szkoła Podstawowa nr 47', attendees: 24, registered: 31,  status: 'scheduled', organizer: 'Rada Osiedla',           category: 'community' },
-    { id: 'ev2', date: 'Jutro',    time: '09:00', icon: '🏃', title: 'Zbiorowy Bieg 5km',           desc: 'Bieg przez dzielnicę dla zawodników każdego poziomu. Zapisy na miejscu.',       location: 'Boisko Sportowe',         attendees: 0,  registered: 47,  status: 'upcoming',  organizer: 'Klub Biegaczy',          category: 'sport'     },
-    { id: 'ev3', date: '31 maja',  time: '18:00', icon: '🎵', title: 'Koncert Lokalnych Zespołów',  desc: 'Festiwal muzyki — punk, indie, folk na scenie w parku. Wstęp wolny.',           location: 'Skwer przy Tarczowej',    attendees: 0,  registered: 156, status: 'upcoming',  organizer: 'Stow. Artystów',         category: 'culture'   },
-    { id: 'ev4', date: '1 czerwca',time: '14:00', icon: '👶', title: 'Dzień Dziecka w Parku',       desc: 'Zabawy dla dzieci, konkursy, nagrody i darmowe lody. Dla dzieci 2–12 lat.',    location: 'Skwer przy Tarczowej',    attendees: 0,  registered: 89,  status: 'upcoming',  organizer: 'SP nr 47',               category: 'family'    },
-    { id: 'ev5', date: '7 czerwca', time: '10:00', icon: '🌱', title: 'Sadzenie drzew — akcja',     desc: 'Wspólne sadzenie 20 drzew w parku. Przynieś rękawice, zapewniamy sadzonki.',   location: 'Skwer przy Tarczowej',    attendees: 0,  registered: 34,  status: 'upcoming',  organizer: 'Wolontariusze Okolicy',  category: 'ecology'   },
-    { id: 'ev6', date: '15 czerwca',time: '19:00', icon: '🎬', title: 'Kino Letnie pod Gwiazdami',  desc: 'Bezpłatny seans filmowy na świeżym powietrzu. Film familijny. Przynieś koc.',  location: 'Skwer przy Tarczowej',    attendees: 0,  registered: 112, status: 'upcoming',  organizer: 'Rada Osiedla',           category: 'culture'   }
+    { id: 'ev1', date: 'Dziś',     time: '11:00', icon: '✈️', title: 'Piknik lotniczy Fly Day 2026', desc: 'Pokazy podniebne, stoiska modelarskie i atrakcje dla całych rodzin.', location: 'Lotnisko w Dąbiu', attendees: 120, registered: 340, status: 'scheduled', organizer: 'Aeroklub Szczeciński', category: 'family' },
+    { id: 'ev2', date: 'Dziś',     time: '18:00', icon: '🎵', title: 'Unia Obu Brzegów | Koncert', desc: 'Fukaj & Hubert. na plenerowej scenie na Wyspie Grodzkiej.', location: 'Wyspa Grodzka', attendees: 85, registered: 210, status: 'upcoming', organizer: 'wSzczecinie.pl', category: 'culture' },
+    { id: 'ev3', date: 'Dziś',     time: '17:00', icon: '🖼️', title: 'Wernisaż: Zatrzymane w locie', desc: 'Oficjalny wernisaż wystawy w Muzeum Techniki i Komunikacji przy Niemierzyńskiej.', location: 'Muzeum Techniki (Niebuszewo)', attendees: 35, registered: 95, status: 'upcoming', organizer: 'MTiK Szczecin', category: 'culture' },
+    { id: 'ev4', date: 'Dziś',     time: '10:00', icon: '🧘', title: 'Joga w chmurach — Lato na Tarasach', desc: 'Poranna sesja jogi na dziedzińcu Zamku Książąt Pomorskich z widokiem na panoramę Szczecina.', location: 'Zamek Książąt Pomorskich', attendees: 40, registered: 75, status: 'upcoming', organizer: 'Zamek Szczecin', category: 'sport' },
+    { id: 'ev5', date: 'Jutro',    time: '10:00', icon: '🏃', title: 'Biegowe Bulwarowe', desc: 'Bieg rekreacyjny wzdłuż szczecińskich nabrzeży Odry i Łasztowni.', location: 'Bulwary / Łasztownia', attendees: 0, registered: 180, status: 'upcoming', organizer: 'Żegluga Szczecińska', category: 'sport' },
+    { id: 'ev6', date: '7 wrz',    time: '17:30', icon: '🏛️', title: 'Spotkanie Rady Osiedla Niebuszewo', desc: 'Konsultacje w sprawie rewitalizacji skwerów, oświetlenia i zieleni przy Łuczniczej.', location: 'SP nr 47, ul. Łucznicza', attendees: 0, registered: 55, status: 'upcoming', organizer: 'Rada Osiedla Niebuszewo', category: 'community' }
   ],
 
   reviews: [
@@ -54,7 +54,9 @@ const COMMUNITY_DATA = {
     { id: 'r3', author: 'Magdalena T.', avatar: 'M', rating: 5, date: '1 dzień temu',place: 'Boisko Sportowe Łucznicza',  text: 'Dzieci uwielbiają! Boisko w dobrym stanie, oświetlenie działa. Czasami za pełne, ale OK dla bezpłatnego boisku.',  helpful: 31, category: 'sport' },
     { id: 'r4', author: 'Jan S.',       avatar: 'J', rating: 4, date: '3 dni temu',  place: 'Szkoła Podstawowa nr 47',    text: 'Szkoła dobrze zorganizowana. Nauczyciele zaangażowani. Mogłoby być więcej zajęć dodatkowych dla dzieci.',            helpful: 12, category: 'edu'   },
     { id: 'r5', author: 'Zofia B.',     avatar: 'Z', rating: 5, date: '4 dni temu',  place: 'Plac Zabaw "Łucznik"',       text: 'Bezpieczny, ogrodzony, nowoczesny. Ścianka wspinaczkowa to hit! Dzieci nie chcą wychodzić.',                        helpful: 41, category: 'park'  },
-    { id: 'r6', author: 'Bartek F.',    avatar: 'B', rating: 5, date: '1 dzień temu',place: 'Siłownia Plenerowa',         text: 'Codziennie tu ćwiczę. Za darmo, na świeżym powietrzu, dobry sprzęt. Idealne na poranny trening.',                   helpful: 29, category: 'sport' }
+    { id: 'r6', author: 'Bartek F.',    avatar: 'B', rating: 5, date: '1 dzień temu',place: 'Siłownia Plenerowa',         text: 'Codziennie tu ćwiczę. Za darmo, na świeżym powietrzu, dobry sprzęt. Idealne na poranny trening.',                   helpful: 29, category: 'sport' },
+    { id: 'r7', author: 'Mati ze Szczecina', avatar: 'M', rating: 5, date: '3 godziny temu', place: 'Pub Klatka', text: 'Zimne piwko pod 43 wchodzi wybornie. Sąsiad z góry zapukał w kaloryfer dopiero o 22:45, więc rekord pobity! Polecam każdemu koneserowi.', helpful: 68, category: 'food' },
+    { id: 'r8', author: 'Pan Stanisław', avatar: 'S', rating: 5, date: 'wczoraj', place: 'Ławeczka Filozofów', text: 'Siedzieliśmy od 16 do 19. Rozwiązaliśmy problem dziury budżetowej i ustaliliśmy skład Pogoni na finał pucharu. Wybitne miejsce refleksji.', helpful: 54, category: 'park' }
   ],
 
   groups: [
@@ -71,7 +73,8 @@ const COMMUNITY_DATA = {
     { id: 'rc2', author: 'Elżbieta W.', type: 'tip',      title: 'Świeże bułki o 6:30',          desc: 'Codziennie o 6:30 w Sklepie Spożywczym świeże pieczywo prosto z pieca.',       poi: 'Sklep Spożywczy',           votes: 52 },
     { id: 'rc3', author: 'Tomasz P.',   type: 'event',    title: 'Piątkowe mecze towarzyskie',   desc: 'Każdy piątek o 18:00 gra w piłkę nożną — dołącz do nas, każdy poziom OK!',    poi: 'Boisko Sportowe Łucznicza', votes: 64 },
     { id: 'rc4', author: 'Marta L.',    type: 'tip',      title: 'Najlepszy obiad za 15 zł',     desc: 'Bigos z kapustą w barze mlecznym w środy — porcja ogromna, smak wyśmienity.',  poi: 'Bar Mleczny "Strzała"',     votes: 93 },
-    { id: 'rc5', author: 'Rafał N.',    type: 'must_see', title: 'Poranny jogging o 7:00',       desc: 'Trasa biegowa przez park jest pusta o 7 rano — idealne warunki do treningu.',  poi: 'Siłownia Plenerowa',        votes: 45 }
+    { id: 'rc5', author: 'Rafał N.',    type: 'must_see', title: 'Poranny jogging o 7:00',       desc: 'Trasa biegowa przez park jest pusta o 7 rano — idealne warunki do treningu.',  poi: 'Siłownia Plenerowa',        votes: 45 },
+    { id: 'rc6', author: 'Wiesław B.',  type: 'must_see', title: 'Debata na Ławeczce Filozofów',  desc: 'Usiądź z kawą o 17:00. Prawdziwe osiedlowe uniwersytety i złote mądrości życiowe.', poi: 'Ławeczka Filozofów', votes: 76 }
   ],
 
   surveys: [
@@ -81,11 +84,11 @@ const COMMUNITY_DATA = {
   ],
 
   news: [
-    { id: 'n1', title: 'Remont drogi na Łuczniczej — wznowienie prac',       desc: 'Prace drogowe wznawiane od przyszłego poniedziałku. Spodziewaj się utrudnień w ruchu przez 3 tygodnie.',  date: '29 maja 2026',  source: 'Urząd Miasta',  category: 'infrastructure', icon: '🚧' },
-    { id: 'n2', title: 'Nowe oświetlenie LED w parku',                        desc: 'Park przy Tarczowej wyposażony w nowoczesne energooszczędne lampy. Oszczędność energii 60%.',              date: '28 maja 2026',  source: 'Rada Osiedla',  category: 'improvement',    icon: '💡' },
-    { id: 'n3', title: 'Konsultacje społeczne — zagospodarowanie placu',      desc: 'Mieszkańcy zaproszeni do głosowania na przyszłe zagospodarowanie nieruchomości obok szkoły.',             date: '27 maja 2026',  source: 'Rada Osiedla',  category: 'community',      icon: '🗳️' },
-    { id: 'n4', title: 'Nowa linia autobusowa 89 przez dzielnicę',            desc: 'Od 1 czerwca linia 89 będzie kursować przez ul. Łuczniczą co 15 minut w godzinach szczytu.',              date: '26 maja 2026',  source: 'ZDiTM',         category: 'transport',      icon: '🚌' },
-    { id: 'n5', title: 'Dofinansowanie na rewitalizację skweru',              desc: 'Dzielnica otrzymała 450 000 zł dofinansowania z budżetu obywatelskiego na modernizację skweru.',          date: '25 maja 2026',  source: 'Urząd Miasta',  category: 'improvement',    icon: '💰' }
+    { id: 'n1', title: 'Tramwaje linii 12 wróciły na pętlę Dworzec Niebuszewo', desc: 'Od 1 września tramwaje powróciły na stałą trasę Dworzec Niebuszewo – Pomorzany po zakończeniu prac torowych.', date: '1 września 2026', source: 'wSzczecinie.pl / ZDiTM', category: 'transport', icon: '🚋' },
+    { id: 'n2', title: 'Spacery miejskie z przewodnikiem po Niebuszewie', desc: 'Rada Osiedla zaprasza na odkrywanie historycznych zakątków Niebuszewa i przedwojennej architektury.', date: '3 września 2026', source: 'wSzczecinie.pl', category: 'community', icon: '🚶' },
+    { id: 'n3', title: 'Piknik lotniczy Fly Day 2026 w Dąbiu', desc: 'Pokazy podniebne, strefa dla dzieci i atrakcje plenerowe na szczecińskim lotnisku.', date: '5 września 2026', source: 'wSzczecinie.pl', category: 'improvement', icon: '✈️' },
+    { id: 'n4', title: 'Weekend z charlestonem w Muzeum Historii Szczecina', desc: 'Otwarte warsztaty taneczne, retro muzyka i oprowadzanie kuratorskie w sercu miasta.', date: '5 września 2026', source: 'wSzczecinie.pl', category: 'improvement', icon: '🎷' },
+    { id: 'n5', title: 'Bulwarowe 2026 na Łasztowni', desc: 'Biegi bulwarowe, strefa chillout, leżaki i foodtrucki nad Odrą przez cały weekend.', date: '5 września 2026', source: 'wSzczecinie.pl', category: 'improvement', icon: '🌊' }
   ]
 };
 
