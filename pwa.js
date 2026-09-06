@@ -28,6 +28,8 @@ function showInstallBanner() {
   const banner = document.createElement('div');
   banner.id = 'pwaBanner';
   banner.className = 'pwa-banner';
+  banner.setAttribute('role', 'region');
+  banner.setAttribute('aria-label', 'Instalacja aplikacji PWA');
   banner.innerHTML = `
     <div class="pwa-banner-icon">🏹</div>
     <div class="pwa-banner-text">

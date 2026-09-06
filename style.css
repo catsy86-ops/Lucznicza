@@ -25,15 +25,15 @@
   outline-offset: 2px;
 }
 
-/* Reduced motion preference */
+/* Reduced motion preference - Modern Web Standards */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0s !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0s !important;
     scroll-behavior: auto !important;
   }
-  .splash-loader, .loader-bar, .ticker-track, .mk-pulse {
+  .splash-loader, .loader-bar, .ticker-track, .mk-pulse, .stadium-lights-shimmer, .crest-shimmer-ray {
     animation: none !important;
   }
 }
@@ -56,8 +56,8 @@
   --surface2: #252545;
   --border: rgba(255,255,255,0.08);
   --text: #e8e8f0;
-  --text2: #9999bb;
-  --text3: #6666aa;
+  --text2: #a5a5c8;
+  --text3: #8a8ab5;
   --accent: #6c63ff;
   --accent2: #ff6584;
   --accent3: #43e97b;
@@ -175,11 +175,23 @@
 html, body { height: 100%; overflow: hidden; }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
   font-size: 15px;
   line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Modern Web Typography - Balanced Headings & Pretty Copy */
+h1, h2, h3, h4, .section-title, .place-card-name, .route-name, .transport-title, .event-name, .logo-main-title {
+  text-wrap: balance;
+}
+
+p, .place-card-desc, .route-desc, .info-card-text, .event-desc {
+  text-wrap: pretty;
 }
 
 /* ===== POGOŃ SZCZECIN ANIMATED SPLASH SCREEN ===== */
@@ -1526,6 +1538,8 @@ body:has(#sidebar.open) .pwa-banner {
 .section-content {
   flex: 1; overflow-y: auto; padding: 20px 16px 20px;
   scrollbar-width: thin; scrollbar-color: var(--surface2) transparent;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
@@ -1550,7 +1564,7 @@ body:has(#sidebar.open) .pwa-banner {
   transition: var(--transition);
 }
 .filter-tab:hover, .filter-tab.active {
-  background: var(--accent); border-color: var(--accent); color: white;
+  background: #584feb; border-color: #584feb; color: #ffffff; font-weight: 600;
 }
 
 /* ===== PLACES GRID ===== */
@@ -1564,6 +1578,8 @@ body:has(#sidebar.open) .pwa-banner {
   border-radius: var(--radius); overflow: hidden;
   cursor: pointer; transition: var(--transition);
   animation: fadeInUp 0.4s ease;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 280px;
 }
 .place-card:hover {
   transform: translateY(-4px);
@@ -1609,6 +1625,8 @@ body:has(#sidebar.open) .pwa-banner {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); overflow: hidden;
   transition: var(--transition);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 160px;
 }
 .route-card:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
 .route-header {
@@ -1806,6 +1824,8 @@ body:has(#sidebar.open) .pwa-banner {
   border-radius: var(--radius); padding: 16px;
   display: flex; gap: 14px; align-items: flex-start;
   transition: var(--transition); cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 120px;
 }
 .event-card:hover { border-color: var(--accent); transform: translateX(4px); }
 .event-date {
@@ -1838,7 +1858,7 @@ body:has(#sidebar.open) .pwa-banner {
 }
 [data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.95); }
 .bnav-btn {
-  background: none; border: none; color: var(--text3);
+  background: none; border: none; color: var(--text2);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 4px; padding: 6px 12px; cursor: pointer;
   transition: color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
@@ -3567,7 +3587,7 @@ body:has(#section-map.active) .live-ticker {
 .card-rating { display: flex; align-items: center; gap: 6px; margin: 6px 0; flex-wrap: wrap; }
 .card-rating .stars { color: #ffd93d; font-size: 14px; letter-spacing: 1px; }
 .card-rating .rating-num { font-size: 13px; font-weight: 700; color: var(--text); }
-.card-rating .review-count { font-size: 11px; color: var(--text3); }
+.card-rating .review-count { font-size: 11px; color: var(--text2); }
 .card-price { margin-left: auto; font-size: 12px; }
 .price-free { color: var(--accent3); font-weight: 700; font-size: 11px; }
 .price-level { font-size: 11px; }
@@ -3575,7 +3595,7 @@ body:has(#section-map.active) .live-ticker {
 /* Card tags */
 .card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
 .card-tag {
-  font-size: 10px; color: var(--text3); background: var(--surface2);
+  font-size: 10px; color: var(--text2); background: var(--surface2);
   padding: 2px 8px; border-radius: 50px;
 }
 .place-card-hours.closed { color: var(--accent2); }
