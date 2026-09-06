@@ -197,5 +197,5 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Eksport tras GPX** | 🟢 Gotowy | Pobieranie plików dla Garmin/Strava | XML / Blob API |
 | **Synchronizacja Ulubionych** | 🟢 Gotowy | Pamięć lokalna + subskrypcje | LocalStorage |
 | **Filtr Dostępności (A11y)** | 🟢 Gotowy | Wózki, rodziny, psy, rowery | TypeScript |
-| **Testy jednostkowe** | 🟢 Gotowy | **61/61 testów przechodzi (Vitest)** | Vitest |
+| **Testy jednostkowe** | 🟢 Gotowy | **114/114 testów przechodzi (Vitest)** | Vitest |
 | **Migracja ESM / Vite** | 🟢 Gotowy | Zbudowano bundle produkcyjny (`dist/`) | Vite + TypeScript |
