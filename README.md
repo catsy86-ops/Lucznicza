@@ -1,175 +1,97 @@
-# 🏹 Przewodnik Łucznicza & Tarczowa — Szczecin
+# 🏹 Niebuszewo & Łucznicza Guide — Szczecin (Duma Pomorza)
 
-Interaktywna aplikacja webowa (PWA) z mapą 3D i danymi na żywo dla dzielnicy Łucznicza/Tarczowa w Szczecinie.
+Nowoczesna, interaktywna aplikacja miejska i PWA (Progressive Web App) stworzona dla mieszkańców i gości osiedla Niebuszewo w Szczecinie (rejon ulic Łucznicza, Tarczowa, Kołłątaja i stacji SKM).
 
-**🌐 Live App**: https://szn-theta.vercel.app
+**🌐 Live Production**: https://szn-theta.vercel.app  
+**📦 Wersja**: `v1.4.0` (Production Ready)  
+**🛡️ Dostępność**: 100% WCAG 2.1 AA (0 naruszeń Axe-Core)  
+**🧪 Testy**: 123/123 zdanych testów jednostkowych i integracyjnych (Vitest)  
 
-## 🚀 Uruchomienie
+---
 
-### Opcja 1 — Live Server (zalecane)
+## 🚀 Szybkie Uruchomienie
+
+### Środowisko deweloperskie (Vite + TS)
 ```bash
-# Zainstaluj Live Server (VS Code extension) lub:
-npx serve .
-# Otwórz: http://localhost:3000
+npm install
+npm run dev
+# Dostępne pod: http://localhost:3000
 ```
 
-### Opcja 2 — Python
+### Uruchomienie testów
 ```bash
-python -m http.server 8080
-# Otwórz: http://localhost:8080
+npm test
+# Uruchamia pełny zestaw 123 testów Vitest
 ```
 
-### Opcja 3 — Bezpośrednio
-Otwórz `index.html` w przeglądarce (mapa może nie działać bez serwera HTTP).
-
----
-
-## 🗝️ Klucz Mapbox API
-
-Aplikacja używa demonstracyjnego tokenu Mapbox. Aby uzyskać własny (bezpłatny):
-
-1. Zarejestruj się na [mapbox.com](https://mapbox.com)
-2. Skopiuj swój **Public Token** z dashboardu
-3. W pliku `app.js` zamień linię:
-   ```js
-   mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94...';
-   ```
-   na swój token.
-
----
-
-## ✨ Funkcje
-
-| Funkcja | Opis | Status |
-|---------|------|--------|
-| 🗺️ Mapa 3D | Interaktywna mapa 3D z budynkami (Mapbox Standard) | ✅ Live |
-| 📍 Markery | 12 punktów POI z kategoriami | ✅ Live |
-| 🚶 Trasy | 3 trasy spacerowe z wizualizacją | ✅ Live |
-| 🌙 Dark/Light | Przełączanie motywu | ✅ Live |
-| 🌡️ Pogoda na żywo | Bieżąca pogoda + prognoza 7-dniowa (Open-Meteo) | ✅ Live |
-| 🌬️ Jakość powietrza | AQI + PM2.5, PM10, NO₂ (Open-Meteo) | ✅ Live |
-| ⏰ Zegar | Bieżący czas + data | ✅ Live |
-| 🌅 Wschód/zachód | Czas wschodu/zachodu słońca | ✅ Live |
-| 🚌 Transport | **Odjazdy na żywo** (ZDiTM API via Vercel) | ✅ **NEW** ⭐ |
-| 📱 PWA | Instalowalna jako aplikacja | ✅ Live |
-| 📡 Offline | Pełna funkcjonalność bez internetu | ✅ Live |
-
-## 📊 Dane Na Żywo (Na żywo Tab)
-
-### 🌡️ Pogoda (Open-Meteo API)
-- Bieżąca temperatura, "odczuwalna", wilgotność, wiatr, ciśnienie
-- Prognoza 7-dniowa z min/max temperaturami
-- Indeks UV i opady
-- **Aktualizacja**: Każde 10 minut
-
-### 🌬️ Jakość powietrza (Open-Meteo Air Quality)
-- Europejski indeks AQI
-- PM2.5, PM10 (pyły stałe)
-- NO₂ (tlenek azotu)
-- Ozon (O₃)
-- Rekomendacje zdrowotne
-- **Aktualizacja**: Każde 15 minut
-
-### 🚌 Odjazdy Transportu (ZDiTM via Vercel) ⭐ NEW
-- **Linie tramwajowe**: 3, 7, 12
-- **Linie autobusowe**: 51, 64, 78, 103, N1
-- **Przystanki**: Łucznicza, Tarczowa, Osiedle Łucznicza
-- **Dane**: Rzeczywisty czas odjazdu, kierunek
-- **Status**: 🟢 ZDiTM (live) / 🟡 Symulowane (fallback)
-- **Aktualizacja**: Każdy 1 minuta
-- **Jak działa**: Vercel serverless function proxy (omija CORS)
-
-### 🌅 Wschód/zachód słońca
-- Dokładne czasy dla bieżącego dnia
-- Długość dnia
-
-### ⏰ Zegar na żywo
-- Aktualna godzina z sekundami
-- Data w polszczyźnie (dzień, liczba, miesiąc)
-- **Aktualizacja**: Co sekundę
-
----
-
----
-
-## 🔧 Nowe: Integracja ZDiTM API
-
-### Problem Rozwiązany
-- ❌ ZDiTM API blokuje bezpośrednie żądania z przeglądarki (CORS)
-- ✅ Rozwiązanie: Vercel serverless function (proxy)
-
-### Jak to działa
-1. Aplikacja wysyła żądanie do `/api/zditm-departures`
-2. Vercel function odbiera żądanie
-3. Function komunikuje się z ZDiTM API (server-to-server, bez CORS)
-4. Zwraca rzeczywisty czas odjazdu
-5. Jeśli ZDiTM niedostępne → graceful fallback do danych symulowanych
-
-### Pliki
-```
-api/
-└── zditm-departures.js    Vercel serverless proxy function
-live.js                    (Updated) Fetch z proxy endpoint
-vercel.json                (Updated) Konfiguracja API
+### Budowanie produkcyjne
+```bash
+npm run build
+# Generuje zoptymalizowany bundle do katalogu dist/
 ```
 
-### Wskaźnik Źródła Danych
-- **🟢 ZDiTM (live)** — Rzeczywiste dane z API
-- **🟡 Symulowane** — Dane fallback (ZDiTM niedostępny)
+---
+
+## 🗺️ Kartografia i Dostawcy Map (100% Bezpłatne, 0 Kluczy API)
+
+Aplikacja nie wymaga żadnych płatnych tokenów ani zewnętrznych kluczy komercyjnych:
+- **🗺️ Mapa Standardowa**: OpenStreetMap (OSM) — nielimitowana, szybka kartografia wektorowo-kafelkowa.
+- **🛰️ Satelita HD**: Esri World Imagery HD — zdjęcia lotnicze wysokiej rozdzielczości z warstwą ulic.
+- **🚲 CyclOSM**: Dedykowana mapa tras rowerowych, stacji Bike_S i infrastruktury miejskiej.
+- **🌙 Pogoń / Nocna**: Autorski ciemny motyw osiedlowy w barwach Dumy Pomorza (`#002D62` / `#FFD700`).
+- **🔦 Maska Reflektorowa Niebuszewa (Spotlight)**: Odwrócony poligon GeoJSON skupiający uwagę na osiedlu i wyciemniający obszary poza granicami.
+- **🏙️ Presety Kamery**: Natychmiastowe przeloty (*Całe Niebuszewo*, *Oś Łucznicza*, *Park Kadziaka*, *Stacja SKM*, *Pętla Kołłątaja*).
 
 ---
 
-## 📁 Struktura
+## ✨ Główne Funkcje Aplikacji
 
-```
+| Moduł | Opis | Status |
+|---|---|---|
+| 🧭 **Google Maps Experience** | Pływający pasek szukania, chipsy kategorii, dolny arkusz gestowy (Bottom Sheet) | ✅ Live |
+| 📍 **45 Miejsc (POI)** | Punkty usługowe, gastronomia, sklepy, parki z godzinami otwarcia w czasie rzeczywistym | ✅ Live |
+| 🚶 **Trasy Spacerowe & GPX** | 6 tras ze śladami GPS i możliwością eksportu do Garmin, Strava i Komoot | ✅ Live |
+| 🎧 **Głosowy Przewodnik** | Opowieści Gryfusa Szczecińskiego czytane przez Web Speech API z radarem POI (Geofencing) | ✅ Live |
+| 🚌 **Odjazdy ZDiTM na żywo** | Rzeczywiste czasy odjazdów z Circuit Breakerem odpornym na awarie API | ✅ Live |
+| 🐗 **Alerty Obywatelskie** | Ostrzeżenia o dzikach i awariach z automatycznym wygasaniem po 90 min | ✅ Live |
+| 🐕 **Psie Niebuszewo & Eko** | Wybiegi dla psów, stacje z woreczkami, harmonogram wywozu odpadów i punkty eko | ✅ Live |
+| 🆘 **Dyżury Aptek 24h & SOS** | Baza pomocy medycznej i aptek dyżurnych z bezpośrednim wybieraniem numeru | ✅ Live |
+| 📱 **PWA & Offline First** | Działa bez dostępu do sieci dzięki Service Workerowi i lokalnemu cache | ✅ Live |
+
+---
+
+## 🛠️ Stos Technologiczny
+
+- **Języki i Środowisko**: TypeScript, JavaScript (ESNext), Node.js, Vite
+- **Kartografia**: Leaflet.js, Esri World Imagery, OpenStreetMap, CyclOSM
+- **Architektura Danych**: Niemutowalny reaktywny `Store<T>` z Pub/Sub, IndexedDB (`localforage`)
+- **Odporność Sieciowa**: Wzorzec Circuit Breaker (`CLOSED`, `OPEN`, `HALF_OPEN`) z planowym fallbackiem
+- **Dostępność i UI**: WCAG 2.1 AA (Axe-Core 0 violations), Google Modern Web Guidance (`text-wrap: balance`, `content-visibility`)
+- **Testowanie**: Vitest, Playwright, Puppeteer MCP, Axe-Core CLI
+
+---
+
+## 📚 Struktura Projektu
+
+```text
 szn/
-├── api/
-│   └── zditm-departures.js     Vercel serverless proxy (NEW)
-├── index.html                  Główny plik HTML
-├── style.css                   Style CSS (dark/light theme)
-├── app.js                      Logika aplikacji + Mapbox
-├── data.js                     Dane miejsc, tras, wydarzeń
-├── live.js                     Real-time data (weather, AQI, transport)
-├── manifest.json               PWA manifest
-├── sw.js                       Service Worker (offline)
-├── vercel.json                 Deployment config (API routes)
-└── README.md
+├── src/
+│   ├── data/             # Baza miejsc, tras, wydarzeń w TypeScript
+│   ├── services/         # Serwisy ZDiTM, Audio Guide, GPX, Circuit Breaker
+│   ├── store/            # Centralny reaktywny Store z typami
+│   ├── tests/            # Zestaw 123 testów automatycznych Vitest
+│   └── types/            # Interfejsy domenowe TypeScript
+├── dist/                 # Zbudowany pakiet produkcyjny
+├── api/                  # Funkcje serverless (proxy ZDiTM, Vercel)
+├── index.html            # Główny interfejs aplikacji PWA
+├── style.css             # Style CSS, motywy, responsywność Dual-Tier
+├── app.js                # Inicjalizacja UI i obsługa mapy
+├── pwa.js                # Rejestracja Service Workera i instalator PWA
+├── sw.js                 # Service Worker (offline caching)
+└── vercel.json           # Konfiguracja nagłówków bezpieczeństwa (CSP, HSTS)
 ```
 
-## 🛠️ Technologie
-
-- **Mapbox GL JS v3.4** — mapa 3D z WebGL
-- **Mapbox Standard Style** — nowoczesny styl z budynkami 3D
-- **Vanilla JS** — bez frameworków, szybkie ładowanie
-- **CSS Custom Properties** — dynamiczne motywy
-- **PWA** — Service Worker + Web App Manifest
-- **Google Fonts** — Inter + Playfair Display
-
-
-## 🛠️ Technologie
-
-- **Frontend**: HTML5, Vanilla JS, CSS3
-- **Mapy**: Mapbox GL JS v3 (3D z WebGL)
-- **Real-time APIs**: 
-  - Open-Meteo Weather (bezpłatny, bez klucza)
-  - Open-Meteo Air Quality (bezpłatny, bez klucza)
-  - ZDiTM Szczecin (via Vercel proxy)
-- **Deployment**: Vercel (serverless functions + CDN)
-- **Offline**: Service Worker + Web App Manifest (PWA)
-- **Styling**: CSS Custom Properties (dynamiczne motywy)
-
 ---
 
-## 📚 Dokumentacja
-
-Więcej informacji znaleźć można w:
-- `REAL_TIME_API_INTEGRATION.md` — Integracja ZDiTM API
-- `ARCHITECTURE.md` — Architektura systemu
-- `QUICK_REFERENCE.md` — Szybka instrukcja
-- `DEPLOYMENT_SUMMARY.txt` — Podsumowanie wdrożenia
-
----
-
-**Status**: ✅ Production-ready
-**URL**: https://szn-theta.vercel.app
-**Ostatnia aktualizacja**: 29 maja 2026
+**Licencja**: MIT  
+**Lokalizacja**: Szczecin, Polska — Niebuszewo / Łucznicza 🏹

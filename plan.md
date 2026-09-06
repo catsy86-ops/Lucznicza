@@ -192,10 +192,28 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 
 ---
 
-### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0 – v1.4.0 [UKOŃCZONE 100%]
-- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 114/114 zdanych)**.
+#### ✅ SPRINT 8: Top Menus, Subpages Return Paths, Modern Web Guidance & Axe-Core 0-Violations (v1.4.1) [UKOŃCZONE 100%]
+- [x] **8.1. Naprawa Górnego Menu i Podwójnych Listenerów**:
+  - Wykryto i usunięto podwójne wywołanie `initUI()` w `app.js` z wprowadzeniem strażnika idempotencji `window.__uiInitialized = true`.
+  - Zarówno menu hamburger (`#menuBtn`), jak i wyspa nagłówkowa (`#islandMenuBtn`) otwierają i zamykają się bezbłędnie na Desktop i Mobile.
+- [x] **8.2. Spójna Nawigacja i Paski Powrotu (`.section-back-btn`)**:
+  - Wszystkie 11 podstron (`map`, `places`, `routes`, `bikes`, `transport`, `info`, `events`, `live`, `community`, `pogon`, `szczecin`) posiadają dedykowany pasek powrotu `← Wróć do mapy`.
+- [x] **8.3. Google Chrome Modern Web Guidance**:
+  - Zastosowano `text-wrap: balance` dla nagłówków i `text-wrap: pretty` dla treści.
+  - Zastosowano `scrollbar-gutter: stable` oraz `overscroll-behavior: contain` eliminujące przesunięcia układu (CLS).
+  - Wprowadzono `content-visibility: auto` wraz z `contain-intrinsic-size` na elementach kart POI, tras i wydarzeń.
+- [x] **8.4. Audyt Dostępności Axe-Core (WCAG 2.1 AA)**:
+  - Uzyskano **0 naruszeń** w audycie `@axe-core/cli` (poprawiono kontrasty barw, etykiety formularzy oraz semantykę banner/aside).
+- [x] **8.5. Testy Automatyczne UI i Nawigacji (Vitest: 123/123 zdanych)**:
+  - Utworzono pakiet `src/tests/ui-navigation-and-menus.test.ts`.
+
+---
+
+### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0 – v1.4.1 [UKOŃCZONE 100%]
+- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 123/123 zdanych)**.
 - [x] **6.2. Weryfikacja produkcyjnego bundle Vite (`tsc && vite build`)**.
-- [x] **6.3. Zrealizowano priorytety audytu UI/UX**.
+- [x] **6.3. Zrealizowano priorytety audytu UI/UX oraz dostępności**.
+- [x] **6.4. Zaktualizowano dokumentację projektu (README.md, plan.md)**.
 
 ---
 
@@ -217,5 +235,6 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Eksport tras GPX** | 🟢 Gotowy | Pobieranie plików dla Garmin/Strava | XML / Blob API |
 | **Synchronizacja Ulubionych** | 🟢 Gotowy | Pamięć lokalna + subskrypcje | LocalStorage |
 | **Filtr Dostępności (A11y)** | 🟢 Gotowy | Wózki, rodziny, psy, rowery | TypeScript |
-| **Testy jednostkowe** | 🟢 Gotowy | **114/114 testów przechodzi (Vitest)** | Vitest |
+| **Testy jednostkowe** | 🟢 Gotowy | **123/123 testów przechodzi (Vitest)** | Vitest |
+| **Dostępność (A11y)** | 🟢 Gotowy | **0 naruszeń (Axe-Core / WCAG 2.1 AA)** | @axe-core/cli |
 | **Migracja ESM / Vite** | 🟢 Gotowy | Zbudowano bundle produkcyjny (`dist/`) | Vite + TypeScript |
