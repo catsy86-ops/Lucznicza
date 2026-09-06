@@ -3,7 +3,7 @@
 Nowoczesna, interaktywna aplikacja miejska i PWA (Progressive Web App) stworzona dla mieszkańców i gości osiedla Niebuszewo w Szczecinie (rejon ulic Łucznicza, Tarczowa, Kołłątaja i stacji SKM).
 
 **🌐 Live Production**: https://szn-theta.vercel.app  
-**📦 Wersja**: `v1.4.0` (Production Ready)  
+**📦 Wersja**: `v1.4.1` (Production Ready)  
 **🛡️ Dostępność**: 100% WCAG 2.1 AA (0 naruszeń Axe-Core)  
 **🧪 Testy**: 123/123 zdanych testów jednostkowych i integracyjnych (Vitest)  
 
