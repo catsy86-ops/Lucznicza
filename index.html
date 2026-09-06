@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#1a1a2e" />
   <meta name="description" content="Interaktywny przewodnik po dzielnicy Niebuszewo/Łucznicza w Szczecinie — mapa, miejsca, trasy, transport na żywo" />
   <meta name="color-scheme" content="dark light" />
-  <title>Niebuszewo Guide — Szczecin</title>
+  <title>Niebuszewo — Szczecin</title>
   <link rel="manifest" href="manifest.json" />
   <!-- Inline emoji favicon (prevents favicon.ico 404) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏹</text></svg>" />
@@ -211,12 +211,19 @@
               <path d="M22 5.5 L36.5 10 C36.5 26 22 41 22 41 C22 41 7.5 26 7.5 10 Z" fill="none" stroke="rgba(255,215,0,0.35)" stroke-width="1" />
               <!-- Ducal Gold Crown -->
               <path class="crest-crown" d="M14 12 L17 16 L22 10.5 L27 16 L30 12 L30 18 L14 18 Z" fill="url(#pogonGold)" stroke="#9A6B00" stroke-width="0.5" />
-              <circle class="crown-gem" cx="22" cy="10.5" r="1.5" fill="#FFF280" />
-              <circle cx="14" cy="12" r="1.1" fill="#FF4444" />
-              <circle cx="30" cy="12" r="1.1" fill="#4488FF" />
-              <!-- Pomeranian Gryf Silhouette -->
-              <path class="crest-gryf" d="M22 18 C20 18 18 20 18 22 C18 24 19.5 25 21 25.5 C19.5 27.5 17 30 16 32.5 C18.5 32.5 21 31.5 23 29.5 C24 31.5 26.5 32.5 28 32.5 C27 29.5 24.5 27.5 23 25.5 C24.5 25 26 24 26 22 C26 20 24 18 22 18 Z" fill="url(#pogonGold)" />
-              <!-- Nautical Gold Star -->
+              <!-- Shield Outer Gold Border -->
+              <path d="M22 1 C33 1 42.5 7.2 42.5 18 C42.5 34 30 46.5 22 51 C14 46.5 1.5 34 1.5 18 C1.5 7.2 11 1 22 1 Z" fill="url(#pogonGold)" />
+              <!-- Split Shield: Left Navy, Right Bordo -->
+              <path d="M22 3 C13 3 4.5 8.5 4.5 18 C4.5 32.5 15.5 44 22 48 L22 3 Z" fill="url(#pogonNavy)" />
+              <path d="M22 3 L22 48 C28.5 44 39.5 32.5 39.5 18 C39.5 8.5 31 3 22 3 Z" fill="url(#pogonBordo)" />
+              <!-- Central Gold Seam -->
+              <line x1="22" y1="3" x2="22" y2="48" stroke="url(#pogonGold)" stroke-width="1.2" />
+              <!-- Stylized Gryf / Anchor Emblem -->
+              <path class="crest-gryf" d="M22 9 L24.5 14 L29.5 14.5 L25.5 18 L27 23 L22 20 L17 23 L18.5 18 L14.5 14.5 L19.5 14 Z" fill="url(#pogonGold)" />
+              <!-- Mini Ball Accent -->
+              <circle cx="22" cy="27" r="4" fill="#ffffff" stroke="url(#pogonGold)" stroke-width="1" />
+              <path d="M22 23.5 L22 30.5 M18.5 27 L25.5 27" stroke="#002D62" stroke-width="0.8" />
+              <!-- Bottom Crown/Star -->
               <path d="M22 36 L23.2 39.5 L27 39.5 L24 41.5 L25.2 45 L22 42.8 L18.8 45 L20 41.5 L17 39.5 L20.8 39.5 Z" fill="url(#pogonGold)" />
               <!-- Shimmer light sweep -->
               <g clip-path="url(#shieldClip)">
@@ -227,8 +234,7 @@
           </div>
           <div class="logo-text-block">
             <div class="logo-title-row">
-              <span class="logo-main-title">ŁUCZNICZA</span>
-              <span class="logo-guide-badge">GUIDE</span>
+              <span class="logo-main-title">NIEBUSZEWO</span>
             </div>
             <div class="logo-sub-title">
               <span class="pogon-flag-dot blue"></span>
@@ -364,64 +370,94 @@
     </div>
 
     <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar" role="dialog" aria-modal="true" aria-label="Główne menu nawigacji">
       <div class="sidebar-header">
-        <h2>Nawigacja</h2>
-        <button class="close-sidebar" id="closeSidebar">✕</button>
+        <div class="sidebar-brand">
+          <div class="sidebar-brand-crest">🛡️</div>
+          <div class="sidebar-brand-info">
+            <h2 class="sidebar-brand-title">NIEBUSZEWO <span class="sidebar-brand-pill">SZCZECIN</span></h2>
+            <span class="sidebar-brand-sub">Szczecin • Niebuszewo • Dzielnica</span>
+          </div>
+        </div>
+        <button class="close-sidebar" id="closeSidebar" aria-label="Zamknij menu">✕</button>
       </div>
+
       <nav class="sidebar-nav">
+        <!-- GRUPA 1: ODKRYWAJ & TRASY -->
+        <div class="sidebar-group-label">🧭 ODKRYWAJ & TRASY</div>
         <a href="#" class="nav-item active" data-section="map">
-          <span class="nav-icon">🗺️</span> Mapa 3D
+          <span class="nav-icon">🗺️</span>
+          <span class="nav-label">Mapa 3D</span>
         </a>
         <a href="#" class="nav-item" data-section="places">
-          <span class="nav-icon">📍</span> Miejsca
+          <span class="nav-icon">📍</span>
+          <span class="nav-label">Miejsca i Punkty</span>
         </a>
         <a href="#" class="nav-item" data-section="routes">
-          <span class="nav-icon">🚶</span> Trasy
+          <span class="nav-icon">🚶</span>
+          <span class="nav-label">Trasy Spacerowe</span>
         </a>
         <a href="#" class="nav-item" data-section="bikes">
-          <span class="nav-icon">🚲</span> Ścieżki rowerowe
-          <span class="nav-badge" style="background:#10b981; color:#fff; font-size:9px; padding:1px 6px; border-radius:10px; font-weight:700;">NOWOŚĆ</span>
+          <span class="nav-icon">🚲</span>
+          <span class="nav-label">Ścieżki Rowerowe & Bike_S</span>
+          <span class="nav-badge badge-new">NOWOŚĆ</span>
+        </a>
+
+        <!-- GRUPA 2: DZIELNICA & TRANSPORT -->
+        <div class="sidebar-group-label">🚌 DZIELNICA & TRANSPORT</div>
+        <a href="#" class="nav-item" data-section="transport">
+          <span class="nav-icon">🚌</span>
+          <span class="nav-label">Komunikacja ZDiTM</span>
         </a>
         <a href="#" class="nav-item" data-section="info">
-          <span class="nav-icon">ℹ️</span> O dzielnicy
-        </a>
-        <a href="#" class="nav-item" data-section="transport">
-          <span class="nav-icon">🚌</span> Transport
+          <span class="nav-icon">ℹ️</span>
+          <span class="nav-label">O Dzielnicy & Historia</span>
         </a>
         <a href="#" class="nav-item" data-section="events">
-          <span class="nav-icon">🎉</span> Wydarzenia
+          <span class="nav-icon">🎉</span>
+          <span class="nav-label">Wydarzenia Lokalne</span>
         </a>
         <a href="#" class="nav-item" data-section="live">
-          <span class="nav-icon">📡</span> Na żywo
+          <span class="nav-icon">📡</span>
+          <span class="nav-label">Radar Osiedla na Żywo</span>
           <span class="nav-badge live-badge">LIVE</span>
         </a>
+
+        <!-- GRUPA 3: SZCZECIŃSKI KLIMAT -->
+        <div class="sidebar-group-label">⚓ SZCZECIŃSKI KLIMAT</div>
         <a href="#" class="nav-item" data-section="community">
-          <span class="nav-icon">👥</span> Społeczność
-          <span class="nav-badge community-badge">LIVE</span>
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">Społeczność & Dzik-Alert</span>
+          <span class="nav-badge community-badge">SĄSIEDZI</span>
         </a>
         <a href="#" class="nav-item" data-section="pogon">
-          <span class="nav-icon">⚽</span> Pogoń & Mecz
-          <span class="nav-badge" style="background:#002D62; color:#FFD700; border: 1px solid #7A0026; font-size:9px; padding:1px 6px; border-radius:10px; font-weight:700;">DUMA</span>
+          <span class="nav-icon">⚽</span>
+          <span class="nav-label">Pogoń Szczecin & Mecz</span>
+          <span class="nav-badge badge-pogon">DUMA</span>
         </a>
         <a href="#" class="nav-item" data-section="szczecin">
-          <span class="nav-icon">🥟</span> Szczecińskie Klasyki
-          <span class="nav-badge" style="background:#e67e22; color:#fff; font-size:9px; padding:1px 6px; border-radius:10px; font-weight:700;">KLIMAT</span>
+          <span class="nav-icon">🥟</span>
+          <span class="nav-label">Szczecińskie Klasyki</span>
+          <span class="nav-badge badge-flavor">KLIMAT</span>
         </a>
       </nav>
+
       <div class="sidebar-footer">
         <div class="sidebar-tools">
-          <button class="sidebar-tool-btn" onclick="SyncManager.downloadBackup()" title="Pobierz backup danych">
-            💾 Backup
+          <button class="sidebar-tool-btn" onclick="SyncManager.downloadBackup()" title="Pobierz kopię zapasową danych">
+            💾 Kopia
           </button>
-          <button class="sidebar-tool-btn" onclick="SyncManager.uploadBackup()" title="Przywróć z backupu">
+          <button class="sidebar-tool-btn" onclick="SyncManager.uploadBackup()" title="Przywróć dane z pliku">
             📂 Przywróć
           </button>
-          <button class="sidebar-tool-btn" onclick="SyncManager.shareViaUrl()" title="Udostępnij ulubione">
+          <button class="sidebar-tool-btn" onclick="SyncManager.shareViaUrl()" title="Udostępnij wybrane ulubione">
             🔗 Sync
           </button>
         </div>
-        <p>Szczecin © 2026</p>
+        <div class="sidebar-meta-row">
+          <span>⚓ Szczecin Niebuszewo</span>
+          <span>v7.2.0 • PWA</span>
+        </div>
       </div>
     </aside>
     <div class="sidebar-overlay hidden" id="sidebarOverlay"></div>

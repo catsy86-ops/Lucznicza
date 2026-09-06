@@ -419,7 +419,7 @@ function createPoiMarker(place) {
     ? `<span class="pp-status ${status.open ? 'open' : 'closed'}">${status.open ? '🟢 Otwarte' : '🔴 Zamknięte'}</span>`
     : '';
 
-  marker.bindPopup(`
+  const popupHtml = `
     <div class="map-popup">
       <div class="pp-head" style="background:${place.gradient || CAT_COLORS[place.cat]}">
         <span class="pp-emoji">${place.emoji}</span>
@@ -436,7 +436,12 @@ function createPoiMarker(place) {
         </div>
       </div>
     </div>
-  `, { maxWidth: 260, minWidth: 220, closeButton: true, className: 'map-popup-wrapper' });
+  `;
+
+  // On desktop screens bind traditional popup; on mobile prefer bottom sheet to prevent double UI
+  if (typeof window !== 'undefined' && window.innerWidth > 768) {
+    marker.bindPopup(popupHtml, { maxWidth: 260, minWidth: 220, closeButton: true, className: 'map-popup-wrapper' });
+  }
 
   marker.on('click', () => {
     showGooglePlaceSheet(place);
@@ -1369,6 +1374,10 @@ function navigateTo(section) {
       window.PogonFeature.render();
     } else if (section === 'szczecin' && window.SzczecinLocalFlavor) {
       window.SzczecinLocalFlavor.render();
+    } else if (section === 'bikes' && window.BikeSectionManager) {
+      if (!target.querySelector('.bike-planner-card') || !target.querySelector('.bike-hero')) {
+        window.BikeSectionManager.init();
+      }
     }
   }
 

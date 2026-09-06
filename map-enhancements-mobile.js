@@ -59,7 +59,13 @@ const MapEnhancementsMobile = (() => {
       detectDevice();
       if (prev !== cfg.isMobile) {
         console.log('📱 Layout changed due to resize');
-        location.reload(); // Or switch UI dynamically
+        const toolbar = document.getElementById('mapEnhancementsToolbar');
+        if (toolbar) toolbar.style.display = cfg.isMobile ? 'none' : 'flex';
+        if (window.map) {
+          window.map.invalidateSize();
+        } else if (window.state?.map) {
+          window.state.map.invalidateSize();
+        }
       }
     });
   }
@@ -109,11 +115,10 @@ const MapEnhancementsMobile = (() => {
 
     if (!desktopContainer || !mobileContainer) return;
 
-    // Clone buttons to bottom sheet
+    // Move buttons into bottom sheet to preserve all JS event listeners
     const buttons = desktopContainer.querySelectorAll('.enh-btn');
     buttons.forEach(btn => {
-      const clone = btn.cloneNode(true);
-      mobileContainer.appendChild(clone);
+      mobileContainer.appendChild(btn);
     });
 
     // Hide desktop toolbar on mobile
@@ -139,10 +144,11 @@ const MapEnhancementsMobile = (() => {
       touchStartTime = Date.now();
       cfg.dragState.isDragging = true;
       sheet.classList.add('dragging');
-    });
+    }, { passive: true });
 
     sheet.addEventListener('touchmove', (e) => {
       if (!cfg.dragState.isDragging) return;
+      if (e.cancelable) e.preventDefault();
 
       const currentY = e.touches[0].clientY;
       const diff = currentY - touchStartY;
@@ -157,7 +163,7 @@ const MapEnhancementsMobile = (() => {
       const newHeight = Math.max(60, currentHeight + diff);
 
       content.style.transform = `translateY(${diff}px)`;
-    });
+    }, { passive: false });
 
     sheet.addEventListener('touchend', (e) => {
       cfg.dragState.isDragging = false;
@@ -237,6 +243,11 @@ const MapEnhancementsMobile = (() => {
     }
 
     console.log(`📌 Snapped to: ${pointName} (${point.height}px)`);
+    if (window.map) {
+      window.map.invalidateSize();
+    } else if (window.state?.map) {
+      window.state.map.invalidateSize();
+    }
   }
 
   /**
