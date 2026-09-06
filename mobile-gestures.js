@@ -178,7 +178,9 @@ const MobileGestures = (() => {
       let startY = 0;
       let offsetX = 0;
       let offsetY = 0;
+      let hasMoved = false;
 
+      // Touch events (mobile)
       el.addEventListener('touchstart', (e) => {
         isDragging = true;
         startX = e.touches[0].clientX;
@@ -188,16 +190,11 @@ const MobileGestures = (() => {
 
       el.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
-
         const currentX = e.touches[0].clientX;
         const currentY = e.touches[0].clientY;
-
         offsetX = currentX - startX;
         offsetY = currentY - startY;
-
         el.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-
-        // Dispatch custom drag event
         dispatchGestureEvent('drag', el, {
           offsetX,
           offsetY,
@@ -209,12 +206,57 @@ const MobileGestures = (() => {
       el.addEventListener('touchend', () => {
         isDragging = false;
         el.style.cursor = 'grab';
-        
-        // Snap back if moved too little
         if (Math.abs(offsetX) < 30 && Math.abs(offsetY) < 30) {
           el.style.transform = 'translate(0, 0)';
         }
       }, { passive: true });
+
+      // Pointer events (desktop mouse/pen)
+      el.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return; // primary button only
+        isDragging = true;
+        hasMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        el.style.cursor = 'grabbing';
+        e.stopPropagation();
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const currentX = e.clientX;
+        const currentY = e.clientY;
+        offsetX = currentX - startX;
+        offsetY = currentY - startY;
+        if (!hasMoved && (Math.abs(offsetX) > 3 || Math.abs(offsetY) > 3)) {
+          hasMoved = true;
+          el.classList.add('is-dragging');
+        }
+        if (!hasMoved) return;
+        el.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        dispatchGestureEvent('drag', el, {
+          offsetX,
+          offsetY,
+          deltaX: offsetX,
+          deltaY: offsetY,
+        });
+      });
+
+      el.addEventListener('pointerup', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        el.style.cursor = 'grab';
+        el.classList.remove('is-dragging');
+        if (Math.abs(offsetX) < 30 && Math.abs(offsetY) < 30) {
+          el.style.transform = 'translate(0, 0)';
+        }
+      });
+
+      el.addEventListener('pointercancel', () => {
+        isDragging = false;
+        el.style.cursor = 'grab';
+        el.classList.remove('is-dragging');
+      });
     });
   }
 

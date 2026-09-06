@@ -1,4 +1,4 @@
-﻿/**
+/**
  * explorer-badges.ts — Osiedlowe Odznaki Gryfusa & Certyfikat Odkrywcy Niebuszewa
  */
 
@@ -61,6 +61,42 @@ export const BASE_BADGES: readonly Omit<ExplorerBadge, 'isUnlocked' | 'unlockedA
     medal: '🎖️ Odznaka',
     desc: 'Zajrzyj do strefy Psie Niebuszewo i poznaj bezpieczne wybiegi dla psów.',
     points: 75
+  },
+  {
+    id: 'badge-matchday-pogon',
+    title: '12. Zawodnik Pogoni',
+    category: 'pogon',
+    icon: '⚽',
+    medal: '⚓ Duma Pomorza',
+    desc: 'Wyznacz trasę na Stadion Krygiera w Trybie Dnia Meczowego i uruchom doping.',
+    points: 150
+  },
+  {
+    id: 'badge-pasztecik-master',
+    title: 'Mistrz Pasztecika',
+    category: 'culture',
+    icon: '🥟',
+    medal: '🏆 Koneser Smaku',
+    desc: 'Skomponuj kultowy zestaw z pasztecikiem i barszczem w Radarze Pasztecika.',
+    points: 120
+  },
+  {
+    id: 'badge-szczecin-slang',
+    title: 'Prawilny Szczeciniak',
+    category: 'culture',
+    icon: '🗣️',
+    medal: '🏙️ Gwara Miejska',
+    desc: 'Poznaj leksykon szczecińskiego slangu i włącz tryb Gwary Osiedlowej.',
+    points: 100
+  },
+  {
+    id: 'badge-klatka-regular',
+    title: 'Bywalec Klatki pod 43',
+    category: 'community',
+    icon: '🍻',
+    medal: '🍺 Złoty Kufel',
+    desc: 'Wstąp do Pubu Klatka na Łuczniczej 43, odpal szafę grającą i rozegraj sąsiedzką debatę.',
+    points: 130
   }
 ];
 

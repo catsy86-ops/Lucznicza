@@ -83,7 +83,7 @@ function handleDeepLink() {
   const hash = window.location.hash;
   
   // Handle section navigation via hash
-  const sectionMatch = hash.match(/^#(map|places|routes|info|transport|events|live|community)$/);
+  const sectionMatch = hash.match(/^#(map|places|routes|bikes|info|transport|events|live|community|pogon|szczecin)$/);
   if (sectionMatch) {
     navigateTo(sectionMatch[1]);
     return;
@@ -137,16 +137,16 @@ function initMap() {
     mapContainer.style.animation = '';
     mapContainer.innerHTML = '';
 
-    // Bounding box of Niebuszewo to prevent drifting outside the neighborhood
+    // Bounding box of Szczecin & Niebuszewo to prevent drifting while accommodating full bike network
     const NIEBUSZEWO_BOUNDS = [
-      [53.4380, 14.5200], // SW
-      [53.4720, 14.5850]  // NE
+      [53.4150, 14.4600], // SW (Wały Chrobrego, Jezioro Głębokie zachód, Stadion)
+      [53.4900, 14.6100]  // NE (Jezioro Głębokie północ, Warszewo, Odra)
     ];
 
-    // Initialize Leaflet map strictly focused on Niebuszewo, Szczecin
+    // Initialize Leaflet map focused on Niebuszewo, Szczecin
     const map = L.map('map', {
       zoomControl: false,
-      minZoom: 14,
+      minZoom: 12,
       maxZoom: 19,
       maxBounds: NIEBUSZEWO_BOUNDS,
       maxBoundsViscosity: 0.85
@@ -857,6 +857,50 @@ function initSzczecinIsland() {
           navigateTo('pogon');
           showToast('🛡️ Aktywowano motyw Pogoń Szczecin — Duma Pomorza!');
           break;
+        case 'matchday':
+          navigateTo('pogon');
+          if (window.PogonFeature) {
+            window.PogonFeature.toggleMatchdayMode();
+          }
+          break;
+        case 'pasztecik':
+          navigateTo('szczecin');
+          setTimeout(() => {
+            const el = document.getElementById('sfGastroRadar');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 200);
+          showToast('🥟 Pasztecik & Frytburger Radar');
+          break;
+        case 'gwara':
+          navigateTo('szczecin');
+          if (window.SzczecinLocalFlavor) {
+            window.SzczecinLocalFlavor.toggleSzczecinDialect();
+          }
+          break;
+        case 'giedroyc':
+          navigateTo('szczecin');
+          setTimeout(() => {
+            const el = document.querySelector('.sf-giedroyc-indicator');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 200);
+          showToast('🚦 Stan przejazdu na Rondzie Giedroycia');
+          break;
+        case 'klatka':
+          navigateTo('community');
+          setTimeout(() => {
+            const el = document.getElementById('comm-klatka');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 200);
+          showToast('🍻 Witaj w Pubie Klatka pod 43! Zimne piwko czeka!');
+          break;
+        case 'ogloszenia':
+          navigateTo('szczecin');
+          setTimeout(() => {
+            const el = document.getElementById('sfAnnounceWrap');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 200);
+          showToast('📜 Ogłoszenia z Klatki pod 43');
+          break;
       }
     });
   });
@@ -1320,6 +1364,12 @@ function navigateTo(section) {
     target.classList.add('active');
     // Smooth scroll to top of section
     target.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (section === 'pogon' && window.PogonFeature) {
+      window.PogonFeature.render();
+    } else if (section === 'szczecin' && window.SzczecinLocalFlavor) {
+      window.SzczecinLocalFlavor.render();
+    }
   }
 
   document.querySelectorAll('.nav-item').forEach(i => {
@@ -1357,6 +1407,12 @@ function navigateTo(section) {
   // If map section, invalidate size so Leaflet redraws tiles
   if (section === 'map' && state.map) {
     setTimeout(() => state.map.invalidateSize(), 100);
+  }
+
+  // Sync bikeActiveRouteBanner visibility
+  const bikeBanner = document.getElementById('bikeActiveRouteBanner');
+  if (bikeBanner) {
+    bikeBanner.style.display = (section === 'map' && window.BikeSectionManager?.routeLayer) ? 'flex' : 'none';
   }
 
   // Update URL hash for deep linking (without triggering hashchange)

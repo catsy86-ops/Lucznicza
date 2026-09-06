@@ -58,6 +58,7 @@ function renderCommunity() {
       <button class="cnp-btn" data-target="comm-audio">🎧 Opowieści Gryfusa</button>
       <button class="cnp-btn" data-target="comm-sos">🆘 Apteki & Dyżury 24h</button>
       <button class="cnp-btn" data-target="comm-dogs">🐕 Psie Niebuszewo</button>
+      <button class="cnp-btn" data-target="comm-klatka" style="background: linear-gradient(135deg, #d97706, #b45309); color: #fff; font-weight: 700;">🍺 Pub Klatka pod 43</button>
       <button class="cnp-btn" data-target="comm-badges">🎖️ Odznaki Gryfusa</button>
       <button class="cnp-btn" data-target="comm-waste">♻️ Śmieci & Gabaryty</button>
       <button class="cnp-btn" data-target="comm-artisans">🏆 Rzemieślnicy</button>
@@ -147,6 +148,15 @@ function renderCommunity() {
       <div id="ekoDropPointsList" class="comm-eko-grid"></div>
     </div>
 
+    <!-- Pub Klatka (ul. Łucznicza 43) — Legendarny Klub Osiedlowy & Strefa Biesiadna -->
+    <div id="comm-klatka" class="comm-klatka-section">
+      <div class="comm-section-title">
+        <span>🍺 Pub Klatka — ul. Łucznicza 43</span>
+        <span class="comm-refresh-hint">Klub Sąsiedzki · Wpadaj na piwo!</span>
+      </div>
+      <div id="pubKlatkaHub"></div>
+    </div>
+
     <!-- Local Artisans ("Kupuj Lokalnie na Niebuszewie") -->
     <div id="comm-artisans">
       <div class="comm-section-title">
@@ -219,6 +229,7 @@ function renderCommunity() {
   renderCommunityAlerts();
   renderSosContacts();
   renderDogZone();
+  renderPubKlatkaHub();
   renderExplorerBadges();
   renderWasteCalendar();
   renderCommunityArtisans();
@@ -1190,6 +1201,355 @@ function renderWasteCalendar() {
   }
 }
 
+// ===== PUB KLATKA (ŁUCZNICZA 43) — INTEGRACJA, HUMOR & DŹWIĘKI =====
+function renderPubKlatkaHub() {
+  const container = document.getElementById('pubKlatkaHub');
+  if (!container) return;
+
+  const topics = [
+    {
+      q: 'Kto nie gasi światła w piwnicy?',
+      ans: '„Licznik kręci się jak szalony, a potem rachunek na wspólnotę! Następnym razem wykręcam żarówkę!”',
+      author: 'Pan Mieczysław z 1. piętra'
+    },
+    {
+      q: 'Wózek w wózkowni vs zielony rower',
+      ans: '„Rower stoi tam od czasów komuny. Ma jeszcze tabliczkę z NRD. Panie, daj pan żyć!”',
+      author: 'Właściciel roweru'
+    },
+    {
+      q: 'Dziki pod altaną śmietnikową o 22:30',
+      ans: '„Lochy z warchlakami czują paprykarz na kilometr. Domykać furtkę i nie dyskutować!”',
+      author: 'Pani Halinka'
+    },
+    {
+      q: 'Grosicki na lewym skrzydle w 88. minucie',
+      ans: '„TurboGrosik jak pociągnie z kontry, to obrońcy Legii szukają butów na Twardowskiego!”',
+      author: 'Mati spod 43'
+    },
+    {
+      q: 'Kiedy remont chodnika na Łuczniczej?',
+      ans: '„Płytki pamiętają wizytę Gierka. Jak popada, to mamy małe Jezioro Głębokie pod klatką!”',
+      author: 'Komitet Lokatorski'
+    }
+  ];
+
+  container.innerHTML = `
+    <div class="klatka-hero-card">
+      <div class="khc-badge">🍺 OFICJALNY KLUB OSIEDLOWY · ŁUCZNICZA 43</div>
+      <div class="khc-header">
+        <div class="khc-icon-wrap">
+          <span class="khc-icon">🍻</span>
+        </div>
+        <div class="khc-title-box">
+          <h3 class="khc-title">Pub Klatka — Łucznicza 43</h3>
+          <p class="khc-sub">„Wpadaj tam na piwo!” · Niezależny ośrodek myśli sąsiedzkiej i debat przy kaloryferze</p>
+        </div>
+      </div>
+
+      <div class="khc-body">
+        <div class="khc-status-row">
+          <div class="khc-status-pill open">
+            <span class="khc-dot"></span> Czynne: 16:00 – dopóki sąsiad nie zapuka w rurę
+          </div>
+          <div class="khc-specialty">
+            🍺 <strong>Specjalność klatki:</strong> Zimny browar z pianką na 2 palce & suchy krakers
+          </div>
+        </div>
+
+        <!-- Interaktywne przyciski dźwiękowe i mikrointerakcje -->
+        <div class="khc-actions-grid">
+          <button class="khc-sound-btn beer" onclick="window.playBeerOpenSound()">
+            <span>🍺</span>
+            <div>
+              <strong>Otwórz Piwko</strong>
+              <small>Dźwięk odkapslowania (Web Audio)</small>
+            </div>
+          </button>
+
+          <button class="khc-sound-btn clink" onclick="window.playGlassClinkSound()">
+            <span>🥂</span>
+            <div>
+              <strong>Stuknij Kuflem!</strong>
+              <small>Sąsiedzkie „Na zdrowie!”</small>
+            </div>
+          </button>
+
+          <button class="khc-sound-btn pipe" onclick="window.playRadiatorKnockSound()">
+            <span>🔨</span>
+            <div>
+              <strong>Pukanie w kaloryfer</strong>
+              <small>Cisza nocna o 22:00!</small>
+            </div>
+          </button>
+
+          <button class="khc-sound-btn bell" onclick="window.playDoorbellIntercom()">
+            <span>🔔</span>
+            <div>
+              <strong>Domofon „Otwórz!”</strong>
+              <small>Sygnał bramy pod 43</small>
+            </div>
+          </button>
+        </div>
+
+        <!-- Symulator Debaty Sąsiedzkiej -->
+        <div class="khc-debate-box">
+          <div class="kdb-head">
+            <span style="font-size: 20px;">🗣️</span>
+            <div>
+              <strong>Osiedlowy Generator Debat spod 43</strong>
+              <div style="font-size: 11.5px; opacity: 0.85;">Wylosuj temat gorącej dyskusji na klatce schodowej</div>
+            </div>
+          </div>
+
+          <div id="klatkaDebateOutput" class="kdb-output">
+            <div class="kdb-q">❓ ${topics[0].q}</div>
+            <div class="kdb-a">${topics[0].ans}</div>
+            <div class="kdb-author">— <i>${topics[0].author}</i></div>
+          </div>
+
+          <div class="kdb-actions">
+            <button class="kdb-roll-btn" onclick="window.rollKlatkaDebate()">
+              🎲 Losuj nową debatę sąsiedzką
+            </button>
+            <button class="kdb-nav-btn" onclick="focusAlertOnMap(53.45405, 14.54752)">
+              🗺️ Namierz Pub Klatka na mapie
+            </button>
+            <button class="kdb-badge-btn" onclick="window.unlockKlatkaBadge()">
+              🎖️ Odbierz odznakę Bywalca Klatki (+130 pkt)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Syntezatory dźwiękowe Web Audio dla Pubu Klatka
+window.playBeerOpenSound = function() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+
+    // Syknięcie gazu / odkapslowanie
+    const bufferSize = ctx.sampleRate * 0.22;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(3200, ctx.currentTime);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.7, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    noise.start();
+
+    // Plusk / pop
+    const popOsc = ctx.createOscillator();
+    const popGain = ctx.createGain();
+    popOsc.type = 'sine';
+    popOsc.frequency.setValueAtTime(520, ctx.currentTime);
+    popOsc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.08);
+    popGain.gain.setValueAtTime(0.5, ctx.currentTime);
+    popGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+
+    popOsc.connect(popGain);
+    popGain.connect(ctx.destination);
+    popOsc.start();
+    popOsc.stop(ctx.currentTime + 0.08);
+
+    if (typeof showToast === 'function') {
+      showToast('🍺 *PSSSYT!* Zimne piwko w Pubie Klatka pod 43 otwarte!');
+    }
+  } catch (e) {
+    console.warn('Audio beer error:', e);
+  }
+};
+
+window.playGlassClinkSound = function() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(2450, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(2400, ctx.currentTime + 0.6);
+
+    gain.gain.setValueAtTime(0.6, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.6);
+
+    if (typeof showToast === 'function') {
+      showToast('🥂 *BRZDĘK!* Zdrowie mieszkańców Łuczniczej i całej Pogoni!');
+    }
+  } catch (e) {
+    console.warn('Audio clink error:', e);
+  }
+};
+
+window.playRadiatorKnockSound = function() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+
+    // 3 metaliczne stuknięcia w rurę
+    const knock = (delay) => {
+      const t = ctx.currentTime + delay;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(380, t);
+      osc.frequency.exponentialRampToValueAtTime(120, t + 0.09);
+
+      gain.gain.setValueAtTime(0.7, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.09);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.09);
+    };
+
+    knock(0);
+    knock(0.16);
+    knock(0.32);
+
+    if (typeof showToast === 'function') {
+      showToast('🔨 *ŁUP! ŁUP! ŁUP!* Sąsiad z góry puka w kaloryfer: „CISZA NOCNA!”');
+    }
+  } catch (e) {
+    console.warn('Audio radiator error:', e);
+  }
+};
+
+window.playDoorbellIntercom = function() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+
+    // Klasyczny buczek domofonu (brzęczyk 180Hz)
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(180, ctx.currentTime);
+
+    gain.gain.setValueAtTime(0.4, ctx.currentTime);
+    gain.gain.setValueAtTime(0.4, ctx.currentTime + 0.35);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.4);
+
+    if (typeof showToast === 'function') {
+      showToast('🔔 *BZZZZZT!* Drzwi do klatki pod 43 otwarte! Wbijaj na górę!');
+    }
+  } catch (e) {
+    console.warn('Audio intercom error:', e);
+  }
+};
+
+window.rollKlatkaDebate = function() {
+  const output = document.getElementById('klatkaDebateOutput');
+  if (!output) return;
+
+  const topics = [
+    {
+      q: 'Kto nie gasi światła w piwnicy?',
+      ans: '„Licznik kręci się jak szalony, a potem rachunek na wspólnotę! Następnym razem wykręcam żarówkę!”',
+      author: 'Pan Mieczysław z 1. piętra'
+    },
+    {
+      q: 'Wózek w wózkowni vs zielony rower',
+      ans: '„Rower stoi tam od czasów komuny. Ma jeszcze tabliczkę z NRD. Panie, daj pan żyć!”',
+      author: 'Właściciel roweru'
+    },
+    {
+      q: 'Dziki pod altaną śmietnikową o 22:30',
+      ans: '„Lochy z warchlakami czują paprykarz na kilometr. Domykać furtkę i nie dyskutować!”',
+      author: 'Pani Halinka'
+    },
+    {
+      q: 'Grosicki na lewym skrzydle w 88. minucie',
+      ans: '„TurboGrosik jak pociągnie z kontry, to obrońcy Legii szukają butów na Twardowskiego!”',
+      author: 'Mati spod 43'
+    },
+    {
+      q: 'Kiedy remont chodnika na Łuczniczej?',
+      ans: '„Płytki pamiętają wizytę Gierka. Jak popada, to mamy małe Jezioro Głębokie pod klatką!”',
+      author: 'Komitet Lokatorski'
+    },
+    {
+      q: 'Pasztecik z mięsem czy z pieczarką?',
+      ans: '„Z mięsem i koniecznie dwa kubki barszczu! Pieczarka to dla tych, co się spóźnili na tramwaj 12!”',
+      author: 'Wiesław, emerytowany stoczniowiec'
+    },
+    {
+      q: 'Zostawianie butelek po oranżadzie pod schodami',
+      ans: '„To są butelki zwrotne! Czekają na piątkową kaucję w Społem, proszę ich nie ruszać!”',
+      author: 'Młody lokator z parteru'
+    }
+  ];
+
+  const picked = topics[Math.floor(Math.random() * topics.length)];
+  output.innerHTML = `
+    <div class="kdb-q">❓ ${picked.q}</div>
+    <div class="kdb-a">${picked.ans}</div>
+    <div class="kdb-author">— <i>${picked.author}</i></div>
+  `;
+
+  if (typeof showToast === 'function') {
+    showToast('🎲 Wylosowano nową debatę osiedlową!');
+  }
+};
+
+window.unlockKlatkaBadge = function() {
+  if (window.__SZCZECIN_APP__?.explorerBadges) {
+    const res = window.__SZCZECIN_APP__.explorerBadges.unlockBadge('badge-klatka-regular');
+    if (res.success && res.badge) {
+      if (typeof showToast === 'function') {
+        showToast(`🎉 Brawo! Odblokowano odznakę: 🍺 ${res.badge.title} (+${res.badge.points} pkt)! Jesteś stałym bywalcem pod 43!`);
+      }
+      renderExplorerBadges();
+    } else {
+      if (typeof showToast === 'function') {
+        showToast('ℹ️ Masz już odznakę Bywalca Klatki pod 43 w swojej kolekcji Gryfusa!');
+      }
+    }
+  }
+};
+
 // ===== GRYFUS AUDIO GUIDE =====
 const DEFAULT_AUDIO_STORIES = [
   {
@@ -1223,6 +1583,14 @@ const DEFAULT_AUDIO_STORIES = [
     coords: [53.4475, 14.5518],
     duration: 'ok. 21 sek',
     desc: 'Kultowe targowisko miejskie, brama do Niebuszewa i serce komunikacyjne dzielnicy.'
+  },
+  {
+    id: 'story-klatka-43',
+    title: 'Pub Klatka pod 43: Serce Integracji',
+    locationName: 'ul. Łucznicza 43',
+    coords: [53.45405, 14.54752],
+    duration: 'ok. 22 sek',
+    desc: 'Legendarna brama i klatka schodowa pod numerem 43! To tu toczą się debaty o składzie Pogoni Szczecin, lochach z warchlakami i tajemnicy znikających żarówek w piwnicy.'
   }
 ];
 
@@ -1314,6 +1682,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAudioGuide();
     renderSosContacts();
     renderDogZone();
+    renderPubKlatkaHub();
     renderExplorerBadges();
     renderWasteCalendar();
   }, 250);
@@ -1326,5 +1695,6 @@ window.renderAudioGuide = renderAudioGuide;
 window.toggleAudioStory = toggleAudioStory;
 window.renderSosContacts = renderSosContacts;
 window.renderDogZone = renderDogZone;
+window.renderPubKlatkaHub = renderPubKlatkaHub;
 window.renderExplorerBadges = renderExplorerBadges;
 window.renderWasteCalendar = renderWasteCalendar;

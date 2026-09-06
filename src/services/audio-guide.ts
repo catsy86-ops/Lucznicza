@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Gryfus Audio Guide Service
  * Voice narrative guide using Web Speech API with Polish pronunciation
  */
@@ -44,6 +44,14 @@ export const NIEBUSZEWO_STORIES: AudioStory[] = [
     coords: [53.4475, 14.5518],
     narrativeText: 'Rondo Sybiraków i plac Kołłątaja to brama do północnych dzielnic Szczecina. Tuż obok działa kultowe targowisko Manhattan, gdzie od pokoleń mieszkańcy zaopatrują się w świeże warzywa z regionu i słynne szczecińskie wypieki.',
     durationSecondsEst: 21
+  },
+  {
+    id: 'story-klatka-43',
+    title: 'Pub Klatka pod 43: Serce Integracji',
+    locationName: 'ul. Łucznicza 43',
+    coords: [53.45405, 14.54752],
+    narrativeText: 'Witaj pod numerem czterdzieści trzy przy ulicy Łuczniczej! To tutaj mieści się nieoficjalny Pub Klatka — bastion osiedlowych debat, wózkowni i bezpieczna przystań przed dzikami. Jeśli chcesz usłyszeć prawdziwe szczecińskie historie, to właśnie tutaj!',
+    durationSecondsEst: 22
   }
 ];
 

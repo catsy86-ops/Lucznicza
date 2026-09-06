@@ -10,18 +10,18 @@
 
 // 1. Węzły sieci rowerowej Szczecina (Niebuszewo i okolice)
 const BIKE_NODES = {
-  lucznicza: { id: 'lucznicza', name: 'ul. Łucznicza / Tarczowa (Centrum Dzielnicy)', coords: [53.4530, 14.5520], elevation: 32 },
-  kadziak: { id: 'kadziak', name: 'Park Antoniego Kadziaka', coords: [53.4510, 14.5440], elevation: 28 },
-  skm_niebuszewo: { id: 'skm_niebuszewo', name: 'Stacja Kolejowa Szczecin Niebuszewo (SKM)', coords: [53.4565, 14.5480], elevation: 35 },
-  kollataja: { id: 'kollataja', name: 'Pętla Kołłątaja / Rondo Giedroycia', coords: [53.4475, 14.5490], elevation: 22 },
-  przyjaciol: { id: 'przyjaciol', name: 'Al. Przyjaciół Żołnierza (DDR)', coords: [53.4545, 14.5610], elevation: 42 },
-  kasprowicza: { id: 'kasprowicza', name: 'Park Kasprowicza (Teatr Letni)', coords: [53.4480, 14.5320], elevation: 25 },
-  jasne_blonia: { id: 'jasne_blonia', name: 'Jasne Błonia im. Jana Pawła II', coords: [53.4420, 14.5400], elevation: 18 },
-  syrenie_stawy: { id: 'syrenie_stawy', name: 'Syrenie Stawy / Ogród Dendrologiczny', coords: [53.4590, 14.5180], elevation: 30 },
-  arkonka: { id: 'arkonka', name: 'Kąpielisko Arkonka (Lasek Arkoński)', coords: [53.4680, 14.5090], elevation: 38 },
-  glebokie: { id: 'glebokie', name: 'Jezioro Głębokie (Węzeł Przesiadkowy)', coords: [53.4790, 14.4850], elevation: 45 },
-  warszewo: { id: 'warszewo', name: 'Warszewo Wzgórza (Rynek / Szczecińska)', coords: [53.4680, 14.5460], elevation: 85 },
-  waly_chrobrego: { id: 'waly_chrobrego', name: 'Wały Chrobrego / Bulwary Nadodrzańskie', coords: [53.4300, 14.5650], elevation: 12 }
+  lucznicza: { id: 'lucznicza', name: 'ul. Łucznicza / Tarczowa (Centrum Dzielnicy)', coords: [53.4530, 14.5520], elevation: 32, icon: '🏹' },
+  kadziak: { id: 'kadziak', name: 'Park Antoniego Kadziaka', coords: [53.4510, 14.5440], elevation: 28, icon: '🌳' },
+  skm_niebuszewo: { id: 'skm_niebuszewo', name: 'Stacja Kolejowa Szczecin Niebuszewo (SKM)', coords: [53.4565, 14.5480], elevation: 35, icon: '🚉' },
+  kollataja: { id: 'kollataja', name: 'Pętla Kołłątaja / Rondo Giedroycia', coords: [53.4475, 14.5490], elevation: 22, icon: '🚋' },
+  przyjaciol: { id: 'przyjaciol', name: 'Al. Przyjaciół Żołnierza (DDR)', coords: [53.4545, 14.5610], elevation: 42, icon: '🛣️' },
+  kasprowicza: { id: 'kasprowicza', name: 'Park Kasprowicza (Teatr Letni)', coords: [53.4480, 14.5320], elevation: 25, icon: '🎭' },
+  jasne_blonia: { id: 'jasne_blonia', name: 'Jasne Błonia im. Jana Pawła II', coords: [53.4420, 14.5400], elevation: 18, icon: '🌳' },
+  syrenie_stawy: { id: 'syrenie_stawy', name: 'Syrenie Stawy / Ogród Dendrologiczny', coords: [53.4590, 14.5180], elevation: 30, icon: '💧' },
+  arkonka: { id: 'arkonka', name: 'Kąpielisko Arkonka (Lasek Arkoński)', coords: [53.4680, 14.5090], elevation: 38, icon: '🏊' },
+  glebokie: { id: 'glebokie', name: 'Jezioro Głębokie (Węzeł Przesiadkowy)', coords: [53.4790, 14.4850], elevation: 45, icon: '🌲' },
+  warszewo: { id: 'warszewo', name: 'Warszewo Wzgórza (Rynek / Szczecińska)', coords: [53.4680, 14.5460], elevation: 85, icon: '⛰️' },
+  waly_chrobrego: { id: 'waly_chrobrego', name: 'Wały Chrobrego / Bulwary Nadodrzańskie', coords: [53.4300, 14.5650], elevation: 12, icon: '⚓' }
 };
 
 // 2. Krawędzie grafu z atrybutami infrastruktury
@@ -354,26 +354,31 @@ const BikeSectionManager = {
 
           <div class="bpc-form-grid">
             <div class="bpc-field">
-              <label for="bikeStartSelect">📍 Punkt startowy:</label>
+              <div class="bpc-label-row">
+                <label for="bikeStartSelect">📍 Punkt startowy:</label>
+                <button type="button" id="bikeSwapPointsBtn" class="bike-swap-btn" title="Zamień punkt startowy i docelowy">
+                  <span>⇄ Zamień</span>
+                </button>
+              </div>
               <select id="bikeStartSelect" class="bike-select">
-                <option value="lucznicza" selected>🏹 ul. Łucznicza / Tarczowa (Centrum)</option>
-                <option value="kadziak">🌳 Park Kadziaka</option>
-                <option value="skm_niebuszewo">🚉 Stacja SKM Niebuszewo</option>
-                <option value="kollataja">🚋 Pętla Kołłątaja</option>
-                <option value="przyjaciol">🛣️ Al. Przyjaciół Żołnierza</option>
+                ${Object.values(BIKE_NODES).map(n => `
+                  <option value="${n.id}" ${n.id === 'lucznicza' ? 'selected' : ''}>
+                    ${n.icon || '📍'} ${n.name}
+                  </option>
+                `).join('')}
               </select>
             </div>
 
             <div class="bpc-field">
-              <label for="bikeEndSelect">🏁 Cel podróży:</label>
+              <div class="bpc-label-row">
+                <label for="bikeEndSelect">🏁 Cel podróży:</label>
+              </div>
               <select id="bikeEndSelect" class="bike-select">
-                <option value="jasne_blonia" selected>🌳 Jasne Błonia (Platany)</option>
-                <option value="kasprowicza">🎭 Park Kasprowicza (Teatr Letni)</option>
-                <option value="syrenie_stawy">💧 Syrenie Stawy</option>
-                <option value="arkonka">🏊 Kąpielisko Arkonka</option>
-                <option value="glebokie">🌲 Jezioro Głębokie</option>
-                <option value="warszewo">⛰️ Warszewo Wzgórza</option>
-                <option value="waly_chrobrego">⚓ Wały Chrobrego / Odra</option>
+                ${Object.values(BIKE_NODES).map(n => `
+                  <option value="${n.id}" ${n.id === 'jasne_blonia' ? 'selected' : ''}>
+                    ${n.icon || '📍'} ${n.name}
+                  </option>
+                `).join('')}
               </select>
             </div>
 
@@ -399,7 +404,7 @@ const BikeSectionManager = {
           </div>
 
           <div class="bpc-action-row">
-            <button id="calcBikeRouteBtn" class="bike-calc-btn">
+            <button id="calcBikeRouteBtn" class="bike-calc-btn" type="button">
               <span>🚀 Wyznacz optymalną trasę</span>
             </button>
           </div>
@@ -430,8 +435,8 @@ const BikeSectionManager = {
       </div>
     `;
 
-    // Calculate initial route
-    this.handleCalculate();
+    // Calculate initial preview without switching to map
+    this.handleCalculate({ showOnMap: false });
   },
 
   renderCuratedCard(r) {
@@ -492,33 +497,79 @@ const BikeSectionManager = {
   bindEvents() {
     const calcBtn = document.getElementById('calcBikeRouteBtn');
     if (calcBtn) {
-      calcBtn.addEventListener('click', () => this.handleCalculate());
+      calcBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        calcBtn.classList.add('morphing');
+        this.playBikeBellSound();
+        this.triggerHaptic();
+        setTimeout(() => calcBtn.classList.remove('morphing'), 400);
+        this.handleCalculate({ showOnMap: true });
+      });
     }
 
-    // Auto calculate on change
+    const swapBtn = document.getElementById('bikeSwapPointsBtn');
+    if (swapBtn) {
+      swapBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const startEl = document.getElementById('bikeStartSelect');
+        const endEl = document.getElementById('bikeEndSelect');
+        if (startEl && endEl) {
+          const temp = startEl.value;
+          startEl.value = endEl.value;
+          endEl.value = temp;
+          this.handleCalculate({ showOnMap: false });
+        }
+      });
+    }
+
+    // Auto calculate preview on change
     ['bikeStartSelect', 'bikeEndSelect', 'bikeProfileSelect', 'bikeTypeSelect'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.addEventListener('change', () => this.handleCalculate());
+      if (el) el.addEventListener('change', () => this.handleCalculate({ showOnMap: false }));
     });
   },
 
-  handleCalculate() {
+  handleCalculate(opts = {}) {
+    const showOnMap = opts.showOnMap === true;
     const startId = document.getElementById('bikeStartSelect')?.value || 'lucznicza';
     const endId = document.getElementById('bikeEndSelect')?.value || 'jasne_blonia';
     const profile = document.getElementById('bikeProfileSelect')?.value || 'safe';
     const bikeType = document.getElementById('bikeTypeSelect')?.value || 'city';
 
+    const box = document.getElementById('bikePlannerResult');
+
+    if (startId === endId) {
+      this.currentRoute = null;
+      if (box) {
+        box.innerHTML = `
+          <div class="bpc-error" style="background:rgba(239,68,68,0.12);border:1px solid #ef4444;border-radius:10px;padding:14px;color:#f87171;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:22px;">⚠️</span>
+            <div>
+              <strong>Wybrano ten sam punkt startowy i docelowy!</strong>
+              <div style="font-size:12px;opacity:0.9;margin-top:2px;">Wybierz różne punkty trasy, aby wyznaczyć optymalny przebieg ścieżki rowerowej.</div>
+            </div>
+          </div>
+        `;
+      }
+      if (showOnMap && typeof showToast === 'function') {
+        showToast('⚠️ Punkt startowy i cel podróży muszą być różne!', 'warning');
+      }
+      return;
+    }
+
     const result = SzczecinBikeRouter.calculateRoute(startId, endId, profile, bikeType);
     this.currentRoute = result;
-    const box = document.getElementById('bikePlannerResult');
     if (!box) return;
 
     if (!result) {
       box.innerHTML = `
-        <div class="bpc-error">
-          <span>⚠️ Wybrano ten sam punkt startowy i docelowy. Wybierz różne punkty.</span>
+        <div class="bpc-error" style="background:rgba(239,68,68,0.12);border:1px solid #ef4444;border-radius:10px;padding:14px;color:#f87171;">
+          <span>⚠️ Nie udało się wyznaczyć trasy rowerowej pomiędzy wybranymi punktami.</span>
         </div>
       `;
+      if (showOnMap && typeof showToast === 'function') {
+        showToast('⚠️ Brak bezpośredniego połączenia rowerowego dla tej trasy', 'error');
+      }
       return;
     }
 
@@ -575,24 +626,95 @@ const BikeSectionManager = {
       </div>
 
       <div class="bpr-cta-row">
-        <button class="bpr-view-map-btn" onclick="BikeSectionManager.showCurrentOnMap()">
+        <button class="bpr-view-map-btn" type="button" onclick="BikeSectionManager.showCurrentOnMap()">
           🗺️ Pokaż trasę na mapie rowerowej CyclOSM
         </button>
-        <button class="bpr-gpx-btn" onclick="BikeSectionManager.downloadCurrentGpx()">
+        <button class="bpr-gpx-btn" type="button" onclick="BikeSectionManager.downloadCurrentGpx()">
           💾 Pobierz plik GPX
         </button>
       </div>
     `;
+
+    if (showOnMap) {
+      this.showCurrentOnMap();
+    }
+  },
+
+  scrubberMarker: null,
+
+  playBikeBellSound() {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      // Authentic two-tone bicycle bell ("dryń-dryń")
+      const strikeBell = (startTime, freq) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, startTime);
+        // Slight metallic pitch wobble
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.99, startTime + 0.18);
+
+        gain.gain.setValueAtTime(0.35, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.22);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(startTime);
+        osc.stop(startTime + 0.22);
+      };
+
+      const now = ctx.currentTime;
+      strikeBell(now, 2093);        // First ring: C7 (~2093 Hz)
+      strikeBell(now + 0.08, 2637); // Second ding: E7 (~2637 Hz)
+    } catch (err) {
+      console.warn('Audio bell could not play:', err);
+    }
+  },
+
+  triggerHaptic() {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      try {
+        navigator.vibrate([35, 45, 35]);
+      } catch (e) {
+        // Ignore vibration errors
+      }
+    }
   },
 
   showCurrentOnMap() {
+    if (!this.currentRoute) {
+      const startId = document.getElementById('bikeStartSelect')?.value || 'lucznicza';
+      const endId = document.getElementById('bikeEndSelect')?.value || 'jasne_blonia';
+      const profile = document.getElementById('bikeProfileSelect')?.value || 'safe';
+      const bikeType = document.getElementById('bikeTypeSelect')?.value || 'city';
+      this.currentRoute = SzczecinBikeRouter.calculateRoute(startId, endId, profile, bikeType);
+    }
     if (!this.currentRoute) return;
-    this.renderRouteOnLeaflet(this.currentRoute.coordinates, `${this.currentRoute.startNode.name} → ${this.currentRoute.endNode.name}`);
+
+    this.playBikeBellSound();
+    this.triggerHaptic();
+
+    this.renderRouteOnLeaflet(
+      this.currentRoute.coordinates,
+      `${this.currentRoute.startNode.name} → ${this.currentRoute.endNode.name}`,
+      this.currentRoute
+    );
   },
 
   previewCurated(id) {
     const route = CURATED_BIKE_ROUTES.find(r => r.id === id);
     if (!route) return;
+
+    this.playBikeBellSound();
+    this.triggerHaptic();
 
     // Połącz koordynaty z węzłów
     let coords = [];
@@ -606,12 +728,21 @@ const BikeSectionManager = {
         coords = coords.concat(seg);
       }
     }
-    this.renderRouteOnLeaflet(coords, route.name);
+    this.renderRouteOnLeaflet(coords, route.name, {
+      dist: route.dist,
+      time: route.time,
+      ddrPercent: route.surface.includes('DDR') ? 95 : 65
+    });
   },
 
-  renderRouteOnLeaflet(coords, title) {
+  renderRouteOnLeaflet(coords, title, routeData = null) {
+    if (!coords || !coords.length) return;
+
     if (!window.state?.map) {
       if (typeof navigateTo === 'function') navigateTo('map');
+      setTimeout(() => {
+        this.renderRouteOnLeaflet(coords, title, routeData);
+      }, 300);
       return;
     }
 
@@ -626,61 +757,281 @@ const BikeSectionManager = {
       window.state.currentBaseLayer = 'cyclosm';
     }
 
-    // Usunięcie poprzedniej warstwy trasy
+    // Usunięcie poprzedniej warstwy trasy i scrubbera
     if (this.routeLayer) {
       map.removeLayer(this.routeLayer);
       this.routeLayer = null;
     }
+    if (this.scrubberMarker) {
+      map.removeLayer(this.scrubberMarker);
+      this.scrubberMarker = null;
+    }
 
-    // Stwórz nową polilinię z poświatą
-    const polylineShadow = L.polyline(coords, {
-      color: '#002D62',
-      weight: 8,
-      opacity: 0.6,
+    // Upewnij się, że dedykowany pane dla trasy rowerowej istnieje (zIndex 580 - nad kafelkami i maskami)
+    if (!map.getPane('bikeRoutePane')) {
+      const pane = map.createPane('bikeRoutePane');
+      pane.style.zIndex = 580;
+      pane.style.pointerEvents = 'none';
+    }
+
+    // 1. Zewnętrzna osłona / casing (ciemny granat)
+    const polylineCasing = L.polyline(coords, {
+      pane: 'bikeRoutePane',
+      color: '#022c22',
+      weight: 10,
+      opacity: 0.85,
       lineCap: 'round',
       lineJoin: 'round'
     });
 
-    const polyline = L.polyline(coords, {
+    // 2. Główna neonowa linia rowerowa (emerald / cyjan)
+    const polylineMain = L.polyline(coords, {
+      pane: 'bikeRoutePane',
       color: '#10b981',
-      weight: 5,
-      opacity: 0.95,
-      dashArray: '8, 6',
+      weight: 6,
+      opacity: 1,
       lineCap: 'round',
       lineJoin: 'round'
     });
 
-    // Start & End markers
+    // 3. Wewnętrzny pasek refleksyjny (biało-seledynowy z pulsacją)
+    const polylineHighlight = L.polyline(coords, {
+      pane: 'bikeRoutePane',
+      color: '#a7f3d0',
+      weight: 2.5,
+      opacity: 0.95,
+      dashArray: '8, 8',
+      lineCap: 'round',
+      lineJoin: 'round'
+    });
+
+    // Start & End markers z pulsującymi pierścieniami
     const startIcon = L.divIcon({
       className: 'bike-point-marker start',
-      html: '<div style="background:#10b981;color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.4);font-size:16px;">▶</div>',
-      iconSize: [32, 32],
-      iconAnchor: [16, 16]
+      html: `
+        <div class="bpm-bubble start">
+          <span>🟢</span>
+          <div class="bpm-pulse"></div>
+        </div>
+      `,
+      iconSize: [34, 34],
+      iconAnchor: [17, 17]
     });
 
     const endIcon = L.divIcon({
       className: 'bike-point-marker end',
-      html: '<div style="background:#e11d48;color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.4);font-size:16px;">🏁</div>',
-      iconSize: [32, 32],
-      iconAnchor: [16, 16]
+      html: `
+        <div class="bpm-bubble end">
+          <span>🏁</span>
+          <div class="bpm-pulse"></div>
+        </div>
+      `,
+      iconSize: [34, 34],
+      iconAnchor: [17, 17]
     });
 
-    const startMarker = L.marker(coords[0], { icon: startIcon }).bindPopup(`<strong>Początek trasy:</strong> ${title}`);
-    const endMarker = L.marker(coords[coords.length - 1], { icon: endIcon }).bindPopup(`<strong>Koniec trasy:</strong> ${title}`);
+    const startMarker = L.marker(coords[0], { icon: startIcon }).bindPopup(`<strong>🟢 Początek trasy:</strong><br>${title}`);
+    const endMarker = L.marker(coords[coords.length - 1], { icon: endIcon }).bindPopup(`<strong>🏁 Cel podróży:</strong><br>${title}`);
 
-    this.routeLayer = L.featureGroup([polylineShadow, polyline, startMarker, endMarker]);
+    this.routeLayer = L.featureGroup([polylineCasing, polylineMain, polylineHighlight, startMarker, endMarker]);
     this.routeLayer.addTo(map);
+
+    // Stwórz interaktywny marker wskaźnika wysokości na trasie
+    const scrubberIcon = L.divIcon({
+      className: 'bike-scrubber-marker',
+      html: '<div class="bsm-pulse">🚴</div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 15]
+    });
+    this.scrubberMarker = L.marker(coords[0], { icon: scrubberIcon, zIndexOffset: 2000 });
+
+    // Floating Active Route Banner on map z profilem wysokościowym
+    this.renderActiveRouteBanner(title, routeData, coords);
 
     if (typeof navigateTo === 'function') {
       navigateTo('map');
     }
 
+    // Auto fit z marginesem i tolerancją granic
     setTimeout(() => {
-      map.fitBounds(this.routeLayer.getBounds(), { padding: [60, 60], maxZoom: 16 });
+      map.invalidateSize(true);
+      const bounds = this.routeLayer.getBounds();
+      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 16 });
       if (typeof showToast === 'function') {
-        showToast(`🚲 Załadowano trasę rowerową: ${title}`);
+        const stats = routeData ? ` (${routeData.totalDistKm || routeData.dist}${typeof (routeData.totalDistKm || routeData.dist) === 'number' ? ' km' : ''}, ~${routeData.timeMinutes ? routeData.timeMinutes + ' min' : routeData.time})` : '';
+        showToast(`🚲 Wyznaczono trasę rowerową: ${title}${stats}`);
       }
-    }, 250);
+    }, 200);
+  },
+
+  renderActiveRouteBanner(title, routeData, coords = null) {
+    let banner = document.getElementById('bikeActiveRouteBanner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'bikeActiveRouteBanner';
+      banner.className = 'bike-active-route-banner';
+      document.body.appendChild(banner);
+    }
+
+    const dist = routeData?.totalDistKm ?? routeData?.dist ?? '';
+    const time = routeData?.timeMinutes ? `${routeData.timeMinutes} min` : routeData?.time || '';
+    const ddr = routeData?.ddrPercent ? `🛡️ ${routeData.ddrPercent}% DDR` : '';
+    const elev = routeData?.elevationGain ? `⛰️ +${routeData.elevationGain}m` : '';
+
+    // Generowanie mini profilu wysokościowego SVG
+    const svgElevation = this.generateElevationSvg(routeData, coords);
+
+    banner.innerHTML = `
+      <div class="barb-content" style="flex-direction: column; align-items: stretch; gap: 4px; width: 100%;">
+        <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+          <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+            <span class="barb-icon" style="font-size:20px;">🚴</span>
+            <div class="barb-info" style="min-width:0;">
+              <div class="barb-title">${title}</div>
+              <div class="barb-stats">
+                ${dist ? `<span>📏 <strong>${dist}${typeof dist === 'number' ? ' km' : ''}</strong></span>` : ''}
+                ${time ? `<span>⏱️ <strong>${time}</strong></span>` : ''}
+                ${ddr ? `<span>${ddr}</span>` : ''}
+                ${elev ? `<span>${elev}</span>` : ''}
+              </div>
+            </div>
+          </div>
+          <div class="barb-actions">
+            <button type="button" class="barb-btn plan-btn" onclick="BikeSectionManager.backToPlanner()">
+              📋 Planer
+            </button>
+            <button type="button" class="barb-btn close-btn" onclick="BikeSectionManager.clearActiveRoute()" title="Wyczyść trasę">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Interaktywny profil wysokości z przesuwaniem wskaźnika -->
+        <div class="barb-elevation-wrap" id="barbElevationWrap" title="Przeciągnij lub najedź, aby sprawdzić punkt na trasie">
+          ${svgElevation}
+          <div class="bike-scrubber-tooltip" id="barbScrubberTooltip">📍 0m n.p.m.</div>
+        </div>
+      </div>
+    `;
+    banner.style.display = 'flex';
+
+    this.bindScrubberEvents(coords, routeData);
+  },
+
+  generateElevationSvg(routeData, coords) {
+    // Profil wysokości na podstawie węzłów trasy lub syntetyczny
+    let points = [];
+    if (routeData && routeData.pathNodes && routeData.pathNodes.length) {
+      points = routeData.pathNodes.map(n => n.elevation || 30);
+    } else {
+      points = [25, 32, 28, 45, 38, 42, 35, 20];
+    }
+
+    const minEle = Math.min(...points) - 5;
+    const maxEle = Math.max(...points) + 5;
+    const range = (maxEle - minEle) || 10;
+    const width = 300;
+    const height = 30;
+
+    const coordsStr = points.map((ele, idx) => {
+      const x = (idx / (points.length - 1)) * width;
+      const y = height - ((ele - minEle) / range) * (height - 6) - 3;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+
+    return `
+      <svg class="barb-elevation-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="elevGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#10b981" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#10b981" stop-opacity="0.05"/>
+          </linearGradient>
+        </defs>
+        <polygon points="0,${height} ${coordsStr} ${width},${height}" fill="url(#elevGrad)"/>
+        <polyline points="${coordsStr}" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+        <line id="barbScrubberLine" x1="0" y1="0" x2="0" y2="${height}" stroke="#38bdf8" stroke-width="2" stroke-dasharray="2,2" style="display:none;"/>
+      </svg>
+    `;
+  },
+
+  bindScrubberEvents(coords, routeData) {
+    const wrap = document.getElementById('barbElevationWrap');
+    if (!wrap || !coords || !coords.length) return;
+
+    const scrubberLine = document.getElementById('barbScrubberLine');
+    const tooltip = document.getElementById('barbScrubberTooltip');
+
+    const handleScrub = (clientX) => {
+      const rect = wrap.getBoundingClientRect();
+      let percent = (clientX - rect.left) / rect.width;
+      percent = Math.max(0, Math.min(1, percent));
+
+      // Indeks koordynatów
+      const targetIdx = Math.round(percent * (coords.length - 1));
+      const targetCoord = coords[targetIdx];
+
+      if (scrubberLine) {
+        scrubberLine.setAttribute('x1', (percent * 300).toFixed(1));
+        scrubberLine.setAttribute('x2', (percent * 300).toFixed(1));
+        scrubberLine.style.display = 'block';
+      }
+
+      if (tooltip) {
+        const nodes = routeData?.pathNodes || [];
+        let eleText = '';
+        if (nodes.length) {
+          const nodeIdx = Math.min(nodes.length - 1, Math.floor(percent * nodes.length));
+          eleText = `⛰️ ${nodes[nodeIdx].elevation}m n.p.m. (${nodes[nodeIdx].name.split('/')[0].trim()})`;
+        } else {
+          eleText = `📍 ${Math.round(percent * 100)}% trasy`;
+        }
+        tooltip.textContent = eleText;
+        tooltip.style.display = 'block';
+      }
+
+      if (targetCoord && window.state?.map) {
+        if (!this.scrubberMarker._map) {
+          this.scrubberMarker.addTo(window.state.map);
+        }
+        this.scrubberMarker.setLatLng(targetCoord);
+      }
+    };
+
+    wrap.onpointermove = (e) => handleScrub(e.clientX);
+    wrap.onpointerdown = (e) => {
+      wrap.setPointerCapture(e.pointerId);
+      handleScrub(e.clientX);
+      this.triggerHaptic();
+    };
+    wrap.onpointerleave = () => {
+      if (tooltip) tooltip.style.display = 'none';
+      if (scrubberLine) scrubberLine.style.display = 'none';
+      if (this.scrubberMarker && this.scrubberMarker._map) {
+        window.state.map.removeLayer(this.scrubberMarker);
+      }
+    };
+  },
+
+  clearActiveRoute() {
+    if (this.routeLayer && window.state?.map) {
+      window.state.map.removeLayer(this.routeLayer);
+      this.routeLayer = null;
+    }
+    if (this.scrubberMarker && window.state?.map && this.scrubberMarker._map) {
+      window.state.map.removeLayer(this.scrubberMarker);
+      this.scrubberMarker = null;
+    }
+    const banner = document.getElementById('bikeActiveRouteBanner');
+    if (banner) banner.remove();
+    if (typeof showToast === 'function') {
+      showToast('🚲 Wyczyszczono trasę rowerową');
+    }
+  },
+
+  backToPlanner() {
+    if (typeof navigateTo === 'function') {
+      navigateTo('bikes');
+    }
   },
 
   locateStation(lat, lng, name) {
@@ -749,3 +1100,12 @@ if (document.readyState === 'loading') {
 } else {
   BikeSectionManager.init();
 }
+
+// Sync banner visibility with active section
+window.addEventListener('hashchange', () => {
+  const isMap = window.location.hash === '#map' || window.location.hash === '' || !window.location.hash;
+  const banner = document.getElementById('bikeActiveRouteBanner');
+  if (banner) {
+    banner.style.display = (isMap && BikeSectionManager.routeLayer) ? 'flex' : 'none';
+  }
+});

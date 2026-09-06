@@ -8529,6 +8529,35 @@ body:not(.is-map-view):not([data-active-section="pogon"]) #pogonMascot {
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
+.bpc-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.bike-swap-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: #10b981;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.bike-swap-btn:hover {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #10b981;
+}
+
 .bpc-action-row {
   display: flex;
   justify-content: flex-end;
@@ -8872,6 +8901,534 @@ body:not(.is-map-view):not([data-active-section="pogon"]) #pogonMascot {
   background: var(--border);
 }
 
+/* Bike Active Route Banner on Map */
+.bike-active-route-banner {
+  position: fixed;
+  bottom: 82px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  background: rgba(17, 24, 39, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-radius: 14px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(92%, 540px);
+  color: #ffffff;
+  animation: slideUpBikeBanner 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+@keyframes slideUpBikeBanner {
+  from { opacity: 0; transform: translate(-50%, 15px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+[data-theme="light"] .bike-active-route-banner {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: #1f2937;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+}
+
+.barb-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.barb-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.barb-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.barb-title {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
+.barb-stats {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  color: #10b981;
+  margin-top: 2px;
+}
+
+[data-theme="light"] .barb-stats {
+  color: #059669;
+}
+
+.barb-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.barb-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.barb-btn.plan-btn {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.barb-btn.plan-btn:hover {
+  background: #059669;
+}
+
+.barb-btn.close-btn {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  padding: 6px 9px;
+  font-size: 12px;
+}
+
+[data-theme="light"] .barb-btn.close-btn {
+  background: rgba(0, 0, 0, 0.08);
+  color: #374151;
+}
+
+.barb-btn.close-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+@media (max-width: 640px) {
+  .bike-active-route-banner {
+    bottom: 78px;
+    width: 95%;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .barb-title {
+    max-width: 170px;
+    font-size: 12px;
+  }
+}
+
+/* Pulsing Start & Finish Markers */
+.bike-point-marker .bpm-bubble {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  border: 2.5px solid #ffffff;
+}
+
+.bike-point-marker .bpm-bubble.start {
+  background: #10b981;
+}
+
+.bike-point-marker .bpm-bubble.end {
+  background: #e11d48;
+}
+
+.bike-point-marker .bpm-pulse {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border-radius: 50%;
+  border: 2.5px solid #10b981;
+  animation: markerPulseRing 1.8s infinite ease-out;
+  pointer-events: none;
+}
+
+.bike-point-marker .bpm-bubble.end .bpm-pulse {
+  border-color: #e11d48;
+}
+
+@keyframes markerPulseRing {
+  0% { transform: scale(0.85); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Scrubber Marker on Map */
+.bike-scrubber-marker .bsm-pulse {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #3b82f6;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.85);
+  animation: scrubberPulse 0.9s infinite alternate ease-in-out;
+}
+
+@keyframes scrubberPulse {
+  from { transform: scale(0.92); }
+  to { transform: scale(1.18); }
+}
+
+/* Elevation Profile in Active Banner */
+.barb-elevation-wrap {
+  position: relative;
+  width: 100%;
+  height: 38px;
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 8px;
+  padding: 3px 6px;
+  margin-top: 6px;
+  cursor: ew-resize;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.barb-elevation-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.bike-scrubber-tooltip {
+  position: absolute;
+  top: 3px;
+  right: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2px 6px;
+  border-radius: 4px;
+  pointer-events: none;
+  display: none;
+}
+
+/* Morphing button click effect */
+.bike-calc-btn:active {
+  transform: scale(0.97);
+}
+
+.bike-calc-btn.morphing {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+}
+
+/* ===================================================== */
+/* ===== PUB KLATKA (ŁUCZNICZA 43) — STYLE & INTERAKCJE = */
+/* ===================================================== */
+.comm-klatka-section {
+  margin: 24px 0;
+}
+
+.klatka-hero-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+  border: 2px solid #d97706;
+  box-shadow: 0 12px 36px rgba(217, 119, 6, 0.25);
+  border-radius: 16px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="light"] .klatka-hero-card {
+  background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+  border-color: #f59e0b;
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.2);
+}
+
+.khc-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.4);
+}
+
+.khc-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.khc-icon-wrap {
+  width: 58px;
+  height: 58px;
+  background: rgba(217, 119, 6, 0.18);
+  border: 2px solid #d97706;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.35);
+}
+
+.khc-title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #fbbf24;
+}
+
+[data-theme="light"] .khc-title {
+  color: #b45309;
+}
+
+.khc-sub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text2, #94a3b8);
+  line-height: 1.4;
+}
+
+.khc-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] .khc-status-row {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.khc-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.khc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: livePulse 1.5s infinite;
+}
+
+.khc-specialty {
+  font-size: 13px;
+  color: var(--text1, #f8fafc);
+}
+
+.khc-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.khc-sound-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  color: var(--text1, #fff);
+}
+
+[data-theme="light"] .khc-sound-btn {
+  background: #ffffff;
+  color: #1f2937;
+  border-color: rgba(217, 119, 6, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.khc-sound-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(217, 119, 6, 0.15);
+  border-color: #f59e0b;
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.25);
+}
+
+.khc-sound-btn:active {
+  transform: scale(0.97);
+}
+
+.khc-sound-btn span {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.khc-sound-btn strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.khc-sound-btn small {
+  font-size: 11px;
+  color: var(--text2, #94a3b8);
+}
+
+.khc-debate-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed rgba(217, 119, 6, 0.5);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+[data-theme="light"] .khc-debate-box {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: #f59e0b;
+}
+
+.kdb-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.kdb-output {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 14px;
+  border-left: 4px solid #f59e0b;
+}
+
+[data-theme="light"] .kdb-output {
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.kdb-q {
+  font-weight: 800;
+  font-size: 14px;
+  color: #fbbf24;
+  margin-bottom: 6px;
+}
+
+[data-theme="light"] .kdb-q {
+  color: #b45309;
+}
+
+.kdb-a {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text1, #f8fafc);
+  margin-bottom: 6px;
+}
+
+.kdb-author {
+  font-size: 11.5px;
+  color: var(--text2, #94a3b8);
+  text-align: right;
+}
+
+.kdb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.kdb-roll-btn {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.kdb-roll-btn:hover {
+  background: linear-gradient(135deg, #b45309, #92400e);
+  transform: translateY(-1px);
+}
+
+.kdb-nav-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text1, #fff);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.15));
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.kdb-nav-btn:hover {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
+}
+
+.kdb-badge-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.kdb-badge-btn:hover {
+  background: #047857;
+}
+
 /* ===================================================== */
 /* ===== MAP LEFT DOCK (High-Visibility Navigation) ==== */
 /* ===================================================== */
@@ -9179,3 +9736,46 @@ body.zen-map-mode .map-left-dock {
   max-width: fit-content !important;
   border-radius: 16px !important;
 }
+
+/* ===== CATEGORY FILTER — DRAG & SCROLL ENHANCEMENTS ===== */
+
+/* Grab cursor hint on desktop hover */
+@media (hover: hover) {
+  .category-filter[data-draggable] {
+    cursor: grab;
+  }
+  .category-filter[data-draggable]:active {
+    cursor: grabbing;
+  }
+  /* buttons inside still get pointer */
+  .category-filter[data-draggable] .cat-btn {
+    cursor: pointer;
+  }
+}
+
+/* Visual feedback during mouse/touch drag */
+.category-filter.is-dragging {
+  cursor: grabbing !important;
+  box-shadow: 0 8px 32px rgba(108, 99, 255, 0.45), 0 2px 8px rgba(0,0,0,0.4) !important;
+  outline: 1.5px solid rgba(108, 99, 255, 0.6) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  transition: box-shadow 0.15s ease, outline 0.15s ease !important;
+}
+
+/* Bike routes button — active/on state */
+.cat-btn.cat-bike-toggle.active,
+.cat-btn.cat-bike-toggle[aria-pressed="true"] {
+  background: rgba(52, 211, 153, 0.2) !important;
+  color: #34d399 !important;
+  border-color: rgba(52, 211, 153, 0.5) !important;
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.3) !important;
+}
+
+/* Pogon theme variant */
+[data-theme="pogon"] .cat-btn.cat-bike-toggle.active {
+  background: rgba(255, 215, 0, 0.15) !important;
+  color: #FFD700 !important;
+  border-color: rgba(255, 215, 0, 0.4) !important;
+}
+

@@ -313,8 +313,43 @@
             <button class="idm-item" data-action="pogon">
               <span class="idm-icon">🛡️</span>
               <div class="idm-text">
-                <strong>Motyw Pogoń Szczecin</strong>
-                <small>Duma Pomorza — barwy klubowe i historia</small>
+                <strong>Pogoń & Dzień Meczowy</strong>
+                <small>Duma Pomorza — dojazd, doping i barwy</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="pasztecik">
+              <span class="idm-icon">🥟</span>
+              <div class="idm-text">
+                <strong>Pasztecik & Frytburger Radar</strong>
+                <small>Kultowe smaki Szczecina od 1969 r.</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="gwara">
+              <span class="idm-icon">🗣️</span>
+              <div class="idm-text">
+                <strong>Słownik & Gwara Szczecińska</strong>
+                <small>Przełącznik miejskiego slangu</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="giedroyc">
+              <span class="idm-icon">🚦</span>
+              <div class="idm-text">
+                <strong>Rondo Giedroycia Zator-Meter</strong>
+                <small>Stan przejazdu i korków u stóp osiedla</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="klatka">
+              <span class="idm-icon">🍻</span>
+              <div class="idm-text">
+                <strong>Pub Klatka — Łucznicza 43</strong>
+                <small>Klub sąsiedzki, debaty i zimne piwo</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="ogloszenia">
+              <span class="idm-icon">📜</span>
+              <div class="idm-text">
+                <strong>Ogłoszenia z Klatki pod 43</strong>
+                <small>Sąsiedzkie komunikaty z Łuczniczej</small>
               </div>
             </button>
           </div>
@@ -364,6 +399,14 @@
         <a href="#" class="nav-item" data-section="community">
           <span class="nav-icon">👥</span> Społeczność
           <span class="nav-badge community-badge">LIVE</span>
+        </a>
+        <a href="#" class="nav-item" data-section="pogon">
+          <span class="nav-icon">⚽</span> Pogoń & Mecz
+          <span class="nav-badge" style="background:#002D62; color:#FFD700; border: 1px solid #7A0026; font-size:9px; padding:1px 6px; border-radius:10px; font-weight:700;">DUMA</span>
+        </a>
+        <a href="#" class="nav-item" data-section="szczecin">
+          <span class="nav-icon">🥟</span> Szczecińskie Klasyki
+          <span class="nav-badge" style="background:#e67e22; color:#fff; font-size:9px; padding:1px 6px; border-radius:10px; font-weight:700;">KLIMAT</span>
         </a>
       </nav>
       <div class="sidebar-footer">
@@ -498,7 +541,7 @@
 
 
           <!-- Category Filter (Pills bar like Google Maps) -->
-          <div class="category-filter">
+          <div class="category-filter" data-draggable>
             <button class="cat-btn active" data-cat="all">Wszystkie</button>
             <button class="cat-btn cat-open-now" id="catOpenNowBtn" title="Pokaż tylko otwarte teraz">🟢 Otwarte teraz</button>
             <button class="cat-btn" data-cat="sport">⚽ Sport</button>
@@ -507,6 +550,7 @@
             <button class="cat-btn" data-cat="park">🌳 Parki</button>
             <button class="cat-btn" data-cat="service">🔧 Usługi</button>
             <button class="cat-btn" data-cat="edu">📚 Edukacja</button>
+            <button class="cat-btn cat-bike-toggle" id="catBikeRoutesBtn" title="Pokaż / schowaj ścieżki rowerowe na mapie">🚲 Trasy rowerowe</button>
             <button class="cat-btn cat-presets-toggle" id="catPresetsToggle" title="Pokaż / schowaj widoki kamery">🏙️ Widoki ▾</button>
             <button class="cat-btn" id="mapLayersModalBtn" title="Przełącz warstwy mapy">🎛️ Warstwy</button>
           </div>
@@ -791,6 +835,16 @@
           <div class="demographics-chart" id="demographicsChart"></div>
 
         </div>
+      </section>
+
+      <!-- POGOŃ SZCZECIN & MATCHDAY SECTION -->
+      <section id="section-pogon" class="section hidden">
+        <div class="section-content"></div>
+      </section>
+
+      <!-- SZCZECIŃSKIE KLASYKI & KLIMAT SECTION -->
+      <section id="section-szczecin" class="section hidden">
+        <div class="section-content"></div>
       </section>
 
     </main>
@@ -1161,9 +1215,12 @@
   <script src="routes-meetup.js"></script>
   <script src="ux-enhancements.js"></script>
   <script src="bike-routes.js"></script>
+  <script src="category-filter-enhancements.js"></script>
   <script src="pwa.js"></script>
   <script src="pull-refresh.js"></script>
   <script src="pogon-mascot.js"></script>
+  <script src="pogon-feature.js"></script>
+  <script src="szczecin-local-flavor.js"></script>
   <script src="app.js"></script>
   <script src="events-live-sync.js"></script>
   <script src="live.js"></script>

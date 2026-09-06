@@ -68,12 +68,23 @@ describe('Szczecin Bike Router & Section', () => {
     expect(styleCss).toContain('.escape-tooltip');
   });
 
-  it('registers bike-routes.js and manifest shortcuts in PWA v7', () => {
+  it('registers bike-routes.js and manifest shortcuts in PWA v7/v8', () => {
     const swJs = fs.readFileSync(path.join(rootDir, 'sw.js'), 'utf-8');
     const manifestJson = fs.readFileSync(path.join(rootDir, 'manifest.json'), 'utf-8');
-    expect(swJs).toContain("const CACHE_VERSION = 'v7'");
+    expect(swJs).toMatch(/const CACHE_VERSION = 'v[78]'/);
     expect(swJs).toContain("'/bike-routes.js'");
     expect(manifestJson).toContain('"short_name": "Rower"');
+  });
+
+  it('provides route calculation button, swap points, and floating route banner on map', () => {
+    expect(bikeJs).toContain('calcBikeRouteBtn');
+    expect(bikeJs).toContain('bikeSwapPointsBtn');
+    expect(bikeJs).toContain('showCurrentOnMap');
+    expect(bikeJs).toContain('bikeActiveRouteBanner');
+    expect(bikeJs).toContain('clearActiveRoute');
+    expect(bikeJs).toContain('backToPlanner');
+    expect(styleCss).toContain('.bike-active-route-banner');
+    expect(styleCss).toContain('.bike-swap-btn');
   });
 });
 

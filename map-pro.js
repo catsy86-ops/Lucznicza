@@ -101,6 +101,16 @@ function setMapStyle(styleKey) {
 function buildFloatingControls() {
   const container = document.getElementById('map');
   if (!container || document.getElementById('mapFabGroup')) return;
+
+  // If fabFullscreen already exists in DOM (added in index.html), only wire up events
+  const existingFs = document.getElementById('fabFullscreen');
+  if (existingFs) {
+    existingFs.addEventListener('click', toggleFullscreen);
+    const existingReset = document.getElementById('fabReset');
+    if (existingReset) existingReset.addEventListener('click', resetView);
+    return; // Skip injecting a second set of buttons
+  }
+
   const fc = document.createElement('div');
   fc.className = 'map-fab-group';
   fc.id = 'mapFabGroup';
