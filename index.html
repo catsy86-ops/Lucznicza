@@ -371,15 +371,26 @@
 
     <!-- SEARCH BAR -->
     <div class="search-bar hidden" id="searchBar">
-      <input type="text" id="searchInput" placeholder="Szukaj miejsca, kategorii..." autocomplete="off" />
-      <button id="searchClose">✕</button>
+      <input type="search" id="searchInput" placeholder="Szukaj miejsca, kategorii... (lub /)" autocomplete="off" inputmode="search" enterkeyhint="search" />
+      <button id="searchClose" aria-label="Zamknij wyszukiwarkę">✕</button>
     </div>
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar" role="dialog" aria-modal="true" aria-label="Główne menu nawigacji">
       <div class="sidebar-header">
         <div class="sidebar-brand">
-          <div class="sidebar-brand-crest">🛡️</div>
+          <div class="sidebar-brand-crest" aria-hidden="true">
+            <svg class="sidebar-crest-svg" viewBox="0 0 44 52" width="28" height="33" aria-hidden="true">
+              <path d="M22 1 C33 1 42.5 7.2 42.5 18 C42.5 34 30 46.5 22 51 C14 46.5 1.5 34 1.5 18 C1.5 7.2 11 1 22 1 Z" fill="url(#pogonGold)" />
+              <path d="M22 3 C13 3 4.5 8.5 4.5 18 C4.5 32.5 15.5 44 22 48 L22 3 Z" fill="url(#pogonNavy)" />
+              <path d="M22 3 L22 48 C28.5 44 39.5 32.5 39.5 18 C39.5 8.5 31 3 22 3 Z" fill="url(#pogonBordo)" />
+              <line x1="22" y1="3" x2="22" y2="48" stroke="url(#pogonGold)" stroke-width="1.2" />
+              <path class="crest-gryf" d="M22 9 L24.5 14 L29.5 14.5 L25.5 18 L27 23 L22 20 L17 23 L18.5 18 L14.5 14.5 L19.5 14 Z" fill="url(#pogonGold)" />
+              <circle cx="22" cy="27" r="4" fill="#ffffff" stroke="url(#pogonGold)" stroke-width="1" />
+              <path d="M22 23.5 L22 30.5 M18.5 27 L25.5 27" stroke="#002D62" stroke-width="0.8" />
+              <path d="M22 36 L23.2 39.5 L27 39.5 L24 41.5 L25.2 45 L22 42.8 L18.8 45 L20 41.5 L17 39.5 L20.8 39.5 Z" fill="url(#pogonGold)" />
+            </svg>
+          </div>
           <div class="sidebar-brand-info">
             <h2 class="sidebar-brand-title">NIEBUSZEWO <span class="sidebar-brand-pill">SZCZECIN</span></h2>
             <span class="sidebar-brand-sub">Szczecin • Niebuszewo • Dzielnica</span>
@@ -660,7 +671,19 @@
       </section>
 
       <!-- BICYCLE ROUTES & NETWORK SECTION -->
-      <section id="section-bikes" class="section hidden"></section>
+      <section id="section-bikes" class="section hidden">
+        <div class="section-content">
+          <div class="section-hero bike-hero">
+            <div class="bike-hero-badge">🚲 SZCZECIN BIKE NETWORK</div>
+            <h2>Ścieżki i Trasy Rowerowe</h2>
+            <p>Trasy rowerowe, nawierzchnie i stacje Bike_S w rejonie Niebuszewa</p>
+          </div>
+          <div class="bike-skeleton-loader" aria-busy="true" aria-label="Ładowanie modułu rowerowego">
+            <div class="skeleton-shimmer" style="height: 180px; border-radius: 16px; margin-bottom: 16px;"></div>
+            <div class="skeleton-shimmer" style="height: 120px; border-radius: 16px; margin-bottom: 16px;"></div>
+          </div>
+        </div>
+      </section>
 
       <!-- INFO SECTION -->
       <section id="section-info" class="section hidden">
@@ -881,12 +904,24 @@
 
       <!-- POGOŃ SZCZECIN & MATCHDAY SECTION -->
       <section id="section-pogon" class="section hidden">
-        <div class="section-content"></div>
+        <div class="section-content">
+          <div class="section-hero pogon-hero">
+            <h2>⚓ Pogoń Szczecin & Dzień Meczowy</h2>
+            <p>Strefa kibica Niebuszewa, dojazd na stadion, gastro i doping...</p>
+          </div>
+          <div class="skeleton-shimmer" style="height: 160px; border-radius: 16px; margin-bottom: 16px;" aria-hidden="true"></div>
+        </div>
       </section>
 
       <!-- SZCZECIŃSKIE KLASYKI & KLIMAT SECTION -->
       <section id="section-szczecin" class="section hidden">
-        <div class="section-content"></div>
+        <div class="section-content">
+          <div class="section-hero szczecin-hero">
+            <h2>🥟 Szczecińskie Klasyki & Klimat</h2>
+            <p>Paszteciki, paprykarz, legendy i kultowe punkty Niebuszewa...</p>
+          </div>
+          <div class="skeleton-shimmer" style="height: 160px; border-radius: 16px; margin-bottom: 16px;" aria-hidden="true"></div>
+        </div>
       </section>
 
     </main>
@@ -1184,15 +1219,15 @@
       <div class="sheet-expanded-content" id="sheetExpanded">
         <!-- Quick Actions -->
         <div class="sheet-quick-grid">
-          <div class="sheet-quick-card" onclick="navigateTo('places')">
+          <div class="sheet-quick-card" role="button" tabindex="0" onclick="navigateTo('places')" onkeydown="if(event.key==='Enter'||event.key===' ')navigateTo('places')">
             <div class="sq-icon">📍</div>
             <div class="sq-label">Miejsca</div>
           </div>
-          <div class="sheet-quick-card" onclick="navigateTo('routes')">
+          <div class="sheet-quick-card" role="button" tabindex="0" onclick="navigateTo('routes')" onkeydown="if(event.key==='Enter'||event.key===' ')navigateTo('routes')">
             <div class="sq-icon">🚶</div>
             <div class="sq-label">Trasy</div>
           </div>
-          <div class="sheet-quick-card" onclick="navigateTo('transport')">
+          <div class="sheet-quick-card" role="button" tabindex="0" onclick="navigateTo('transport')" onkeydown="if(event.key==='Enter'||event.key===' ')navigateTo('transport')">
             <div class="sq-icon">🚌</div>
             <div class="sq-label">Rozkłady</div>
           </div>

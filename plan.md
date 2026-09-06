@@ -170,12 +170,32 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 - [x] **6.4. Algorytm Ray-Casting & Testy Automatyczne (Vitest: 61/61 zdanych)**:
   - Utworzono pakiet `src/tests/niebuszewo-boundary.test.ts` weryfikujący geometrię GeoJSON, wycięcie maski, algorytm punktu w wielokącie oraz presety kamery.
 
+#### ✅ SPRINT 7: Audyt UI/UX, Animacje Mikrointerakcji & Ergonomia (v1.4.0) [UKOŃCZONE 100%]
+- [x] **7.1. Animowany wskaźnik pigułkowy (Pill Bubble Indicator) w Bottom Nav**:
+  - Płynny bubble w barwach Pogoni z micro-zoomem i cieniem na aktywnej ikonie nawigacji (`.bnav-btn.active`).
+- [x] **7.2. Płynne wejścia widoków (`@keyframes sectionFadeIn`)**:
+  - Płynne przejścia faza/fade-in (0.28s) przy przełączaniu zakładek z poszanowaniem `prefers-reduced-motion`.
+- [x] **7.3. Skalowanie Desktop & Ekrany 4K (`.section-content`)**:
+  - Ograniczenie szerokości do `max-width: 1240px; margin: 0 auto;` zapobiegające rozciąganiu treści na monitorach panoramicznych.
+- [x] **7.4. Szkielety ładowania (Skeleton Placeholders)**:
+  - Wdrożono skeleton loaders w sekcjach `section-bikes`, `section-pogon` i `section-szczecin`, likwidując pusty flash przed inicjalizacją JS.
+- [x] **7.5. SVG Herb Pogoni w Sidebarze**:
+  - Zastąpiono surowe emoji `🛡️` eleganckim emblematem wektorowym SVG z koroną i gryfem.
+- [x] **7.6. Optymalizacja Klawiatury Mobilnej**:
+  - Dodano `inputmode="search"` oraz `enterkeyhint="search"` dla wyszukiwarki `#searchInput`.
+- [x] **7.7. Modernizacja Toastów**:
+  - Glassmorphic popup z `backdrop-filter: blur(16px)`, złote obwódki i płynny fade-out.
+- [x] **7.8. Blokada przeciągania tła (Overscroll Contain) & Scroll-Snap**:
+  - Wdrożono `overscroll-behavior: contain` na dolnym arkuszu (Bottom Sheet) oraz `scroll-snap-type: x mandatory` na filtrze kategorii.
+- [x] **7.9. Dostępność A11y & Focus States**:
+  - Wprowadzono `role="button"`, `tabindex="0"`, obsługę klawiszy Enter/Spacja oraz złote pierścienie fokusu `:focus-visible`.
+
 ---
 
-### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0, v1.1.0, v1.2.0 & v1.3.0 [UKOŃCZONE 100%]
-- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 61/61)**.
+### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0 – v1.4.0 [UKOŃCZONE 100%]
+- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 114/114 zdanych)**.
 - [x] **6.2. Weryfikacja produkcyjnego bundle Vite (`tsc && vite build`)**.
-- [x] **6.3. Wypchnięcie kodu i tagu `v1.3.0` do origin/main**.
+- [x] **6.3. Zrealizowano priorytety audytu UI/UX**.
 
 ---
 
