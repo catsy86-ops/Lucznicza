@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
       app.classList.add('app-visible');
       requestAnimationFrame(() => {
         initMap();
-        initUI();
         renderPlaces();
         renderRoutes();
         renderInfo();
@@ -682,25 +681,36 @@ function initMapControls() {
 
 // ===== UI INIT =====
 function initUI() {
+  if (window.__uiInitialized) return;
+  window.__uiInitialized = true;
+
   initMapControls();
 
-  // Map Tools Panel
-
-
-
   // Menu button
-  document.getElementById('menuBtn').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.add('open');
-    document.getElementById('sidebarOverlay').classList.remove('hidden');
-  });
-
-  document.getElementById('closeSidebar').addEventListener('click', closeSidebar);
-  document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
 
   function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.add('hidden');
+    sidebar?.classList.remove('open');
+    overlay?.classList.add('hidden');
   }
+
+  if (menuBtn) {
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = sidebar?.classList.contains('open');
+      if (isOpen) {
+        closeSidebar();
+      } else {
+        sidebar?.classList.add('open');
+        overlay?.classList.remove('hidden');
+      }
+    });
+  }
+
+  document.getElementById('closeSidebar')?.addEventListener('click', closeSidebar);
+  overlay?.addEventListener('click', closeSidebar);
 
   // Sidebar nav
   document.querySelectorAll('.nav-item').forEach(item => {
@@ -940,9 +950,17 @@ function initSzczecinIsland() {
 
   // Keyboard shortcut Ctrl+K / Cmd+K and Escape
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !dropdown.classList.contains('hidden')) {
-      dropdown.classList.add('hidden');
-      menuBtn.setAttribute('aria-expanded', 'false');
+    if (e.key === 'Escape') {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (sidebar && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+        overlay?.classList.add('hidden');
+      }
+      if (!dropdown.classList.contains('hidden')) {
+        dropdown.classList.add('hidden');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      }
     }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
@@ -1680,6 +1698,9 @@ function renderRoutes() {
 
   // Build the full section HTML
   container.querySelector('.section-content').innerHTML = `
+    <div class="section-back-bar">
+      <button class="section-back-btn" onclick="navigateTo('map')">← Wróć do mapy</button>
+    </div>
     <div class="section-hero">
       <h2>🚶 Trasy spacerowe</h2>
       <p>Odkryj dzielnicę pieszo, rowerem lub biegiem</p>
@@ -2001,7 +2022,9 @@ function renderInfo() {
   if (!content) return;
 
   content.innerHTML = `
-
+    <div class="section-back-bar">
+      <button class="section-back-btn" onclick="navigateTo('map')">← Wróć do mapy</button>
+    </div>
     <!-- Hero banner -->
     <div class="info-hero">
       <div class="info-hero-bg"></div>

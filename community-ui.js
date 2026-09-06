@@ -24,6 +24,9 @@ function renderCommunity() {
   const stats = window.communityAPI.getStats();
 
   content.innerHTML = `
+    <div class="section-back-bar">
+      <button class="section-back-btn" onclick="navigateTo('map')">← Wróć do mapy</button>
+    </div>
     <!-- Hero -->
     <div class="comm-hero">
       <div class="comm-hero-bg"></div>
