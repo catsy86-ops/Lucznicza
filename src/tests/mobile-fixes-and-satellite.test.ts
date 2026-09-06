@@ -1,4 +1,4 @@
-﻿import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 
@@ -60,5 +60,24 @@ describe('Mobile Navigation, Satellite Default Basemap & Widget Lifecycle Tests'
 
   it('verifies bottom nav has high z-index (1200) to never be trapped under sheets', () => {
     expect(styleCss).toContain('z-index: 1200;');
+  });
+
+  it('verifies Centrum Dzielnicy (mapStatsPanel) clears category filter bar without collision on mobile', () => {
+    expect(styleCss).toContain('top: calc(var(--header-h, 64px) + 56px)');
+    expect(styleCss).toContain('height: 42px !important;');
+    expect(styleCss).toContain('body:has(#mapPresetsBar:not(.collapsed)) .map-stats-panel');
+    expect(styleCss).toContain('.msp-toggle-btn');
+    expect(styleCss).toContain('touch-action: none !important;');
+  });
+
+  it('verifies Touch Drag System with passive: false, preventDefault, and dual position keys', () => {
+    expect(uxEnhancementsJs).toContain("handle.addEventListener('touchstart'");
+    expect(uxEnhancementsJs).toContain("handle.addEventListener('touchmove'");
+    expect(uxEnhancementsJs).toContain("handle.addEventListener('touchend'");
+    expect(uxEnhancementsJs).toContain('{ passive: false }');
+    expect(uxEnhancementsJs).toContain('e.cancelable');
+    expect(uxEnhancementsJs).toContain('e.preventDefault()');
+    expect(uxEnhancementsJs).toContain('lucznicza_widget_pos_');
+    expect(uxEnhancementsJs).toContain('justDragged');
   });
 });

@@ -632,7 +632,11 @@ function buildMapStats() {
   const resetBtn = document.getElementById('mspBtnResetWidgets');
 
   const togglePanel = (e) => {
-    if (e?.target?.classList?.contains('widget-drag-handle')) return;
+    if (panel.dataset.justDragged === 'true') {
+      panel.dataset.justDragged = 'false';
+      return;
+    }
+    if (e?.target?.closest('.widget-drag-handle')) return;
     e?.stopPropagation();
     panel.classList.toggle('collapsed');
     if (!panel.classList.contains('collapsed')) {

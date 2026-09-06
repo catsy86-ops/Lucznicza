@@ -789,6 +789,11 @@ const WidgetDragManager = {
       } catch {}
 
       if (hasMoved) {
+        el.dataset.justDragged = 'true';
+        setTimeout(() => {
+          el.dataset.justDragged = 'false';
+        }, 350);
+
         // Save position to localStorage
         const pos = {
           left: parseFloat(el.style.left),
@@ -796,6 +801,7 @@ const WidgetDragManager = {
         };
         try {
           localStorage.setItem(`widget_pos_${el.id}`, JSON.stringify(pos));
+          localStorage.setItem(`lucznicza_widget_pos_${el.id}`, JSON.stringify(pos));
         } catch {}
       }
     };
@@ -804,6 +810,85 @@ const WidgetDragManager = {
     el.addEventListener('pointermove', onPointerMove);
     el.addEventListener('pointerup', onPointerUp);
     el.addEventListener('pointercancel', onPointerUp);
+
+    // Dedicated Touch Drag System for mobile devices
+    const handles = el.querySelectorAll('.widget-drag-handle');
+    handles.forEach(handle => {
+      handle.style.touchAction = 'none';
+
+      handle.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        isDragging = true;
+        hasMoved = false;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        const rect = el.getBoundingClientRect();
+        startLeft = rect.left;
+        startTop = rect.top;
+        e.stopPropagation();
+      }, { passive: false });
+
+      handle.addEventListener('touchmove', (e) => {
+        if (!isDragging || e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+
+        if (!hasMoved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+          hasMoved = true;
+          el.classList.add('is-dragging');
+        }
+
+        if (!hasMoved) return;
+
+        // Prevent browser scrolling and map panning while dragging
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+
+        let newLeft = startLeft + dx;
+        let newTop = startTop + dy;
+
+        const minLeft = 6;
+        const maxLeft = Math.max(minLeft, window.innerWidth - el.offsetWidth - 6);
+        const minTop = 52;
+        const maxTop = Math.max(minTop, window.innerHeight - el.offsetHeight - 52);
+
+        newLeft = Math.min(Math.max(minLeft, newLeft), maxLeft);
+        newTop = Math.min(Math.max(minTop, newTop), maxTop);
+
+        el.style.setProperty('position', 'fixed', 'important');
+        el.style.setProperty('left', `${Math.round(newLeft)}px`, 'important');
+        el.style.setProperty('top', `${Math.round(newTop)}px`, 'important');
+        el.style.setProperty('right', 'auto', 'important');
+        el.style.setProperty('bottom', 'auto', 'important');
+      }, { passive: false });
+
+      const onTouchEnd = (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        el.classList.remove('is-dragging');
+
+        if (hasMoved) {
+          el.dataset.justDragged = 'true';
+          setTimeout(() => {
+            el.dataset.justDragged = 'false';
+          }, 350);
+
+          const pos = {
+            left: parseFloat(el.style.left),
+            top: parseFloat(el.style.top)
+          };
+          try {
+            localStorage.setItem(`widget_pos_${el.id}`, JSON.stringify(pos));
+            localStorage.setItem(`lucznicza_widget_pos_${el.id}`, JSON.stringify(pos));
+          } catch {}
+        }
+      };
+
+      handle.addEventListener('touchend', onTouchEnd, { passive: true });
+      handle.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    });
   },
 
   toggleMinimize(widgetId, forceState) {
@@ -840,7 +925,7 @@ const WidgetDragManager = {
 
   restorePosition(el) {
     try {
-      const raw = localStorage.getItem(`widget_pos_${el.id}`);
+      const raw = localStorage.getItem(`widget_pos_${el.id}`) || localStorage.getItem(`lucznicza_widget_pos_${el.id}`);
       if (!raw) return;
       const pos = JSON.parse(raw);
       if (typeof pos.left === 'number' && typeof pos.top === 'number') {
@@ -904,6 +989,7 @@ const WidgetDragManager = {
     this.registeredWidgets.forEach(config => {
       try {
         localStorage.removeItem(`widget_pos_${config.id}`);
+        localStorage.removeItem(`lucznicza_widget_pos_${config.id}`);
         localStorage.removeItem(`widget_min_${config.id}`);
         localStorage.removeItem(`widget_closed_${config.id}`);
       } catch {}
