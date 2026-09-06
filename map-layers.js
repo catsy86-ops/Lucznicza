@@ -177,16 +177,16 @@ function buildBikeLayer(map) {
     const markerIcon = L.divIcon({
       html: `
         <div class="bike-station-marker ${isBikeS ? 'bikes' : 'ibombo'}" style="
-          width: 32px; height: 32px; border-radius: 50%;
+          width: 24px; height: 24px; border-radius: 50%;
           background: ${isBikeS ? '#10b981' : '#f59e0b'};
           color: #fff; display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 3px 10px rgba(0,0,0,0.35); border: 2.5px solid #fff; font-size: 15px; cursor: pointer;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.35); border: 2px solid #fff; font-size: 11.5px; cursor: pointer;
         ">
           <span>${isBikeS ? '🚲' : '🔧'}</span>
         </div>
       `,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
       className: 'bike-station-marker-wrap'
     });
 
@@ -364,10 +364,10 @@ function buildMapStats() {
   panel.innerHTML = `
     <!-- Floating pill trigger (always visible in top right) -->
     <div class="msp-trigger-wrapper">
-      <button class="msp-toggle-btn" id="mspToggleBtn" title="Menu z prawej: Control Hub Pro & Statystyki (M)" aria-label="Rozwiń menu i statystyki mapy">
+      <button class="msp-toggle-btn" id="mspToggleBtn" title="Centrum Dzielnicy & Statystyki (M)" aria-label="Rozwiń Centrum Dzielnicy i statystyki mapy">
         <span class="widget-drag-handle msp-drag-handle" title="Przeciągnij menu" aria-label="Przeciągnij">⠿</span>
-        <span class="mst-icon">📊</span>
-        <span class="mst-title">Control Hub</span>
+        <span class="mst-icon">🏛️</span>
+        <span class="mst-title">Centrum Dzielnicy</span>
         <span class="mst-count">(${places.length})</span>
         <span class="mst-chevron">▾</span>
       </button>

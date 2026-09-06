@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('lucznicza_theme') || 'dark';
   applyTheme(savedTheme);
 
+  // Bind core UI event listeners immediately without waiting for splash timeout
+  initUI();
+
   // Splash screen — use requestAnimationFrame to avoid forced reflow
   setTimeout(() => {
     const splash = document.getElementById('splash');
@@ -402,9 +405,9 @@ function createPoiMarker(place) {
   `;
   const icon = L.divIcon({
     html: iconHtml,
-    iconSize: [34, 42],
-    iconAnchor: [17, 40],
-    popupAnchor: [0, -38],
+    iconSize: [26, 32],
+    iconAnchor: [13, 30],
+    popupAnchor: [0, -29],
     className: 'leaflet-marker-google-style'
   });
 
@@ -832,6 +835,10 @@ function initSzczecinIsland() {
       menuBtn.setAttribute('aria-expanded', 'false');
 
       switch (action) {
+        case 'map':
+          navigateTo('map');
+          showToast('🗺️ Widok główny mapy Niebuszewa');
+          break;
         case 'bikes':
           navigateTo('bikes');
           showToast('🚲 Wybrano ścieżki i trasy rowerowe Szczecina');
@@ -872,8 +879,12 @@ function initSzczecinIsland() {
           navigateTo('szczecin');
           setTimeout(() => {
             const el = document.getElementById('sfGastroRadar');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }, 200);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              el.classList.add('highlight-section');
+              setTimeout(() => el.classList.remove('highlight-section'), 2000);
+            }
+          }, 250);
           showToast('🥟 Pasztecik & Frytburger Radar');
           break;
         case 'gwara':
@@ -881,6 +892,15 @@ function initSzczecinIsland() {
           if (window.SzczecinLocalFlavor) {
             window.SzczecinLocalFlavor.toggleSzczecinDialect();
           }
+          setTimeout(() => {
+            const el = document.getElementById('sfDictionary');
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              el.classList.add('highlight-section');
+              setTimeout(() => el.classList.remove('highlight-section'), 2000);
+            }
+          }, 250);
+          showToast('🗣️ Słownik & Gwara Szczecińska');
           break;
         case 'giedroyc':
           navigateTo('szczecin');

@@ -783,7 +783,7 @@ body {
   border-radius: 16px;
   box-shadow: 0 12px 32px rgba(0, 10, 25, 0.6), 0 0 20px rgba(255, 215, 0, 0.15);
   padding: 8px;
-  z-index: 1000;
+  z-index: 12000 !important;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -919,16 +919,46 @@ body {
     padding: 6px 7px;
     height: 32px;
   }
+  .logo-sub-title {
+    display: none !important;
+  }
+  .logo-guide-badge {
+    display: none !important;
+  }
+  .header {
+    padding: 0 8px;
+    gap: 6px;
+  }
+  .header-left, .header-right {
+    gap: 4px;
+  }
 }
 
 .menu-btn {
-  background: none; border: none; cursor: pointer;
-  display: flex; flex-direction: column; gap: 5px; padding: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 10px;
+  border-radius: 12px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease;
+}
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 .menu-btn span {
   display: block; width: 22px; height: 2px;
   background: var(--text); border-radius: 2px;
   transition: var(--transition);
+  pointer-events: none;
 }
 
 .icon-btn {
@@ -1449,6 +1479,48 @@ body:has(#sidebar.open) .pwa-banner {
   transition: var(--transition);
 }
 .popup-btn:hover { opacity: 0.85; }
+
+/* ===== SECTION BACK BUTTON (Universal Exit to Map) ===== */
+.section-back-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.section-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(0, 45, 98, 0.35);
+  border: 1.5px solid rgba(255, 215, 0, 0.45);
+  color: #FFD700;
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+.section-back-btn:hover {
+  background: linear-gradient(135deg, #002D62, #990024);
+  border-color: #FFD700;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+.section-back-btn:active {
+  transform: scale(0.96);
+}
+[data-theme="light"] .section-back-btn {
+  background: rgba(0, 45, 98, 0.08);
+  border-color: rgba(0, 45, 98, 0.3);
+  color: #002D62;
+}
 
 /* ===== SECTION CONTENT ===== */
 .section-content {
@@ -4743,10 +4815,10 @@ body:has(#section-map.active) .live-ticker {
 /* Stop markers */
 .stop-marker-wrap { background: transparent !important; border: none !important; }
 .stop-marker {
-  width: 28px; height: 28px; border-radius: 50%;
+  width: 21px; height: 21px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px; border: 2px solid rgba(255,255,255,0.9);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  font-size: 10.5px; border: 1.5px solid rgba(255,255,255,0.9);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.35);
   transition: transform 0.2s ease;
 }
 .stop-marker.bus  { background: #3498db; }
@@ -5711,7 +5783,7 @@ body.zen-map-mode .pogon-mascot-btn {
     max-width: calc(100vw - 138px) !important;
   }
   .map-stats-panel {
-    top: 72px !important;
+    top: calc(var(--header-h, 64px) + 52px) !important;
     right: 10px !important;
     z-index: 1050 !important;
   }
@@ -5721,11 +5793,13 @@ body.zen-map-mode .pogon-mascot-btn {
     gap: 4px;
   }
   .map-stats-panel .mst-title {
-    display: none !important;
+    display: inline !important;
+    font-size: 11px !important;
   }
   .map-stats-panel .msp-toggle-btn {
-    padding: 6px 10px !important;
-    gap: 4px !important;
+    padding: 6px 12px !important;
+    gap: 5px !important;
+    height: 34px !important;
   }
   .msp-card {
     width: min(320px, calc(100vw - 20px)) !important;
@@ -6321,36 +6395,36 @@ body.offline::after {
 
 .vehicle-icon-wrap { background: transparent !important; border: none !important; }
 .vehicle-marker {
-  position: relative; width: 36px; height: 36px;
+  position: relative; width: 27px; height: 27px;
   display: flex; align-items: center; justify-content: center;
 }
 .vm-bubble {
-  width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
+  width: 22.5px; height: 22.5px; border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   display: flex; align-items: center; justify-content: center;
-  border: 2px solid rgba(255,255,255,0.95);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.4); z-index: 2;
+  border: 1.5px solid rgba(255,255,255,0.95);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4); z-index: 2;
 }
 .vm-line {
   transform: rotate(45deg); color: #fff;
-  font-size: 11px; font-weight: 800; line-height: 1;
+  font-size: 8.5px; font-weight: 800; line-height: 1;
 }
 .vehicle-marker.moving .vm-bubble { animation: vehiclePulse 1.5s ease infinite; }
 @keyframes vehiclePulse {
-  0%, 100% { box-shadow: 0 3px 10px rgba(0,0,0,0.4); }
-  50% { box-shadow: 0 3px 16px var(--vcolor); }
+  0%, 100% { box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  50% { box-shadow: 0 2px 12px var(--vcolor); }
 }
 .vm-arrow {
-  position: absolute; top: -4px; left: 50%; margin-left: -5px;
+  position: absolute; top: -3px; left: 50%; margin-left: -4px;
   width: 0; height: 0;
-  border-left: 5px solid transparent; border-right: 5px solid transparent;
-  border-bottom: 8px solid; z-index: 3;
-  transform-origin: center 22px;
+  border-left: 4px solid transparent; border-right: 4px solid transparent;
+  border-bottom: 6px solid; z-index: 3;
+  transform-origin: center 16.5px;
 }
 .vm-punct {
-  position: absolute; bottom: 2px; right: 2px;
-  width: 8px; height: 8px; border-radius: 50%;
-  border: 1.5px solid #fff; z-index: 4;
+  position: absolute; bottom: 1.5px; right: 1.5px;
+  width: 6px; height: 6px; border-radius: 50%;
+  border: 1px solid #fff; z-index: 4;
 }
 
 /* Vehicle popup */
@@ -6753,6 +6827,22 @@ body.offline::after {
     left: 12px !important;
   }
 
+  .map-stats-panel {
+    top: calc(var(--header-h, 64px) + 52px) !important;
+    right: 12px !important;
+    z-index: 1050 !important;
+  }
+  .map-stats-panel .mst-title {
+    display: inline !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+  }
+  .map-stats-panel .msp-toggle-btn {
+    padding: 6px 12px !important;
+    gap: 5px !important;
+    height: 36px !important;
+  }
+
   /* Smooth fade out when bottom sheet expands */
   body.sheet-open .google-locate-btn,
   body.sheet-open .live-transport-btn,
@@ -6760,12 +6850,14 @@ body.offline::after {
   body.sheet-open .map-fab-group,
   body.sheet-open .google-layer-thumb-btn,
   body.sheet-open .layer-panel,
+  body.sheet-open .map-stats-panel,
   .sheet-expanded .google-locate-btn,
   .sheet-expanded .live-transport-btn,
   .sheet-expanded .community-alert-fab,
   .sheet-expanded .map-fab-group,
   .sheet-expanded .google-layer-thumb-btn,
-  .sheet-expanded .layer-panel {
+  .sheet-expanded .layer-panel,
+  .sheet-expanded .map-stats-panel {
     opacity: 0 !important;
     pointer-events: none !important;
     transform: translateY(16px) !important;
@@ -7186,31 +7278,31 @@ body:not(.is-map-view):not([data-active-section="pogon"]) #pogonMascot {
 }
 
 .google-pin-head {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
-  border: 2px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  border: 1.5px solid #ffffff;
   position: relative;
 }
 
 .google-pin-icon {
   transform: rotate(45deg);
-  font-size: 15px;
+  font-size: 11.5px;
   line-height: 1;
 }
 
 .google-pin-pulse {
   position: absolute;
-  width: 14px;
-  height: 6px;
+  width: 10px;
+  height: 4.5px;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 50%;
-  bottom: -6px;
+  bottom: -4.5px;
   filter: blur(1px);
 }
 
@@ -7648,16 +7740,16 @@ body:not(.is-map-view):not([data-active-section="pogon"]) #pogonMascot {
 .custom-alert-pin,
 .alert-map-marker {
   position: relative;
-  width: 38px;
-  height: 38px;
+  width: 28.5px;
+  height: 28.5px;
   border-radius: 50%;
   background: #ffffff;
-  border: 2px solid #e63946;
-  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1.5px solid #e63946;
+  box-shadow: 0 3px 9px rgba(230, 57, 70, 0.4), 0 2px 5px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 15px;
   cursor: pointer;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }

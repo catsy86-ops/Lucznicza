@@ -335,6 +335,11 @@ const BikeSectionManager = {
 
     container.innerHTML = `
       <div class="section-content">
+        <div style="margin-bottom: 14px;">
+          <button class="section-back-btn" onclick="navigateTo('map')" style="display:inline-flex; align-items:center; gap:8px; background:rgba(0,45,98,0.35); border:1.5px solid rgba(255,215,0,0.45); color:#FFD700; padding:8px 16px; border-radius:24px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; min-height:44px; margin-bottom:12px; transition:all 0.2s ease;">
+            <span>← Wróć do mapy</span>
+          </button>
+        </div>
         <!-- Hero Header -->
         <div class="section-hero bike-hero">
           <div class="bike-hero-badge">🚲 SZCZECIN BIKE NETWORK</div>
