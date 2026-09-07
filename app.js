@@ -926,14 +926,14 @@ function initSzczecinIsland() {
             const el = document.getElementById('comm-klatka');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }, 200);
-          showToast('🍻 Witaj w Pubie Klatka pod 43! Zimne piwko czeka!');
+          showToast('🍻 Witaj w Pubie Klatka pod 39! Zimne piwko czeka!');
           break;
         case 'ogloszenia':
           navigateTo('szczecin');
           setTimeout(() => {
             const el = document.getElementById('sfAnnounceWrap');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }, 200);
+          }, 400);
           showToast('📜 Ogłoszenia z Klatki pod 43');
           break;
       }
@@ -1160,6 +1160,23 @@ function initGoogleMapControls() {
 
           map.flyTo([lat, lng], 16.5, { animate: true, duration: 1.2 });
           showToast('📍 Wycentrowano na Twojej pozycji');
+
+          // Reverse geocoding — show street name via Nominatim
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=pl`, {
+            headers: { 'Accept': 'application/json', 'User-Agent': 'NiebuszewoGuide/1.5' }
+          }).then(r => r.json()).then(data => {
+            const addr = data.address || {};
+            const road = addr.road || addr.pedestrian || addr.path || '';
+            const suburb = addr.suburb || addr.neighbourhood || addr.city_district || '';
+            const num = addr.house_number ? ' ' + addr.house_number : '';
+            if (road) {
+              const label = road + num + (suburb ? ', ' + suburb : '');
+              showToast('📍 Jesteś na: ' + label);
+              if (userGpsMarker) {
+                userGpsMarker.setPopupContent(`<b>📍 Twoja pozycja</b><br>${label}<br>Dokładność: ±${Math.round(accuracy || 15)} m`);
+              }
+            }
+          }).catch(() => {}); // silent fail
 
           // Device orientation support for heading beam on mobile
           if (window.DeviceOrientationEvent && !isTrackingUser) {
@@ -1397,6 +1414,27 @@ function navigateTo(section) {
   document.body.classList.toggle('is-map-view', section === 'map');
   document.body.setAttribute('data-active-section', section);
 
+  // Track recently visited sections (skip 'map' — too frequent)
+  if (section !== 'map') {
+    try {
+      const SECTION_LABELS = {
+        places:'Miejsca', routes:'Trasy', bikes:'Rowery', transport:'Transport',
+        info:'Informacje', events:'Wydarzenia', live:'Na żywo', community:'Społeczność',
+        pogon:'Pogoń Szczecin', szczecin:'Szczecińskie Klasyki'
+      };
+      const SECTION_ICONS = {
+        places:'📍', routes:'🗺️', bikes:'🚲', transport:'🚌',
+        info:'ℹ️', events:'🎉', live:'📡', community:'🏘️',
+        pogon:'🛡️', szczecin:'🥟'
+      };
+      let recent = JSON.parse(localStorage.getItem('recent_sections') || '[]');
+      recent = recent.filter(r => r.id !== section);
+      recent.unshift({ id: section, label: SECTION_LABELS[section] || section, icon: SECTION_ICONS[section] || '📌' });
+      recent = recent.slice(0, 5);
+      localStorage.setItem('recent_sections', JSON.stringify(recent));
+    } catch (_) {}
+  }
+
   document.querySelectorAll('.section').forEach(s => {
     s.classList.remove('active');
     s.classList.add('hidden');
@@ -1408,12 +1446,12 @@ function navigateTo(section) {
     // Smooth scroll to top of section
     target.scrollTo({ top: 0, behavior: 'smooth' });
 
-    if (section === 'pogon' && window.PogonFeature) {
-      window.PogonFeature.render();
-    } else if (section === 'szczecin' && window.SzczecinLocalFlavor) {
-      window.SzczecinLocalFlavor.render();
-    } else if (section === 'bikes' && window.BikeSectionManager) {
-      if (!target.querySelector('.bike-planner-card') || !target.querySelector('.bike-hero')) {
+    if (section === 'pogon') {
+      if (window.PogonFeature?.render) window.PogonFeature.render();
+    } else if (section === 'szczecin') {
+      if (window.SzczecinLocalFlavor?.render) window.SzczecinLocalFlavor.render(true);
+    } else if (section === 'bikes') {
+      if (window.BikeSectionManager?.init) {
         window.BikeSectionManager.init();
       }
     }
@@ -1425,6 +1463,21 @@ function navigateTo(section) {
   document.querySelectorAll('.bnav-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.section === section);
   });
+
+  // Highlight matching item in island dropdown menu
+  const sectionToAction = {
+    map: 'map', bikes: 'bikes', transport: 'zditm',
+    community: 'klatka', pogon: 'pogon', szczecin: 'pasztecik'
+  };
+  const dropdown = document.getElementById('islandDropdownMenu');
+  if (dropdown) {
+    dropdown.querySelectorAll('.idm-item').forEach(i => i.classList.remove('idm-active'));
+    const matchAction = sectionToAction[section];
+    if (matchAction) {
+      const match = dropdown.querySelector(`[data-action="${matchAction}"]`);
+      if (match) match.classList.add('idm-active');
+    }
+  }
 
   // Bottom sheet only appears on map section
   const sheet = document.getElementById('modernBottomSheet');
@@ -1467,6 +1520,8 @@ function navigateTo(section) {
     history.replaceState(null, '', `#${section}`);
   }
 }
+
+window.navigateTo = navigateTo;
 
 // ===== RENDER PLACES (ENHANCED) =====
 function renderPlaces(query = '') {
@@ -2608,13 +2663,19 @@ function showToast(msg, type = 'info') {
   toast.style.display = 'block';
   toast.style.opacity = '1';
   clearTimeout(toast._timeout);
+  // Click to dismiss early
+  toast.onclick = () => {
+    clearTimeout(toast._timeout);
+    toast.style.opacity = '0';
+    setTimeout(() => { toast.className = 'toast hidden'; toast.style.display = 'none'; }, 300);
+  };
   toast._timeout = setTimeout(() => {
     toast.style.opacity = '0';
     setTimeout(() => {
       toast.className = 'toast hidden';
       toast.style.display = 'none';
     }, 300);
-  }, 3000);
+  }, 2400);
 }
 
 // ===== RENDER COMMUNITY (handled by community-ui.js auto-init) =====

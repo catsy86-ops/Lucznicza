@@ -888,6 +888,20 @@ p, .place-card-desc, .route-desc, .info-card-text, .event-desc {
   background: rgba(0, 45, 98, 0.06);
 }
 
+.idm-item.idm-active {
+  background: rgba(255, 215, 0, 0.14);
+  color: #FFD700;
+  font-weight: 700;
+  border-left: 3px solid #FFD700;
+  padding-left: 8px;
+}
+
+[data-theme="light"] .idm-item.idm-active {
+  background: rgba(0, 45, 98, 0.1);
+  color: #002D62;
+  border-left-color: #002D62;
+}
+
 .idm-icon {
   font-size: 18px;
   width: 24px;
@@ -1975,6 +1989,8 @@ body:has(#sidebar.open) .pwa-banner {
   animation: toastIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
+  cursor: pointer;
+  user-select: none;
 }
 .toast-success { border-color: #43e97b; background: rgba(15, 35, 25, 0.92); box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 14px rgba(67,233,123,0.3); }
 .toast-error { border-color: #ff6584; background: rgba(35, 15, 20, 0.92); box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 14px rgba(255,101,132,0.3); }

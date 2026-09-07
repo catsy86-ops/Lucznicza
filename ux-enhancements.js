@@ -188,7 +188,7 @@ transitionStyle.textContent = `
 `;
 document.head.appendChild(transitionStyle);
 
-const SECTION_ORDER = ['map','places','routes','info','transport','events','live','community'];
+const SECTION_ORDER = ['map','places','routes','bikes','info','transport','events','live','community','pogon','szczecin'];
 
 function getSectionAnimation(from, to) {
   const fi = SECTION_ORDER.indexOf(from);
@@ -197,23 +197,26 @@ function getSectionAnimation(from, to) {
   return ti > fi ? 'slide-in-right' : 'slide-in-left';
 }
 
-// Wrap navigateTo to add animations
+// Hook into navigateTo smoothly after DOM and scripts load
 let _lastSection = 'map';
-const _origNavigateTo = window.navigateTo;
-window.navigateTo = function(section) {
-  const anim = getSectionAnimation(_lastSection, section);
-  _lastSection = section;
-  if (typeof _origNavigateTo === 'function') _origNavigateTo(section);
-  // Apply animation to newly active section
-  requestAnimationFrame(() => {
-    const el = document.getElementById(`section-${section}`);
-    if (el) {
-      el.classList.remove('slide-in-right','slide-in-left','slide-in-up');
-      void el.offsetWidth; // reflow
-      el.classList.add(anim);
-    }
-  });
-};
+document.addEventListener('DOMContentLoaded', () => {
+  const baseNavigateTo = window.navigateTo;
+  if (typeof baseNavigateTo === 'function') {
+    window.navigateTo = function(section) {
+      const anim = getSectionAnimation(_lastSection, section);
+      _lastSection = section;
+      baseNavigateTo(section);
+      requestAnimationFrame(() => {
+        const el = document.getElementById(`section-${section}`);
+        if (el) {
+          el.classList.remove('slide-in-right','slide-in-left','slide-in-up');
+          void el.offsetWidth; // reflow
+          el.classList.add(anim);
+        }
+      });
+    };
+  }
+});
 
 // ============================================================
 // 5. "DZIŚ W DZIELNICY" — WIDGET NA MAPIE

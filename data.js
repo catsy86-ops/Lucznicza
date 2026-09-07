@@ -577,18 +577,18 @@ const APP_DATA = {
       tags: ['żabka', 'convenience', 'Rapackiego']
     },
 
-    // ===== PUB KLATKA — ŁUCZNICZA 43 =====
+    // ===== PUB KLATKA — ŁUCZNICZA 39 =====
     {
       id: 46, cat: 'food',
       name: 'Pub Klatka',
-      addr: 'ul. Łucznicza 43, Szczecin',
+      addr: 'ul. Łucznicza 39, Szczecin',
       emoji: '🍻',
-      desc: 'Wpadaj tam na piwo! Legendarne osiedlowe centrum integracji na klatce schodowej pod 43. Oficjalny napój to zimny browar z pianką na dwa palce, a nieoficjalny sport narodowy to debaty o tym, kto znowu nie zgasił światła w piwnicy i dlaczego dziki na Niebuszewie mają lepszy GPS niż kurierzy z paczkami.',
+      desc: 'Wpadaj tam na piwo! Legendarne osiedlowe centrum integracji na klatce schodowej pod 39. Oficjalny napój to zimny browar z pianką na dwa palce, a nieoficjalny sport narodowy to debaty o tym, kto znowu nie zgasił światła w piwnicy i dlaczego dziki na Niebuszewie mają lepszy GPS niż kurierzy z paczkami.',
       hours: 'Otwarte: 16:00–23:00 (lub dopóki sąsiad z góry nie zapuka w rurę od kaloryfera)',
       phone: '500-KLATKA', website: null,
       coords: [14.54752, 53.45405],
       rating: 5.0,
-      tags: ['pub', 'piwo', 'Łucznicza 43', 'integracja', 'klatka', 'humor', 'lokalne', 'piwko']
+      tags: ['pub', 'piwo', 'Łucznicza 39', 'integracja', 'klatka', 'humor', 'lokalne', 'piwko']
     },
 
     // ===== ŁAWECZKA FILOZOFÓW — PARK KADZIAKA =====
@@ -603,6 +603,20 @@ const APP_DATA = {
       coords: [14.54420, 53.45140],
       rating: 4.9,
       tags: ['park', 'filozofia', 'relaks', 'Park Kadziaka', 'debata', 'legenda', 'humor']
+    },
+
+    // ===== MUREK PRZY SKLEPIE ANKA =====
+    {
+      id: 48, cat: 'park',
+      name: 'Osiedlowy Murek przy Sklepie Anka',
+      addr: 'ul. Łucznicza / okolice sklepu Anka, Niebuszewo',
+      emoji: '🧱',
+      desc: 'Kultowy nieformalny klub dyskusyjny pod gołym niebem. Stali bywalcy zbierają się tu niezależnie od pogody, pory roku i stanu portfela. Tematyka debat: Pogoń Szczecin, drożyzna w Społem i czemu autobus 89 znowu się spóźnił. Wstęp wolny, klimat obowiązkowy.',
+      hours: 'Całą dobę (szczyt aktywności: 10:00–20:00)',
+      phone: null, website: null,
+      coords: [14.5500, 53.4538],
+      rating: 4.5,
+      tags: ['murek', 'Anka', 'miejscowi', 'lokalny', 'spotkania', 'humor', 'Niebuszewo']
     }
   ],
 
@@ -832,7 +846,7 @@ const APP_DATA = {
         { name: 'Start: Park Antoniego Kadziaka', addr: 'ul. Łucznicza', emoji: '🌳' },
         { name: 'Ławeczka Filozofów (narada strategiczna)', addr: 'Park Kadziaka', emoji: '🧐' },
         { name: 'Skwer przy Tarczowej (strefa podsłuchu chrumkania)', addr: 'ul. Tarczowa', emoji: '🐗' },
-        { name: 'Meta: Pub Klatka (schronienie i zimne piwo)', addr: 'ul. Łucznicza 43', emoji: '🍻' }
+        { name: 'Meta: Pub Klatka (schronienie i zimne piwo)', addr: 'ul. Łucznicza 39', emoji: '🍻' }
       ],
       coords: [
         [14.54365, 53.45100],

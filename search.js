@@ -178,21 +178,33 @@ function runSearch(q) {
 
 function scoreMatch(query, fields) {
   let score = 0;
-  const words = query.split(/\s+/).filter(Boolean);
+  const qn = normalize(query);
+  const words = qn.split(/\s+/).filter(Boolean);
   fields.forEach(f => {
     if (!f) return;
-    const fl = f.toLowerCase();
-    if (fl === query) score += 100;
-    else if (fl.startsWith(query)) score += 50;
-    else if (fl.includes(query)) score += 30;
-    // Fuzzy matching — allow 1 character difference for words > 3 chars
-    else if (query.length > 3 && fuzzyMatch(query, fl)) score += 15;
+    const fn = normalize(f);
+    if (fn === qn) score += 100;
+    else if (fn.startsWith(qn)) score += 50;
+    else if (fn.includes(qn)) score += 30;
+    else if (qn.length > 3 && fuzzyMatch(qn, fn)) score += 15;
     words.forEach(w => {
-      if (fl.includes(w)) score += 10;
-      else if (w.length > 3 && fuzzyMatch(w, fl)) score += 5;
+      if (fn.includes(w)) score += 10;
+      else if (w.length > 3 && fuzzyMatch(w, fn)) score += 5;
     });
   });
   return score;
+}
+
+// Normalize Polish diacritics for search matching
+function normalize(s) {
+  if (!s) return '';
+  return s.toLowerCase()
+    .replace(/ą/g, 'a').replace(/ć/g, 'c').replace(/ę/g, 'e')
+    .replace(/ł/g, 'l').replace(/ń/g, 'n').replace(/ó/g, 'o')
+    .replace(/ś/g, 's').replace(/ź/g, 'z').replace(/ż/g, 'z')
+    .replace(/Ą/g, 'a').replace(/Ć/g, 'c').replace(/Ę/g, 'e')
+    .replace(/Ł/g, 'l').replace(/Ń/g, 'n').replace(/Ó/g, 'o')
+    .replace(/Ś/g, 's').replace(/Ź/g, 'z').replace(/Ż/g, 'z');
 }
 
 // Simple fuzzy match — checks if query is "close enough" to any substring in text
@@ -231,23 +243,43 @@ function renderHistory() {
   if (!histEl || !resEl) return;
   resEl.innerHTML = '';
 
+  // Recently visited sections
+  let recentSections = [];
+  try { recentSections = JSON.parse(localStorage.getItem('recent_sections') || '[]'); } catch (_) {}
+
   const history = getHistory();
-  if (!history.length) {
+
+  if (!history.length && !recentSections.length) {
     histEl.innerHTML = `<div class="gs-empty">🔍 Zacznij pisać aby wyszukać...</div>`;
     return;
   }
 
-  histEl.innerHTML = `
-    <div class="gs-section-title">🕐 Ostatnie wyszukiwania</div>
-    ${history.map(h => `
-      <div class="gs-item gs-history-item" onclick="fillSearch('${h.replace(/'/g,"\\'")}')">
+  let html = '';
+
+  if (recentSections.length) {
+    html += `<div class="gs-section-title">🕐 Ostatnio odwiedzone</div>`;
+    html += recentSections.map(s => `
+      <div class="gs-item gs-history-item" onclick="closeGlobalSearch(); navigateTo('${s.id}')">
+        <span class="gs-item-icon">${s.icon}</span>
+        <span class="gs-item-title">${s.label}</span>
+        <span class="gs-item-arrow">→</span>
+      </div>
+    `).join('');
+  }
+
+  if (history.length) {
+    html += `<div class="gs-section-title" style="margin-top:${recentSections.length ? '10px' : '0'}">🔎 Ostatnie wyszukiwania</div>`;
+    html += history.map(h => `
+      <div class="gs-item gs-history-item" onclick="fillSearch('${h.replace(/'/g, "\\'")}')">
         <span class="gs-item-icon">🕐</span>
         <span class="gs-item-title">${h}</span>
         <span class="gs-item-arrow">→</span>
       </div>
-    `).join('')}
-    <button class="gs-clear-history" onclick="clearSearchHistory()">🗑️ Wyczyść historię</button>
-  `;
+    `).join('');
+    html += `<button class="gs-clear-history" onclick="clearSearchHistory()">🗑️ Wyczyść historię</button>`;
+  }
+
+  histEl.innerHTML = html;
 }
 
 function renderResults(q, results) {

@@ -55,7 +55,7 @@ const COMMUNITY_DATA = {
     { id: 'r4', author: 'Jan S.',       avatar: 'J', rating: 4, date: '3 dni temu',  place: 'Szkoła Podstawowa nr 47',    text: 'Szkoła dobrze zorganizowana. Nauczyciele zaangażowani. Mogłoby być więcej zajęć dodatkowych dla dzieci.',            helpful: 12, category: 'edu'   },
     { id: 'r5', author: 'Zofia B.',     avatar: 'Z', rating: 5, date: '4 dni temu',  place: 'Plac Zabaw "Łucznik"',       text: 'Bezpieczny, ogrodzony, nowoczesny. Ścianka wspinaczkowa to hit! Dzieci nie chcą wychodzić.',                        helpful: 41, category: 'park'  },
     { id: 'r6', author: 'Bartek F.',    avatar: 'B', rating: 5, date: '1 dzień temu',place: 'Siłownia Plenerowa',         text: 'Codziennie tu ćwiczę. Za darmo, na świeżym powietrzu, dobry sprzęt. Idealne na poranny trening.',                   helpful: 29, category: 'sport' },
-    { id: 'r7', author: 'Mati ze Szczecina', avatar: 'M', rating: 5, date: '3 godziny temu', place: 'Pub Klatka', text: 'Zimne piwko pod 43 wchodzi wybornie. Sąsiad z góry zapukał w kaloryfer dopiero o 22:45, więc rekord pobity! Polecam każdemu koneserowi.', helpful: 68, category: 'food' },
+    { id: 'r7', author: 'Mati ze Szczecina', avatar: 'M', rating: 5, date: '3 godziny temu', place: 'Pub Klatka', text: 'Zimne piwko pod 39 wchodzi wybornie. Sąsiad z góry zapukał w kaloryfer dopiero o 22:45, więc rekord pobity! Polecam każdemu koneserowi.', helpful: 68, category: 'food' },
     { id: 'r8', author: 'Pan Stanisław', avatar: 'S', rating: 5, date: 'wczoraj', place: 'Ławeczka Filozofów', text: 'Siedzieliśmy od 16 do 19. Rozwiązaliśmy problem dziury budżetowej i ustaliliśmy skład Pogoni na finał pucharu. Wybitne miejsce refleksji.', helpful: 54, category: 'park' }
   ],
 

@@ -61,7 +61,7 @@ function renderCommunity() {
       <button class="cnp-btn" data-target="comm-audio">🎧 Opowieści Gryfusa</button>
       <button class="cnp-btn" data-target="comm-sos">🆘 Apteki & Dyżury 24h</button>
       <button class="cnp-btn" data-target="comm-dogs">🐕 Psie Niebuszewo</button>
-      <button class="cnp-btn" data-target="comm-klatka" style="background: linear-gradient(135deg, #d97706, #b45309); color: #fff; font-weight: 700;">🍺 Pub Klatka pod 43</button>
+      <button class="cnp-btn" data-target="comm-klatka" style="background: linear-gradient(135deg, #d97706, #b45309); color: #fff; font-weight: 700;">🍺 Pub Klatka pod 39</button>
       <button class="cnp-btn" data-target="comm-badges">🎖️ Odznaki Gryfusa</button>
       <button class="cnp-btn" data-target="comm-waste">♻️ Śmieci & Gabaryty</button>
       <button class="cnp-btn" data-target="comm-artisans">🏆 Rzemieślnicy</button>
@@ -151,10 +151,10 @@ function renderCommunity() {
       <div id="ekoDropPointsList" class="comm-eko-grid"></div>
     </div>
 
-    <!-- Pub Klatka (ul. Łucznicza 43) — Legendarny Klub Osiedlowy & Strefa Biesiadna -->
+    <!-- Pub Klatka (ul. Łucznicza 39) — Legendarny Klub Osiedlowy & Strefa Biesiadna -->
     <div id="comm-klatka" class="comm-klatka-section">
       <div class="comm-section-title">
-        <span>🍺 Pub Klatka — ul. Łucznicza 43</span>
+        <span>🍺 Pub Klatka — ul. Łucznicza 39</span>
         <span class="comm-refresh-hint">Klub Sąsiedzki · Wpadaj na piwo!</span>
       </div>
       <div id="pubKlatkaHub"></div>
@@ -860,7 +860,7 @@ function syncCommunityAlertsOnMap(alerts) {
 
     activeRadarLayers.push(radarCircleOuter, radarCircleInner);
 
-    // 2. Bezpieczna ścieżka ucieczki do Pub Klatka (ul. Łucznicza 43)
+    // 2. Bezpieczna ścieżka ucieczki do Pub Klatka (ul. Łucznicza 39)
     const pubCoords = [53.45330, 14.54980];
     const escapeRouteCoords = [
       [alertLat, alertLng],
@@ -881,7 +881,7 @@ function syncCommunityAlertsOnMap(alerts) {
       opacity: 0.95
     }).addTo(map);
 
-    escapePolyline.bindTooltip('🍺 <strong>Korytarz Ucieczki: Prosto do Pub Klatka (Łucznicza 43)!</strong>', {
+    escapePolyline.bindTooltip('🍺 <strong>Korytarz Ucieczki: Prosto do Pub Klatka (Łucznicza 39)!</strong>', {
       permanent: true,
       direction: 'top',
       className: 'escape-tooltip'
@@ -1239,13 +1239,13 @@ function renderPubKlatkaHub() {
 
   container.innerHTML = `
     <div class="klatka-hero-card">
-      <div class="khc-badge">🍺 OFICJALNY KLUB OSIEDLOWY · ŁUCZNICZA 43</div>
+      <div class="khc-badge">🍺 OFICJALNY KLUB OSIEDLOWY · ŁUCZNICZA 39</div>
       <div class="khc-header">
         <div class="khc-icon-wrap">
           <span class="khc-icon">🍻</span>
         </div>
         <div class="khc-title-box">
-          <h3 class="khc-title">Pub Klatka — Łucznicza 43</h3>
+          <h3 class="khc-title">Pub Klatka — Łucznicza 39</h3>
           <p class="khc-sub">„Wpadaj tam na piwo!” · Niezależny ośrodek myśli sąsiedzkiej i debat przy kaloryferze</p>
         </div>
       </div>
@@ -1374,7 +1374,7 @@ window.playBeerOpenSound = function() {
     popOsc.stop(ctx.currentTime + 0.08);
 
     if (typeof showToast === 'function') {
-      showToast('🍺 *PSSSYT!* Zimne piwko w Pubie Klatka pod 43 otwarte!');
+      showToast('🍺 *PSSSYT!* Zimne piwko w Pubie Klatka pod 39 otwarte!');
     }
   } catch (e) {
     console.warn('Audio beer error:', e);
@@ -1476,7 +1476,7 @@ window.playDoorbellIntercom = function() {
     osc.stop(ctx.currentTime + 0.4);
 
     if (typeof showToast === 'function') {
-      showToast('🔔 *BZZZZZT!* Drzwi do klatki pod 43 otwarte! Wbijaj na górę!');
+      showToast('🔔 *BZZZZZT!* Drzwi do klatki pod 39 otwarte! Wbijaj na górę!');
     }
   } catch (e) {
     console.warn('Audio intercom error:', e);
@@ -1542,12 +1542,12 @@ window.unlockKlatkaBadge = function() {
     const res = window.__SZCZECIN_APP__.explorerBadges.unlockBadge('badge-klatka-regular');
     if (res.success && res.badge) {
       if (typeof showToast === 'function') {
-        showToast(`🎉 Brawo! Odblokowano odznakę: 🍺 ${res.badge.title} (+${res.badge.points} pkt)! Jesteś stałym bywalcem pod 43!`);
+        showToast(`🎉 Brawo! Odblokowano odznakę: 🍺 ${res.badge.title} (+${res.badge.points} pkt)! Jesteś stałym bywalcem pod 39!`);
       }
       renderExplorerBadges();
     } else {
       if (typeof showToast === 'function') {
-        showToast('ℹ️ Masz już odznakę Bywalca Klatki pod 43 w swojej kolekcji Gryfusa!');
+        showToast('ℹ️ Masz już odznakę Bywalca Klatki pod 39 w swojej kolekcji Gryfusa!');
       }
     }
   }
@@ -1588,12 +1588,12 @@ const DEFAULT_AUDIO_STORIES = [
     desc: 'Kultowe targowisko miejskie, brama do Niebuszewa i serce komunikacyjne dzielnicy.'
   },
   {
-    id: 'story-klatka-43',
-    title: 'Pub Klatka pod 43: Serce Integracji',
-    locationName: 'ul. Łucznicza 43',
+    id: 'story-klatka-39',
+    title: 'Pub Klatka pod 39: Serce Integracji',
+    locationName: 'ul. Łucznicza 39',
     coords: [53.45405, 14.54752],
     duration: 'ok. 22 sek',
-    desc: 'Legendarna brama i klatka schodowa pod numerem 43! To tu toczą się debaty o składzie Pogoni Szczecin, lochach z warchlakami i tajemnicy znikających żarówek w piwnicy.'
+    desc: 'Legendarna brama i klatka schodowa pod numerem 39! To tu toczą się debaty o składzie Pogoni Szczecin, lochach z warchlakami i tajemnicy znikających żarówek w piwnicy.'
   }
 ];
 

@@ -335,6 +335,43 @@ const MobileGestures = (() => {
       }
     });
 
+    // ── Swipe right from left edge → go back to previous section ──
+    let _edgeSwipeStartX = 0;
+    let _edgeSwipeStartY = 0;
+    let _edgeSwipeActive = false;
+
+    document.addEventListener('touchstart', (e) => {
+      const x = e.touches[0].clientX;
+      const y = e.touches[0].clientY;
+      _edgeSwipeStartX = x;
+      _edgeSwipeStartY = y;
+      // Only activate edge swipe if touch starts within 30px of left edge
+      _edgeSwipeActive = x <= 30;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      if (!_edgeSwipeActive) return;
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const diffX = endX - _edgeSwipeStartX;
+      const diffY = Math.abs(endY - _edgeSwipeStartY);
+      // Must be mostly horizontal swipe of at least 80px
+      if (diffX > 80 && diffY < 60) {
+        // Navigate to previous section
+        try {
+          const recent = JSON.parse(localStorage.getItem('recent_sections') || '[]');
+          const currentSection = document.body.getAttribute('data-active-section');
+          const prev = recent.find(r => r.id !== currentSection);
+          if (prev && typeof navigateTo === 'function') {
+            navigateTo(prev.id);
+            if (typeof showToast === 'function') showToast('← ' + prev.label);
+            if (window.navigator && window.navigator.vibrate) navigator.vibrate(15);
+          }
+        } catch (_) {}
+      }
+      _edgeSwipeActive = false;
+    }, { passive: true });
+
     console.log('🎯 Gesture handlers setup complete');
   }
 

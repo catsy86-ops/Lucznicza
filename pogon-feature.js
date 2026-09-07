@@ -81,7 +81,7 @@ const PogonFeature = (() => {
     },
     {
       name: 'Pub Klatka — Baza Niebuszewo',
-      addr: 'ul. Łucznicza 43, Szczecin',
+      addr: 'ul. Łucznicza 39, Szczecin',
       specialty: 'Zimne piwo na klatce, dyskusje o taktyce i składzie',
       badge: '🍻 Przedmeczowa Zbiórka',
       desc: 'Osiedlowy punkt zbiórki kibiców z Łuczniczej i Tarczowej przed wspólnym wymarszem na tramwaj 2.',
@@ -227,7 +227,7 @@ const PogonFeature = (() => {
     // Punkty trasy tranzytowej: Kołłątaja -> Brama Portowa -> Plac Kościuszki -> Stadion
     const coordsMap = {
       lucznicza: [
-        [53.45405, 14.54752], // Pub Klatka / Łucznicza 43
+        [53.45405, 14.54752], // Pub Klatka / Łucznicza 39
         [53.4510, 14.5485],
         [53.4475, 14.5518],   // Pętla Kołłątaja
         [53.4385, 14.5535],   // Plac Rodła
@@ -642,9 +642,9 @@ const PogonFeature = (() => {
 
           <div class="mnc-route-box">
             <span class="mnc-route-tag">🚶 Marsz Kibiców · 55 min · 4.8 km</span>
-            <div class="mnc-route-name">Start: Łucznicza 43 (Pub Klatka)</div>
+            <div class="mnc-route-name">Start: Łucznicza 39 (Pub Klatka)</div>
             <div class="mnc-route-desc">
-              Malownicza zbiórka pod 43, przemarsz przez Park Kadziaka, Jasne Błonia, al. Wojska Polskiego wprost na Pogodno pod wejście główne.
+              Malownicza zbiórka pod 39, przemarsz przez Park Kadziaka, Jasne Błonia, al. Wojska Polskiego wprost na Pogodno pod wejście główne.
             </div>
             <button class="mnc-map-draw-btn" onclick="PogonFeature.drawMatchdayRouteOnMap('lucznicza')">
               🗺️ Pokaż spacer na mapie

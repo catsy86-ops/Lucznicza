@@ -1,5 +1,5 @@
 /**
- * szczecin-local-flavor.js — Szczeciński Klimat, Pasztecik Radar, Gwara, Rondo Giedroycia & Ogłoszenia z Klatki pod 43
+ * szczecin-local-flavor.js — Szczeciński Klimat, Pasztecik Radar, Gwara, Rondo Giedroycia & Ogłoszenia z Klatki pod 39
  * Autentyczne tradycje, legendy miejskie, humor sąsiedzki i kultowe smaki Szczecina.
  */
 'use strict';
@@ -67,6 +67,18 @@ const SzczecinLocalFlavor = (() => {
       coords: [53.4485, 14.5530],
       openHours: 'Wt–Sob 7:00–15:00',
       rating: 4.9
+    },
+    {
+      id: 'murek-anka',
+      name: 'Osiedlowy Murek przy Sklepie Anka',
+      addr: 'ul. Łucznicza / okolice sklepu Anka, Niebuszewo',
+      since: 'czas nieokreślony',
+      specialty: 'Orenburg w puszce, dyskusje o życiu, filozofia churu',
+      badge: '🧱 Instytucja Kulturalna',
+      desc: 'Kultowy murek przy sklepie Anka — nieformalny klub dyskusyjny pod gołym niebem. Stali bywalcy zbierają się tu niezależnie od pogody, pory roku i stanu portfela. Tematyka debat: Pogoń Szczecin, drożyzna w Społem, i czemu autobus 89 znowu się spóźnił. Wstęp wolny.',
+      coords: [53.4538, 14.5500],
+      openHours: 'Całą dobę (szczyt: 10:00–20:00)',
+      rating: 4.5
     }
   ];
 
@@ -100,7 +112,7 @@ const SzczecinLocalFlavor = (() => {
       word: 'Klamoty',
       phonetic: '[kla-mo-ty]',
       desc: 'Wszystkie niepotrzebne, ale „kiedyś się przydadzą” graty, stare opony i meble zalegające w piwnicach kamienic przy ul. Łuczniczej.',
-      example: '— „Znowu ktoś zostawił klamoty w suszarni pod czterdziestką trójką!”'
+      example: '— „Znowu ktoś zostawił klamoty w suszarni pod trzydziestką dziewiątką!"'
     },
     {
       word: 'Rondo Giedroycia',
@@ -183,7 +195,7 @@ const SzczecinLocalFlavor = (() => {
 
     const searchPill = document.querySelector('.search-pill-text');
     if (searchPill) {
-      searchPill.textContent = active ? 'Kaj to je? (Ctrl+K)' : 'Szukaj...';
+      searchPill.textContent = active ? 'Kaj to je? (Ctrl+K)' : 'Szukaj';
     }
   }
 
@@ -317,7 +329,7 @@ const SzczecinLocalFlavor = (() => {
     {
       id: 'browar',
       title: '🍻 Integracja w Pubie Klatka',
-      text: 'Sąsiedzkie posiedzenie!\nDzisiaj po meczu Pogoni (od ok. 19:30) spotkanie integracyjne pod numerem 43. Zimne piwo, debaty o opóźnieniach linii 89 i planach remontu chodnika na Łuczniczej.\n\nEkipa spod 43'
+      text: 'Sąsiedzkie posiedzenie!\nDzisiaj po meczu Pogoni (od ok. 19:30) spotkanie integracyjne pod numerem 39. Zimne piwo, debaty o opóźnieniach linii 89 i planach remontu chodnika na Łuczniczej.\n\nEkipa spod 39'
     },
     {
       id: 'dziki',
@@ -349,7 +361,7 @@ const SzczecinLocalFlavor = (() => {
   function copyAnnouncementToClipboard() {
     const formatted = `
 ======================================================
-  📢 OGŁOSZENIE Z KLATKI SCHODOWEJ (ul. Łucznicza 43)
+  📢 OGŁOSZENIE Z KLATKI SCHODOWEJ (ul. Łucznicza 39)
 ======================================================
 ${currentAnnounceText}
 
@@ -528,7 +540,7 @@ Data wywieszenia: ${new Date().toLocaleDateString('pl-PL')}
     const el = document.getElementById('sfAnnounceWrap');
     const content = `
       <div class="sf-section-card">
-        <div class="sf-badge">📌 Klatka pod 43</div>
+        <div class="sf-badge">📌 Klatka pod 39</div>
         <h3 class="sf-title">Sąsiedzka Tablica Ogłoszeń z Klatki</h3>
         <p class="sf-desc">
           Wybierz szablon typowego osiedlowego komunikatu lub wygeneruj wersję do wydruku / na grupę sąsiedzką.
@@ -545,7 +557,7 @@ Data wywieszenia: ${new Date().toLocaleDateString('pl-PL')}
         <div class="sf-retro-paper">
           <div class="sf-pushpin">📌</div>
           <pre class="sf-paper-text">${currentAnnounceText}</pre>
-          <div class="sf-paper-date">Wywieszono: ul. Łucznicza 43 · Szczecin-Niebuszewo</div>
+          <div class="sf-paper-date">Wywieszono: ul. Łucznicza 39 · Szczecin-Niebuszewo</div>
         </div>
 
         <button class="sf-copy-btn" onclick="SzczecinLocalFlavor.copyAnnouncementToClipboard()">
@@ -558,7 +570,256 @@ Data wywieszenia: ${new Date().toLocaleDateString('pl-PL')}
     return content;
   }
 
+  // ── RENDER COMPONENT: PROGNOZA POGODY 6H ─────────────────
+  const WMO_ICONS = {
+    0:'☀️', 1:'🌤️', 2:'⛅', 3:'☁️',
+    45:'🌫️', 48:'🌫️',
+    51:'🌦️', 53:'🌦️', 55:'🌧️',
+    61:'🌧️', 63:'🌧️', 65:'🌧️',
+    71:'❄️', 73:'❄️', 75:'❄️',
+    80:'🌦️', 81:'🌧️', 82:'⛈️',
+    95:'⛈️', 96:'⛈️', 99:'⛈️'
+  };
+
+  let _weatherCache = null;
+  let _weatherFetchedAt = 0;
+
+  function renderWeatherForecast() {
+    setTimeout(() => loadWeatherForecast(), 150);
+    return `
+      <div class="sf-section-card" id="sfWeatherForecast">
+        <div class="sf-badge">🌤️ Szczecin</div>
+        <h3 class="sf-title">Prognoza Pogody — 6 godzin</h3>
+        <div id="sfWeatherBody" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:4px;">
+          <div style="color:var(--text2,#94a3b8); font-size:13px;">Ładowanie prognozy...</div>
+        </div>
+        <div style="font-size:10px; color:var(--text3,#64748b); text-align:right; margin-top:6px;">
+          Dane: <a href="https://open-meteo.com" target="_blank" rel="noopener" style="color:inherit;">Open-Meteo</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function loadWeatherForecast() {
+    const body = document.getElementById('sfWeatherBody');
+    if (!body) return;
+
+    const now = Date.now();
+    // Cache for 15 minutes
+    if (_weatherCache && (now - _weatherFetchedAt) < 15 * 60 * 1000) {
+      renderWeatherBody(body, _weatherCache); return;
+    }
+
+    const url = 'https://api.open-meteo.com/v1/forecast' +
+      '?latitude=53.43&longitude=14.55' +
+      '&hourly=temperature_2m,weathercode' +
+      '&forecast_days=1&timezone=Europe%2FWarsaw';
+
+    fetch(url)
+      .then(r => r.json())
+      .then(data => {
+        _weatherCache = data;
+        _weatherFetchedAt = now;
+        renderWeatherBody(body, data);
+      })
+      .catch(() => {
+        if (body) body.innerHTML = '<div style="color:var(--text2,#94a3b8);font-size:13px;">Brak danych pogodowych.</div>';
+      });
+  }
+
+  function renderWeatherBody(body, data) {
+    const hours = data.hourly?.time || [];
+    const temps = data.hourly?.temperature_2m || [];
+    const codes = data.hourly?.weathercode || [];
+    const nowH = new Date().getHours();
+    // Find current hour index
+    let startIdx = hours.findIndex(t => new Date(t).getHours() >= nowH);
+    if (startIdx === -1) startIdx = 0;
+    const slots = [];
+    for (let i = startIdx; i < Math.min(startIdx + 6, hours.length); i++) {
+      const h = new Date(hours[i]).getHours();
+      slots.push({ h: h + ':00', temp: Math.round(temps[i]), icon: WMO_ICONS[codes[i]] || '🌡️' });
+    }
+    body.innerHTML = slots.map(s => `
+      <div style="flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:4px;
+        background:rgba(255,255,255,0.04); border-radius:10px; padding:8px 12px; min-width:52px;">
+        <div style="font-size:10px; color:var(--text2,#94a3b8);">${s.h}</div>
+        <div style="font-size:22px; line-height:1;">${s.icon}</div>
+        <div style="font-size:13px; font-weight:800; color:var(--text1,#f1f5f9);">${s.temp}°</div>
+      </div>
+    `).join('');
+  }
+
+  // ── RENDER COMPONENT: CO DZIŚ W SZCZECINIE? (Events Feed) ─
+
+  const TAG_ICONS = {
+    'Koncerty': '🎵', 'Sport': '🏅', 'Dla dzieci': '🧸', 'Warsztaty': '🎨',
+    'Jarmarki, festyny, pchle targi': '🛍️', 'Wernisaże': '🖼️',
+    'Spacery i oprowadzania': '🚶', 'Imprezy cykliczne': '🔄',
+    'Spotkania, wykłady, konferencje': '🎤', 'Spektakle i opery': '🎭', 'Inne': '📌'
+  };
+
+  let _eventsCache = null;
+
+  function renderEventsFeed() {
+    const wrapperId = 'sfEventsFeed';
+    const html = `
+      <div class="sf-section-card" id="${wrapperId}">
+        <div class="sf-badge">🗓️ Szczecin</div>
+        <h3 class="sf-title">Co dziś w Szczecinie?</h3>
+        <p class="sf-desc">Aktualne wydarzenia z wSzczecinie.pl</p>
+        <div id="sfEventsBody" style="display:flex; flex-direction:column; gap:10px;">
+          <div style="color:var(--text2,#94a3b8); font-size:13px;">Ładowanie wydarzeń...</div>
+        </div>
+      </div>
+    `;
+    setTimeout(() => loadEventsFeed(), 100);
+    return html;
+  }
+
+  function loadEventsFeed() {
+    const body = document.getElementById('sfEventsBody');
+    if (!body) return;
+
+    const render = (events) => {
+      const shown = events.slice(0, 6);
+      body.innerHTML = shown.map(ev => {
+        const icon = TAG_ICONS[ev.tag] || '📌';
+        return `
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:10px 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+              <div style="font-size:13px; font-weight:700; color:var(--text1,#f1f5f9); line-height:1.4;">
+                ${icon} ${ev.name}
+              </div>
+              <div style="font-size:11px; font-weight:800; color:#e67e22; white-space:nowrap; flex-shrink:0;">
+                ${ev.day} ${ev.month}
+              </div>
+            </div>
+            <div style="font-size:11px; color:var(--text2,#94a3b8); margin-top:4px;">📍 ${ev.place}</div>
+          </div>
+        `;
+      }).join('') + `
+        <div style="text-align:center; margin-top:4px;">
+          <button onclick="navigateTo('events')"
+            style="background:transparent; border:1px solid rgba(255,255,255,0.15); border-radius:8px;
+            color:var(--text2,#94a3b8); font-size:12px; padding:6px 14px; cursor:pointer; font-family:inherit;">
+            📅 Wszystkie wydarzenia →
+          </button>
+        </div>
+      `;
+    };
+
+    if (_eventsCache) { render(_eventsCache); return; }
+
+    fetch('scraped-szczecin-events.json')
+      .then(r => r.json())
+      .then(events => { _eventsCache = events; render(events); })
+      .catch(() => {
+        if (body) body.innerHTML = '<div style="color:var(--text2,#94a3b8);font-size:13px;">Brak danych o wydarzeniach.</div>';
+      });
+  }
+
+  // ── RENDER COMPONENT: MUREK LIVE (Status Murku przy Ance) ──
+
+  function renderMurekLive() {
+    const hour = new Date().getHours();
+    let status, statusColor, statusDot, crowdDesc, tip;
+
+    if (hour >= 10 && hour < 14) {
+      status = 'RUCH PORANNY'; statusColor = '#f59e0b'; statusDot = '🟡';
+      crowdDesc = 'Emeryci omawiają ceny w Społem i opóźnienia linii 89.';
+      tip = 'Idealna pora na poranny wywiad sąsiedzki.';
+    } else if (hour >= 14 && hour < 18) {
+      status = 'PEŁNA MOC'; statusColor = '#ef4444'; statusDot = '🔴';
+      crowdDesc = 'Murek zajęty w 100%. Trwa debata o składzie Pogoni na mecz.';
+      tip = 'Przynieś własne krzesło — miejsca limitowane.';
+    } else if (hour >= 18 && hour < 22) {
+      status = 'WIECZORNA ZMIANA'; statusColor = '#8b5cf6'; statusDot = '🟣';
+      crowdDesc = 'Przyszła młodsza ekipa. Debata o przyszłości Europy i cenie piwa.';
+      tip = 'Optymalny czas na filozoficzny spór o wolną wolę.';
+    } else {
+      status = 'SPOKÓJ NOCNY'; statusColor = '#64748b'; statusDot = '⚫';
+      crowdDesc = 'Murek śpi. Może tu kot.';
+      tip = 'Cicho, żeby nie budzić sąsiada z naprzeciwka.';
+    }
+
+    return `
+      <div class="sf-section-card" id="sfMurekLive">
+        <div class="sf-badge">🧱 Murek przy Sklepie Anka</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <h3 class="sf-title" style="margin:0;">Status Murku — Na Żywo</h3>
+          <button onclick="SzczecinLocalFlavor.refreshMurekLive()" title="Odśwież status"
+            style="background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:8px; color:var(--text2,#94a3b8); font-size:12px; padding:4px 10px; cursor:pointer; font-family:inherit;">
+            🔄 Odśwież
+          </button>
+        </div>
+        <p class="sf-desc">Osiedlowy termometr aktywności niebuszewskich stałych bywalców.</p>
+        <div style="display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.04); border:1px solid ${statusColor}44; border-radius:12px; padding:16px; margin-bottom:14px;">
+          <span style="font-size:32px;">${statusDot}</span>
+          <div>
+            <div style="font-size:14px; font-weight:800; color:${statusColor}; margin-bottom:4px;">${status}</div>
+            <div style="font-size:13px; color:var(--text2,#94a3b8);">${crowdDesc}</div>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:12px 14px; font-size:12px; color:var(--text2,#94a3b8); border-left:3px solid ${statusColor};">
+          💡 <strong>Wskazówka lokalna:</strong> ${tip}
+        </div>
+        <div style="margin-top:12px; font-size:11px; color:var(--text3,#64748b); text-align:right;">
+          🕐 Aktualnie: ${String(hour).padStart(2,'0')}:${String(new Date().getMinutes()).padStart(2,'0')} · ul. Łucznicza, Niebuszewo
+        </div>
+      </div>
+    `;
+  }
+
+  function refreshMurekLive() {
+    const el = document.getElementById('sfMurekLive');
+    if (el) el.outerHTML = renderMurekLive();
+    if (typeof showToast === 'function') showToast('🧱 Status Murku zaktualizowany!');
+  }
+
+  // ── RENDER COMPONENT: SZCZECIŃSKA MASZYNA LOSOWA ──────────
+  const LOCAL_TIPS = [
+    { tip: 'Nigdy nie biegnij na tramwaj numer 12 od strony Kołłątaja — jak go nie ma, to zaraz przyjedzie. Jak jest, to i tak się spóźni.', author: 'Pan Mieczysław, emerytowany motorniczy' },
+    { tip: 'Pasztecik z mięsem jemy stojąc. Kto siada, ten traci kolejkę i szacunek.', author: 'Halinka z Wojska Polskiego' },
+    { tip: 'Jeśli widzisz dzika przy altanie śmietnikowej — nie walcz o pojemnik na plastik. Ustąp i wróć rano.', author: 'Rada Osiedla Niebuszewo' },
+    { tip: 'Na Rondzie Giedroycia zawsze jedź odważnie. Kto się zatrzyma bez powodu, ten stoi do jutra.', author: 'Taksówkarz Wiesław, 30 lat stażu' },
+    { tip: 'Murek przy Ance to darmowy kurs filozofii życia. Wystarczy przyjść z kawą i słuchać.', author: 'Anonim, bywalec od lat' },
+    { tip: 'Barszcz do pasztecika pijemy z kubka, nie z miseczki. To nie restauracja, to tradycja.', author: 'Bar Pasztecik, al. Wojska Polskiego' },
+    { tip: 'Jeśli w Szczecinie wieje z zachodu i pachnie fabryką — pogoda będzie dobra. Jeśli nie wiesz skąd wieje — jesteś turystą.', author: 'Meteorolog Osiedlowy' },
+    { tip: 'Frytburger po meczu Pogoni smakuje dwa razy lepiej, gdy wygrają. Po przegranej smakuje tak samo, ale się go je szybciej.', author: 'Bar Rab, ul. Krzywoustego' },
+    { tip: 'Autobus 89 przyjedzie. Tylko nie wiadomo kiedy. Miej plan B i zawsze plan C.', author: 'Czekający przy Kołłątaja od 45 minut' },
+  ];
+
+  let currentTipIndex = Math.floor(Math.random() * LOCAL_TIPS.length);
+
+  function renderMaszynaLosowa() {
+    const item = LOCAL_TIPS[currentTipIndex];
+    return `
+      <div class="sf-section-card" id="sfMaszynaLosowa">
+        <div class="sf-badge">🎲 Mądrość Osiedlowa</div>
+        <h3 class="sf-title">Szczecińska Maszyna Losowa</h3>
+        <p class="sf-desc">Codzienna dawka lokalnej mądrości prosto z Niebuszewa.</p>
+        <div style="background:linear-gradient(135deg,rgba(230,126,34,0.12),rgba(0,45,98,0.12)); border:1px solid rgba(230,126,34,0.3); border-radius:12px; padding:18px; margin-bottom:14px;">
+          <p style="font-size:15px; font-style:italic; color:var(--text1,#f1f5f9); line-height:1.6; margin:0 0 10px 0;">„${item.tip}"</p>
+          <div style="font-size:11px; color:var(--text2,#94a3b8); text-align:right;">— <em>${item.author}</em></div>
+        </div>
+        <button
+          onclick="SzczecinLocalFlavor.rollNextTip()"
+          style="width:100%; background:linear-gradient(135deg,#e67e22,#d35400); color:#fff; border:none; border-radius:10px; padding:10px 16px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; transition:all 0.2s;"
+        >🎲 Wylosuj kolejną mądrość</button>
+      </div>
+    `;
+  }
+
+  function rollNextTip() {
+    currentTipIndex = (currentTipIndex + 1) % LOCAL_TIPS.length;
+    const el = document.getElementById('sfMaszynaLosowa');
+    if (el) el.outerHTML = renderMaszynaLosowa();
+    if (typeof showToast === 'function') showToast('🎲 Nowa mądrość z Niebuszewa wylosowana!');
+  }
+
   // ── STYLE CSS ────────────────────────────────────────────
+
   const CSS_STYLES = `
     #section-szczecin {
       background: linear-gradient(180deg, rgba(230, 126, 34, 0.04) 0%, rgba(0, 45, 98, 0.04) 100%);
@@ -864,9 +1125,11 @@ Data wywieszenia: ${new Date().toLocaleDateString('pl-PL')}
   }
 
   // ── MAIN RENDER ──────────────────────────────────────────
-  function render() {
+  function render(force = false) {
     const container = document.querySelector('#section-szczecin .section-content');
     if (!container) return;
+    // Only skip if already rendered AND container actually has content (not skeleton)
+    if (!force && container.dataset.sfRendered === '1' && container.querySelector('#sfBarometrWrap')) return;
 
     container.innerHTML = `
       <div style="margin-bottom: 14px;">
@@ -880,16 +1143,21 @@ Data wywieszenia: ${new Date().toLocaleDateString('pl-PL')}
           <span>Szczecińskie Klasyki & Klimat Niebuszewa</span>
         </h2>
         <p style="font-size:13px; color:var(--text2, #94a3b8);">
-          Paszteciki od 1969 roku, nocny Frytburger, rondo Giedroycia, gwara miejska i ogłoszenia z Klatki pod 43.
+          Paszteciki od 1969 roku, nocny Frytburger, rondo Giedroycia, gwara miejska i ogłoszenia z Klatki pod 39.
         </p>
       </div>
 
       ${renderGastroRadar()}
       <div id="sfBarometrWrap">${renderBarometr()}</div>
+      ${renderMurekLive()}
+      ${renderMaszynaLosowa()}
+      ${renderWeatherForecast()}
+      ${renderEventsFeed()}
       ${renderDictionary()}
       ${renderGiedroycAndSKM()}
       <div id="sfAnnounceWrap">${renderAnnouncementBoard()}</div>
     `;
+    container.dataset.sfRendered = '1';
   }
 
   // ── INIT ─────────────────────────────────────────────────
@@ -905,7 +1173,15 @@ Data wywieszenia: ${new Date().toLocaleDateString('pl-PL')}
     const section = document.querySelector('#section-szczecin');
     if (section) {
       const obs = new MutationObserver(() => {
-        if (section.classList.contains('active')) render();
+        if (section.classList.contains('active')) {
+          // Only render if not yet rendered — preserves interactive state
+          render();
+        } else {
+          // Section hidden: clear flag so it re-renders fresh next time it's opened
+          // from a fresh navigateTo (but interactive state is reset only then)
+          const c = document.querySelector('#section-szczecin .section-content');
+          if (c) c.dataset.sfRendered = '0';
+        }
       });
       obs.observe(section, { attributes: true, attributeFilter: ['class'] });
     }
@@ -926,7 +1202,9 @@ Data wywieszenia: ${new Date().toLocaleDateString('pl-PL')}
     toggleSzczecinDialect,
     setAnnouncementTemplate,
     copyAnnouncementToClipboard,
-    flyToCoord
+    flyToCoord,
+    rollNextTip,
+    refreshMurekLive
   };
 })();
 
