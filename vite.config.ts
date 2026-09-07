@@ -2,52 +2,27 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import fs from 'fs';
 
-// Custom plugin to ensure root scripts and PWA assets are available in dist for standalone deployment
+// Custom plugin to ensure all root scripts, data, and PWA assets are available in dist for standalone deployment
 function copyLegacyScripts() {
   return {
     name: 'copy-legacy-scripts',
     closeBundle() {
-      const distDir = resolve(import.meta.dirname, 'dist');
+      const rootDir = import.meta.dirname || process.cwd();
+      const distDir = resolve(rootDir, 'dist');
       if (!fs.existsSync(distDir)) return;
 
-      const filesToCopy = [
-        'data.js',
-        'error-handler.js',
-        'offline-store.js',
-        'zditm-live.js',
-        'sync-manager.js',
-        'performance.js',
-        'places-enhanced.js',
-        'community-data.js',
-        'community-ui.js',
-        'map-enhancements.js',
-        'map-improvements.js',
-        'map-pro.js',
-        'map-layers.js',
-        'map-vehicles.js',
-        'map-extras.js',
-        'map-extras2.js',
-        'navigation.js',
-        'search.js',
-        'place-images.js',
-        'user-profile.js',
-        'routes-meetup.js',
-        'ux-enhancements.js',
-        'pwa.js',
-        'pull-refresh.js',
-        'pogon-mascot.js',
-        'app.js',
-        'live.js',
-        'sw.js',
-        'offline.html',
-        'manifest.json'
-      ];
-
-      for (const file of filesToCopy) {
-        const src = resolve(import.meta.dirname, file);
-        const dest = resolve(distDir, file);
-        if (fs.existsSync(src)) {
-          fs.copyFileSync(src, dest);
+      const rootFiles = fs.readdirSync(rootDir);
+      for (const file of rootFiles) {
+        if (file === 'dist' || file === 'node_modules' || file === 'src' || file.startsWith('.')) continue;
+        const ext = file.substring(file.lastIndexOf('.')).toLowerCase();
+        if (['.js', '.json', '.png', '.svg', '.ico', '.webp', '.jpg', '.jpeg'].includes(ext) || file === 'offline.html') {
+          const src = resolve(rootDir, file);
+          const dest = resolve(distDir, file);
+          try {
+            if (fs.statSync(src).isFile()) {
+              fs.copyFileSync(src, dest);
+            }
+          } catch (_) {}
         }
       }
     }
