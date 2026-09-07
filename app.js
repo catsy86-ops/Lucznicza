@@ -712,12 +712,28 @@ function initUI() {
   document.getElementById('closeSidebar')?.addEventListener('click', closeSidebar);
   overlay?.addEventListener('click', closeSidebar);
 
-  // Sidebar nav
+  // Sidebar nav (event delegation + individual listeners for 100% reliability)
+  const sidebarNav = document.querySelector('.sidebar-nav');
+  if (sidebarNav) {
+    sidebarNav.addEventListener('click', e => {
+      const item = e.target.closest('.nav-item');
+      if (!item) return;
+      e.preventDefault();
+      const sec = item.dataset.section;
+      if (sec) {
+        navigateTo(sec);
+        closeSidebar();
+      }
+    });
+  }
+
   document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', e => {
       e.preventDefault();
-      navigateTo(item.dataset.section);
-      closeSidebar();
+      if (item.dataset.section) {
+        navigateTo(item.dataset.section);
+        closeSidebar();
+      }
     });
   });
 
@@ -780,6 +796,13 @@ function initUI() {
   initPlacesToolbar();
   initBottomSheet();
   initSzczecinIsland();
+
+  // Pre-render dynamic sections immediately so they are instantly available
+  try {
+    if (window.BikeSectionManager?.init) window.BikeSectionManager.init();
+    if (window.PogonFeature?.render) window.PogonFeature.render();
+    if (window.SzczecinLocalFlavor?.render) window.SzczecinLocalFlavor.render(true);
+  } catch (_) {}
 }
 
 // ===== THEME CONTROLLER (Dark / Light / Pogoń Szczecin) =====
@@ -825,126 +848,143 @@ window.applyTheme = applyTheme;
 window.cycleTheme = cycleTheme;
 
 // ===== SZCZECIN ISLAND ACTION CAPSULE LOGIC =====
+function executeIslandAction(action) {
+  if (!action) return;
+  switch (action) {
+    case 'map':
+      navigateTo('map');
+      showToast('🗺️ Widok główny mapy Niebuszewa');
+      break;
+    case 'bikes':
+      navigateTo('bikes');
+      showToast('🚲 Wybrano ścieżki i trasy rowerowe Szczecina');
+      break;
+    case 'zditm':
+      navigateTo('transport');
+      showToast('🚏 Odjazdy ZDiTM na żywo');
+      break;
+    case 'alert':
+      const alertFab = document.querySelector('.community-alert-fab');
+      if (alertFab) {
+        alertFab.click();
+      } else {
+        showToast('🐗 Ostrzeżenia osiedlowe i alerty dzików');
+      }
+      break;
+    case 'widgets':
+      if (window.WidgetDragManager && typeof window.WidgetDragManager.restoreAllWidgets === 'function') {
+        window.WidgetDragManager.restoreAllWidgets();
+        showToast('🧩 Przywrócono wszystkie widżety');
+      } else {
+        const dock = document.getElementById('widgetRestoreDock');
+        if (dock) dock.classList.toggle('open');
+      }
+      break;
+    case 'pogon':
+      applyTheme('pogon');
+      navigateTo('pogon');
+      showToast('🛡️ Aktywowano motyw Pogoń Szczecin — Duma Pomorza!');
+      break;
+    case 'matchday':
+      navigateTo('pogon');
+      if (window.PogonFeature) {
+        window.PogonFeature.toggleMatchdayMode();
+      }
+      break;
+    case 'pasztecik':
+      navigateTo('szczecin');
+      setTimeout(() => {
+        const el = document.getElementById('sfGastroRadar');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          el.classList.add('highlight-section');
+          setTimeout(() => el.classList.remove('highlight-section'), 2000);
+        }
+      }, 250);
+      showToast('🥟 Pasztecik & Frytburger Radar');
+      break;
+    case 'gwara':
+      navigateTo('szczecin');
+      if (window.SzczecinLocalFlavor) {
+        window.SzczecinLocalFlavor.toggleSzczecinDialect();
+      }
+      setTimeout(() => {
+        const el = document.getElementById('sfDictionary');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          el.classList.add('highlight-section');
+          setTimeout(() => el.classList.remove('highlight-section'), 2000);
+        }
+      }, 250);
+      showToast('🗣️ Słownik & Gwara Szczecińska');
+      break;
+    case 'giedroyc':
+      navigateTo('szczecin');
+      setTimeout(() => {
+        const el = document.querySelector('.sf-giedroyc-indicator');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 200);
+      showToast('🚦 Stan przejazdu na Rondzie Giedroycia');
+      break;
+    case 'klatka':
+      navigateTo('community');
+      setTimeout(() => {
+        const el = document.getElementById('comm-klatka');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 200);
+      showToast('🍻 Witaj w Pubie Klatka pod 39! Zimne piwko czeka!');
+      break;
+    case 'ogloszenia':
+      navigateTo('szczecin');
+      setTimeout(() => {
+        const el = document.getElementById('sfAnnounceWrap');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 400);
+      showToast('📜 Ogłoszenia z Klatki pod 43');
+      break;
+  }
+}
+
 function initSzczecinIsland() {
   const menuBtn = document.getElementById('islandMenuBtn');
   const dropdown = document.getElementById('islandDropdownMenu');
   if (!menuBtn || !dropdown) return;
 
+  function toggleDropdown(forceState) {
+    const shouldOpen = typeof forceState === 'boolean' ? forceState : dropdown.classList.contains('hidden');
+    dropdown.classList.toggle('hidden', !shouldOpen);
+    menuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+  }
+
   menuBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     e.stopPropagation();
-    const isHidden = dropdown.classList.contains('hidden');
-    dropdown.classList.toggle('hidden');
-    menuBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+    toggleDropdown();
   });
 
+  // Event delegation on dropdown for all items (reliable even with nested spans/divs)
+  dropdown.addEventListener('click', (e) => {
+    const item = e.target.closest('.idm-item');
+    if (!item) return;
+    e.preventDefault();
+    e.stopPropagation();
+    toggleDropdown(false);
+    executeIslandAction(item.dataset.action);
+  });
+
+  // Individual click listeners as additional guarantee
   dropdown.querySelectorAll('.idm-item').forEach(item => {
     item.addEventListener('click', (e) => {
       e.stopPropagation();
-      const action = item.dataset.action;
-      dropdown.classList.add('hidden');
-      menuBtn.setAttribute('aria-expanded', 'false');
-
-      switch (action) {
-        case 'map':
-          navigateTo('map');
-          showToast('🗺️ Widok główny mapy Niebuszewa');
-          break;
-        case 'bikes':
-          navigateTo('bikes');
-          showToast('🚲 Wybrano ścieżki i trasy rowerowe Szczecina');
-          break;
-        case 'zditm':
-          navigateTo('transport');
-          showToast('🚏 Odjazdy ZDiTM na żywo');
-          break;
-        case 'alert':
-          const alertFab = document.querySelector('.community-alert-fab');
-          if (alertFab) {
-            alertFab.click();
-          } else {
-            showToast('🐗 Ostrzeżenia osiedlowe i alerty dzików');
-          }
-          break;
-        case 'widgets':
-          if (window.WidgetDragManager && typeof window.WidgetDragManager.restoreAllWidgets === 'function') {
-            window.WidgetDragManager.restoreAllWidgets();
-            showToast('🧩 Przywrócono wszystkie widżety');
-          } else {
-            const dock = document.getElementById('widgetRestoreDock');
-            if (dock) dock.classList.toggle('open');
-          }
-          break;
-        case 'pogon':
-          applyTheme('pogon');
-          navigateTo('pogon');
-          showToast('🛡️ Aktywowano motyw Pogoń Szczecin — Duma Pomorza!');
-          break;
-        case 'matchday':
-          navigateTo('pogon');
-          if (window.PogonFeature) {
-            window.PogonFeature.toggleMatchdayMode();
-          }
-          break;
-        case 'pasztecik':
-          navigateTo('szczecin');
-          setTimeout(() => {
-            const el = document.getElementById('sfGastroRadar');
-            if (el) {
-              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              el.classList.add('highlight-section');
-              setTimeout(() => el.classList.remove('highlight-section'), 2000);
-            }
-          }, 250);
-          showToast('🥟 Pasztecik & Frytburger Radar');
-          break;
-        case 'gwara':
-          navigateTo('szczecin');
-          if (window.SzczecinLocalFlavor) {
-            window.SzczecinLocalFlavor.toggleSzczecinDialect();
-          }
-          setTimeout(() => {
-            const el = document.getElementById('sfDictionary');
-            if (el) {
-              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              el.classList.add('highlight-section');
-              setTimeout(() => el.classList.remove('highlight-section'), 2000);
-            }
-          }, 250);
-          showToast('🗣️ Słownik & Gwara Szczecińska');
-          break;
-        case 'giedroyc':
-          navigateTo('szczecin');
-          setTimeout(() => {
-            const el = document.querySelector('.sf-giedroyc-indicator');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }, 200);
-          showToast('🚦 Stan przejazdu na Rondzie Giedroycia');
-          break;
-        case 'klatka':
-          navigateTo('community');
-          setTimeout(() => {
-            const el = document.getElementById('comm-klatka');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }, 200);
-          showToast('🍻 Witaj w Pubie Klatka pod 39! Zimne piwko czeka!');
-          break;
-        case 'ogloszenia':
-          navigateTo('szczecin');
-          setTimeout(() => {
-            const el = document.getElementById('sfAnnounceWrap');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }, 400);
-          showToast('📜 Ogłoszenia z Klatki pod 43');
-          break;
-      }
+      toggleDropdown(false);
+      executeIslandAction(item.dataset.action);
     });
   });
 
   // Close dropdown on outside click
   document.addEventListener('click', (e) => {
     if (!dropdown.classList.contains('hidden') && !dropdown.contains(e.target) && !menuBtn.contains(e.target)) {
-      dropdown.classList.add('hidden');
-      menuBtn.setAttribute('aria-expanded', 'false');
+      toggleDropdown(false);
     }
   });
 
@@ -1446,13 +1486,16 @@ function navigateTo(section) {
     // Smooth scroll to top of section
     target.scrollTo({ top: 0, behavior: 'smooth' });
 
-    if (section === 'pogon') {
-      if (window.PogonFeature?.render) window.PogonFeature.render();
-    } else if (section === 'szczecin') {
-      if (window.SzczecinLocalFlavor?.render) window.SzczecinLocalFlavor.render(true);
-    } else if (section === 'bikes') {
-      if (window.BikeSectionManager?.init) {
-        window.BikeSectionManager.init();
+    // Render dynamic sections: pogon|szczecin and bikes
+    if (/pogon|szczecin/.test(section) || section === 'bikes') {
+      if (section === 'pogon') {
+        if (window.PogonFeature?.render) window.PogonFeature.render();
+      } else if (section === 'szczecin') {
+        if (window.SzczecinLocalFlavor?.render) window.SzczecinLocalFlavor.render(true);
+      } else if (section === 'bikes') {
+        if (window.BikeSectionManager?.init) {
+          window.BikeSectionManager.init();
+        }
       }
     }
   }

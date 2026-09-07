@@ -73,6 +73,8 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
       .then(reg => {
         console.log('✅ SW registered:', reg.scope);
+        // Actively check for SW updates
+        reg.update().catch(() => {});
         // Check for updates
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;

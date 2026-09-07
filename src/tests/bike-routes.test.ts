@@ -68,10 +68,10 @@ describe('Szczecin Bike Router & Section', () => {
     expect(styleCss).toContain('.escape-tooltip');
   });
 
-  it('registers bike-routes.js and manifest shortcuts in PWA v7/v8', () => {
+  it('registers bike-routes.js and manifest shortcuts in PWA v7+', () => {
     const swJs = fs.readFileSync(path.join(rootDir, 'sw.js'), 'utf-8');
     const manifestJson = fs.readFileSync(path.join(rootDir, 'manifest.json'), 'utf-8');
-    expect(swJs).toMatch(/const CACHE_VERSION = 'v[78]'/);
+    expect(swJs).toMatch(/const CACHE_VERSION = 'v([7-9]|1\d)'/);
     expect(swJs).toContain("'/bike-routes.js'");
     expect(manifestJson).toContain('"short_name": "Rower"');
   });

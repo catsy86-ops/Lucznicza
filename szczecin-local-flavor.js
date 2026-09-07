@@ -183,19 +183,19 @@ const SzczecinLocalFlavor = (() => {
 
   function applyDialectToDom(active) {
     // Etykiety nawigacji
-    document.querySelectorAll('.bnav-btn span, .sidebar-nav .nav-item').forEach(el => {
+    document.querySelectorAll('.bnav-btn span, .sidebar-nav .nav-item .nav-label').forEach(el => {
       for (const [standard, dialect] of Object.entries(DIALECT_MAP)) {
         if (active && el.textContent.trim().includes(standard)) {
-          el.innerHTML = el.innerHTML.replace(standard, dialect);
+          el.textContent = el.textContent.replace(standard, dialect);
         } else if (!active && el.textContent.trim().includes(dialect)) {
-          el.innerHTML = el.innerHTML.replace(dialect, standard);
+          el.textContent = el.textContent.replace(dialect, standard);
         }
       }
     });
 
     const searchPill = document.querySelector('.search-pill-text');
     if (searchPill) {
-      searchPill.textContent = active ? 'Kaj to je? (Ctrl+K)' : 'Szukaj';
+      searchPill.textContent = 'Szukaj';
     }
   }
 
