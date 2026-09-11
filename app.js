@@ -587,7 +587,16 @@ function filterMarkers(cat) {
   state.markers.forEach(marker => {
     const place = marker.placeData;
     if (!place) return;
-    let show = (currentCat === 'all' || place.cat === currentCat);
+    let show = false;
+    if (currentCat === 'all') {
+      show = true;
+    } else if (currentCat === 'legend') {
+      show = !!(place.tags && place.tags.some(t => ['klimat', 'legenda', 'legendy', 'humor', 'murek', 'wytrzeźwiałka', 'piwo', 'dziki'].includes(t.toLowerCase())));
+    } else if (currentCat === 'transport') {
+      show = (place.cat === 'service') && !!(place.tags && place.tags.some(t => ['skm', 'kolej', 'pociąg', 'dworzec', 'tramwaj', 'autobus', 'kołłątaja', 'giedroyć', 'zditm', 'komunikacja', 'transport'].includes(t.toLowerCase())));
+    } else {
+      show = (place.cat === currentCat);
+    }
 
     // Apply 'open now' filter
     if (show && showOnlyOpenNow && PE) {
@@ -1576,7 +1585,13 @@ function renderPlaces(query = '') {
 
   // Filter by category
   if (state.currentFilter !== 'all') {
-    places = places.filter(p => p.cat === state.currentFilter);
+    if (state.currentFilter === 'legend') {
+      places = places.filter(p => p.tags && p.tags.some(t => ['klimat', 'legenda', 'legendy', 'humor', 'murek', 'wytrzeźwiałka', 'piwo', 'dziki'].includes(t.toLowerCase())));
+    } else if (state.currentFilter === 'transport') {
+      places = places.filter(p => (p.cat === 'service') && p.tags && p.tags.some(t => ['skm', 'kolej', 'pociąg', 'dworzec', 'tramwaj', 'autobus', 'kołłątaja', 'giedroyć', 'zditm', 'komunikacja', 'transport'].includes(t.toLowerCase())));
+    } else {
+      places = places.filter(p => p.cat === state.currentFilter);
+    }
   }
   // Filter favorites
   if (state.showFavoritesOnly && PE) {

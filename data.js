@@ -631,6 +631,62 @@ const APP_DATA = {
       coords: [14.54205, 53.44792],
       rating: 5.0,
       tags: ['wytrzeźwiałka', 'przystań', 'piwo', 'Lenartowicza', 'Lenartowicza 21', 'spotkania', 'klimat', 'humor', 'lokalne']
+    },
+
+    // ===== DWORZEC SZCZECIN NIEBUSZEWO & WĘZEŁ SKM =====
+    {
+      id: 50, cat: 'service',
+      name: 'Dworzec Szczecin Niebuszewo & Węzeł SKM',
+      addr: 'ul. Elizy Orzeszkowej 28 / Kolejowa, Szczecin',
+      emoji: '🚉',
+      desc: 'Historyczny dworzec kolejowy (dawniej Stettin-Zabelsdorf) z 1898 roku, zrewitalizowany jako kluczowy węzeł Szczecińskiej Kolei Metropolitalnej (SKM). Klimatyczna architektura kolejowa i bezpośrednie połączenie z całym Szczecinem i Policami.',
+      hours: 'Czynne 24/7 (kursy pociągów i perony)',
+      phone: null, website: 'skm.szczecin.pl',
+      coords: [14.55780, 53.45420],
+      rating: 4.8,
+      tags: ['dworzec', 'skm', 'kolej', 'pociąg', 'Niebuszewo', 'zabelsdorf', 'historia', 'komunikacja', 'transport']
+    },
+
+    // ===== ORLIK & MURAL KIBICÓW POGONI SZCZECIN =====
+    {
+      id: 51, cat: 'sport',
+      name: 'Orlik & Mural Kibiców Pogoni Szczecin',
+      addr: 'ul. Łucznicza / Komuny Paryskiej, Szczecin',
+      emoji: '⚽',
+      desc: 'Nowoczesny kompleks boisk ze sztuczną nawierzchnią oraz okazałym muralem w barwach Dumy Pomorza. Serce sportowego życia młodzieży z Łuczniczej i miejsce zbiórek kibiców MKS Pogoń Szczecin.',
+      hours: 'Codziennie 08:00–21:30',
+      phone: null, website: null,
+      coords: [14.54920, 53.45180],
+      rating: 4.9,
+      tags: ['sport', 'orlik', 'boisko', 'pogoń', 'piłka', 'mural', 'Łucznicza', 'kibice', 'legenda']
+    },
+
+    // ===== TRADYCYJNY PASZTECIK SPOŁEM „NIEBUSZEWO” =====
+    {
+      id: 52, cat: 'food',
+      name: 'Tradycyjny Pasztecik i Barszcz Społem „Niebuszewo”',
+      addr: 'ul. Elizy Orzeszkowej 14 / Kołłątaja, Szczecin',
+      emoji: '🥟',
+      desc: 'Kultowy szczeciński przysmak wpisany na Listę Produktów Tradycyjnych Ministerstwa Rolnictwa. Chrupiące ciasto drożdżowe wypiekane na bieżąco, nadziewane aromatycznym farszem mięsnym lub pieczarkowym i podawane z gorącym barszczem czerwonym.',
+      hours: 'Pon–Pt 09:00–18:00, Sob 09:00–14:00',
+      phone: null, website: null,
+      coords: [14.54820, 53.44980],
+      rating: 4.9,
+      tags: ['pasztecik', 'barszcz', 'jedzenie', 'tradycja', 'klasyk', 'społem', 'gastronomia', 'Szczecin', 'klimat']
+    },
+
+    // ===== PĘTLA KOŁŁĄTAJA / RONDO GIEDROYCIA =====
+    {
+      id: 53, cat: 'service',
+      name: 'Pętla Tramwajowa i Węzeł Kołłątaja',
+      addr: 'al. Wyzwolenia / ul. Hugona Kołłątaja, Szczecin',
+      emoji: '🚋',
+      desc: 'Główna arteria przesiadkowa u wrót Niebuszewa i Bolinka. Pętla tramwajowa linii 2, 3, 10, 12 oraz kluczowych autobusów dziennych (w tym linia 89) i nocnych. Stąd dojedziesz bezpośrednio pod Stadion Miejski im. Floriana Krygiera.',
+      hours: 'Czynne 24/7 (kursy dzienne i nocne)',
+      phone: null, website: 'zditm.szczecin.pl',
+      coords: [14.54480, 53.44720],
+      rating: 4.7,
+      tags: ['tramwaj', 'autobus', 'kołłątaja', 'giedroyć', 'zditm', 'komunikacja', 'transport', 'przesiadka', 'skm']
     }
   ],
 
@@ -868,6 +924,71 @@ const APP_DATA = {
         [14.54794, 53.45296],
         [14.55100, 53.45200],
         [14.54752, 53.45405]
+      ]
+    },
+    {
+      id: 8,
+      name: 'Klimaty i Legendy Niebuszewa',
+      emoji: '🍻',
+      type: 'walk',
+      color: '#f39c12',
+      distance: '2.8 km',
+      distanceNum: 2.8,
+      time: '38 min',
+      timeMin: 38,
+      difficulty: 'Łatwa / Degustacyjna',
+      difficultyLevel: 1,
+      calories: 145,
+      terrain: 'Chodnik i parkowe alejki',
+      bestTime: 'Popołudnie i wieczór (16:00–21:00)',
+      tags: ['klimat', 'legendy', 'piwo', 'murek', 'wytrzeźwiałka', 'klatka', 'humor', 'spacer'],
+      desc: 'Niezapomniana osiedlowa eskapada szlakiem nieformalnych instytucji kultury towarzyskiej: od Murka przy sklepie Anka, przez Pub Klatka i parkowe ławki Kadziaka, aż po Przystań Pijacką „Wytrzeźwiałka” przy Lenartowicza 21.',
+      highlights: ['Osiedlowy Murek przy Ance', 'Pub Klatka pod 39', 'Ławeczki Parku Kadziaka', 'Pasztecik Społem', 'Przystań Pijacka Wytrzeźwiałka'],
+      stops: [
+        { name: 'Start: Osiedlowy Murek przy Sklepie Anka', addr: 'ul. Łucznicza', emoji: '🧱' },
+        { name: 'Pub Klatka (narada osiedlowa)', addr: 'ul. Łucznicza 39/43', emoji: '🍻' },
+        { name: 'Park Antoniego Kadziaka', addr: 'Niebuszewo', emoji: '🌳' },
+        { name: 'Pasztecik Społem Kołłątaja', addr: 'ul. Orzeszkowej 14', emoji: '🥟' },
+        { name: 'Meta: Przystań Pijacka „Wytrzeźwiałka”', addr: 'ul. Lenartowicza 21', emoji: '🍺' }
+      ],
+      coords: [
+        [14.5500, 53.4538],
+        [14.54752, 53.45405],
+        [14.54365, 53.45100],
+        [14.54820, 53.44980],
+        [14.54205, 53.44792]
+      ]
+    },
+    {
+      id: 9,
+      name: 'Granatowo-Bordowy Szlak Dumy Pomorza',
+      emoji: '🛡️',
+      type: 'walk',
+      color: '#002D62',
+      distance: '3.2 km',
+      distanceNum: 3.2,
+      time: '42 min',
+      timeMin: 42,
+      difficulty: 'Średnia',
+      difficultyLevel: 2,
+      calories: 190,
+      terrain: 'Chodnik',
+      bestTime: 'Dzień meczowy / Przedpołudnie',
+      tags: ['pogoń', 'sport', 'mural', 'dumapomorza', 'piłka', 'stadion', 'szlak'],
+      desc: 'Trasa dla każdego fana Pogoni Szczecin na Niebuszewie. Łączy osiedlowy orlik z muralem MKS-u, punkty zbornego dopingu, Stację SKM Niebuszewo oraz pętlę Kołłątaja, skąd tramwaj zabiera kibiców prosto pod bramy stadionu im. Floriana Krygiera.',
+      highlights: ['Mural Pogoni na Orliku Łucznicza', 'Stacja SKM Szczecin Niebuszewo', 'Tradycyjny Pasztecik Niebuszewo', 'Pętla Kołłątaja — Tramwaj na Stadion'],
+      stops: [
+        { name: 'Start: Orlik & Mural Pogoni Szczecin', addr: 'ul. Łucznicza', emoji: '⚽' },
+        { name: 'Stacja SKM Szczecin Niebuszewo', addr: 'ul. Orzeszkowej 28', emoji: '🚉' },
+        { name: 'Tradycyjny Pasztecik Niebuszewo', addr: 'ul. Orzeszkowej 14', emoji: '🥟' },
+        { name: 'Meta: Pętla Kołłątaja (przystanek na Stadion)', addr: 'al. Wyzwolenia', emoji: '🚋' }
+      ],
+      coords: [
+        [14.54920, 53.45180],
+        [14.55100, 53.45200],
+        [14.55780, 53.45420],
+        [14.54820, 53.44980],
+        [14.54480, 53.44720]
       ]
     }
   ],

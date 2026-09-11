@@ -17,10 +17,10 @@
 const ZDiTM = (() => {
   const BASE = 'https://www.zditm.szczecin.pl/api/v1';
 
-  // Przystanki w okolicy Łuczniczej (potwierdzone w API: 15111, 15112)
-  // "Tarczowa" nie istnieje w ZDiTM — najbliższe to Łucznicza + sąsiednie.
-  const NEARBY_STOP_NUMBERS = ['15111', '15112'];
-  const NEARBY_STOP_NAMES = ['Łucznicza'];
+  // Przystanki w okolicy Łuczniczej i Niebuszewa (potwierdzone w API ZDiTM)
+  // Łucznicza (15111, 15112), Orzeszkowej (15211, 15212), Kołłątaja (12511, 12521)
+  const NEARBY_STOP_NUMBERS = ['15111', '15112', '15211', '15212', '12511', '12521'];
+  const NEARBY_STOP_NAMES = ['Łucznicza', 'Orzeszkowej', 'Kołłątaja'];
 
   // Tramwaje w Szczecinie: linie 1-12. Wszystko inne = autobus.
   function vehicleTypeFromLine(line) {

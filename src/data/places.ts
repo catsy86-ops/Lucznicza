@@ -1084,5 +1084,113 @@ export const PLACES: PlacePOI[] = [
       "humor",
       "lokalne"
     ]
+  },
+  {
+    "id": 50,
+    "cat": "service",
+    "name": "Dworzec Szczecin Niebuszewo & Węzeł SKM",
+    "addr": "ul. Elizy Orzeszkowej 28 / Kolejowa, Szczecin",
+    "emoji": "🚉",
+    "desc": "Historyczny dworzec kolejowy (dawniej Stettin-Zabelsdorf) z 1898 roku, zrewitalizowany jako kluczowy węzeł Szczecińskiej Kolei Metropolitalnej (SKM). Klimatyczna architektura kolejowa i bezpośrednie połączenie z całym Szczecinem i Policami.",
+    "hours": "Czynne 24/7 (kursy pociągów i perony)",
+    "phone": null,
+    "website": "skm.szczecin.pl",
+    "coords": [
+      14.55780,
+      53.45420
+    ],
+    "rating": 4.8,
+    "tags": [
+      "dworzec",
+      "skm",
+      "kolej",
+      "pociąg",
+      "Niebuszewo",
+      "zabelsdorf",
+      "historia",
+      "komunikacja",
+      "transport"
+    ]
+  },
+  {
+    "id": 51,
+    "cat": "sport",
+    "name": "Orlik & Mural Kibiców Pogoni Szczecin",
+    "addr": "ul. Łucznicza / Komuny Paryskiej, Szczecin",
+    "emoji": "⚽",
+    "desc": "Nowoczesny kompleks boisk ze sztuczną nawierzchnią oraz okazałym muralem w barwach Dumy Pomorza. Serce sportowego życia młodzieży z Łuczniczej i miejsce zbiórek kibiców MKS Pogoń Szczecin.",
+    "hours": "Codziennie 08:00–21:30",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.54920,
+      53.45180
+    ],
+    "rating": 4.9,
+    "tags": [
+      "sport",
+      "orlik",
+      "boisko",
+      "pogoń",
+      "piłka",
+      "mural",
+      "Łucznicza",
+      "kibice",
+      "legenda"
+    ]
+  },
+  {
+    "id": 52,
+    "cat": "food",
+    "name": "Tradycyjny Pasztecik i Barszcz Społem „Niebuszewo”",
+    "addr": "ul. Elizy Orzeszkowej 14 / Kołłątaja, Szczecin",
+    "emoji": "🥟",
+    "desc": "Kultowy szczeciński przysmak wpisany na Listę Produktów Tradycyjnych Ministerstwa Rolnictwa. Chrupiące ciasto drożdżowe wypiekane na bieżąco, nadziewane aromatycznym farszem mięsnym lub pieczarkowym i podawane z gorącym barszczem czerwonym.",
+    "hours": "Pon–Pt 09:00–18:00, Sob 09:00–14:00",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.54820,
+      53.44980
+    ],
+    "rating": 4.9,
+    "tags": [
+      "pasztecik",
+      "barszcz",
+      "jedzenie",
+      "tradycja",
+      "klasyk",
+      "społem",
+      "gastronomia",
+      "Szczecin",
+      "klimat"
+    ]
+  },
+  {
+    "id": 53,
+    "cat": "service",
+    "name": "Pętla Tramwajowa i Węzeł Kołłątaja",
+    "addr": "al. Wyzwolenia / ul. Hugona Kołłątaja, Szczecin",
+    "emoji": "🚋",
+    "desc": "Główna arteria przesiadkowa u wrót Niebuszewa i Bolinka. Pętla tramwajowa linii 2, 3, 10, 12 oraz kluczowych autobusów dziennych (w tym linia 89) i nocnych. Stąd dojedziesz bezpośrednio pod Stadion Miejski im. Floriana Krygiera.",
+    "hours": "Czynne 24/7 (kursy dzienne i nocne)",
+    "phone": null,
+    "website": "zditm.szczecin.pl",
+    "coords": [
+      14.54480,
+      53.44720
+    ],
+    "rating": 4.7,
+    "tags": [
+      "tramwaj",
+      "autobus",
+      "kołłątaja",
+      "giedroyć",
+      "zditm",
+      "komunikacja",
+      "transport",
+      "przesiadka",
+      "skm"
+    ]
   }
 ];

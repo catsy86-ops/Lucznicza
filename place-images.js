@@ -20,6 +20,11 @@ const PLACE_IMAGES = {
   'Bank Pekao':         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Bank_Pekao_logo.svg/200px-Bank_Pekao_logo.svg.png',
   'Bank Millennium':    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Bank_Millennium_logo.svg/200px-Bank_Millennium_logo.svg.png',
   'Santander Bank Polska': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Santander_logo.svg/200px-Santander_logo.svg.png',
+  'Dworzec Szczecin Niebuszewo': 'https://picsum.photos/seed/dworzec-niebuszewo/400/200',
+  'Pasztecik':          'https://picsum.photos/seed/pasztecik-szczecin/400/200',
+  'Pogoń':              'https://picsum.photos/seed/pogon-mural/400/200',
+  'Kołłątaja':          'https://picsum.photos/seed/kollataja-tram/400/200',
+  'Wytrzeźwiałka':      'https://picsum.photos/seed/wytrzezwialka-pub/400/200',
 };
 
 // Kategorie → zdjęcia z Picsum (deterministyczne ID = zawsze to samo zdjęcie)

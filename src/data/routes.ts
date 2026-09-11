@@ -555,5 +555,164 @@ export const ROUTES: WalkingRoute[] = [
         53.45405
       ]
     ]
+  },
+  {
+    "id": 8,
+    "name": "Klimaty i Legendy Niebuszewa",
+    "emoji": "🍻",
+    "type": "walk",
+    "color": "#f39c12",
+    "distance": "2.8 km",
+    "distanceNum": 2.8,
+    "time": "38 min",
+    "timeMin": 38,
+    "difficulty": "Łatwa / Degustacyjna",
+    "difficultyLevel": 1,
+    "calories": 145,
+    "terrain": "Chodnik i parkowe alejki",
+    "bestTime": "Popołudnie i wieczór (16:00–21:00)",
+    "tags": [
+      "klimat",
+      "legendy",
+      "piwo",
+      "murek",
+      "wytrzeźwiałka",
+      "klatka",
+      "humor",
+      "spacer"
+    ],
+    "desc": "Niezapomniana osiedlowa eskapada szlakiem nieformalnych instytucji kultury towarzyskiej: od Murka przy sklepie Anka, przez Pub Klatka i parkowe ławki Kadziaka, aż po Przystań Pijacką „Wytrzeźwiałka” przy Lenartowicza 21.",
+    "highlights": [
+      "Osiedlowy Murek przy Ance",
+      "Pub Klatka pod 39",
+      "Ławeczki Parku Kadziaka",
+      "Pasztecik Społem",
+      "Przystań Pijacka Wytrzeźwiałka"
+    ],
+    "stops": [
+      {
+        "name": "Start: Osiedlowy Murek przy Sklepie Anka",
+        "addr": "ul. Łucznicza",
+        "emoji": "🧱"
+      },
+      {
+        "name": "Pub Klatka (narada osiedlowa)",
+        "addr": "ul. Łucznicza 39/43",
+        "emoji": "🍻"
+      },
+      {
+        "name": "Park Antoniego Kadziaka",
+        "addr": "Niebuszewo",
+        "emoji": "🌳"
+      },
+      {
+        "name": "Pasztecik Społem Kołłątaja",
+        "addr": "ul. Orzeszkowej 14",
+        "emoji": "🥟"
+      },
+      {
+        "name": "Meta: Przystań Pijacka „Wytrzeźwiałka”",
+        "addr": "ul. Lenartowicza 21",
+        "emoji": "🍺"
+      }
+    ],
+    "coords": [
+      [
+        14.5500,
+        53.4538
+      ],
+      [
+        14.54752,
+        53.45405
+      ],
+      [
+        14.54365,
+        53.45100
+      ],
+      [
+        14.54820,
+        53.44980
+      ],
+      [
+        14.54205,
+        53.44792
+      ]
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Granatowo-Bordowy Szlak Dumy Pomorza",
+    "emoji": "🛡️",
+    "type": "walk",
+    "color": "#002D62",
+    "distance": "3.2 km",
+    "distanceNum": 3.2,
+    "time": "42 min",
+    "timeMin": 42,
+    "difficulty": "Średnia",
+    "difficultyLevel": 2,
+    "calories": 190,
+    "terrain": "Chodnik",
+    "bestTime": "Dzień meczowy / Przedpołudnie",
+    "tags": [
+      "pogoń",
+      "sport",
+      "mural",
+      "dumapomorza",
+      "piłka",
+      "stadion",
+      "szlak"
+    ],
+    "desc": "Trasa dla każdego fana Pogoni Szczecin na Niebuszewie. Łączy osiedlowy orlik z muralem MKS-u, punkty zbornego dopingu, Stację SKM Niebuszewo oraz pętlę Kołłątaja, skąd tramwaj zabiera kibiców prosto pod bramy stadionu im. Floriana Krygiera.",
+    "highlights": [
+      "Mural Pogoni na Orliku Łucznicza",
+      "Stacja SKM Szczecin Niebuszewo",
+      "Tradycyjny Pasztecik Niebuszewo",
+      "Pętla Kołłątaja — Tramwaj na Stadion"
+    ],
+    "stops": [
+      {
+        "name": "Start: Orlik & Mural Pogoni Szczecin",
+        "addr": "ul. Łucznicza",
+        "emoji": "⚽"
+      },
+      {
+        "name": "Stacja SKM Szczecin Niebuszewo",
+        "addr": "ul. Orzeszkowej 28",
+        "emoji": "🚉"
+      },
+      {
+        "name": "Tradycyjny Pasztecik Niebuszewo",
+        "addr": "ul. Orzeszkowej 14",
+        "emoji": "🥟"
+      },
+      {
+        "name": "Meta: Pętla Kołłątaja (przystanek na Stadion)",
+        "addr": "al. Wyzwolenia",
+        "emoji": "🚋"
+      }
+    ],
+    "coords": [
+      [
+        14.54920,
+        53.45180
+      ],
+      [
+        14.55100,
+        53.45200
+      ],
+      [
+        14.55780,
+        53.45420
+      ],
+      [
+        14.54820,
+        53.44980
+      ],
+      [
+        14.54480,
+        53.44720
+      ]
+    ]
   }
 ];

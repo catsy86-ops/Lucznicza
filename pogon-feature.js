@@ -102,6 +102,22 @@ const PogonFeature = (() => {
       badge: '🍟 Tradycja po 90 minutach',
       desc: 'Klasyczna dogrywka po wygranym meczu w drodze powrotnej z Pogodna do centrum.',
       coords: [53.4285, 14.5480]
+    },
+    {
+      name: 'Tradycyjny Pasztecik Społem Kołłątaja',
+      addr: 'ul. Elizy Orzeszkowej 14 / Kołłątaja',
+      specialty: 'Pasztecik szczeciński z mięsem i gorący czerwony barszcz',
+      badge: '🥟 Klasyk Szczecina',
+      desc: 'Tradycyjne paliwo przedmeczowe przy przesiadce na pętli Kołłątaja.',
+      coords: [53.4498, 14.5482]
+    },
+    {
+      name: 'Przystań Pijacka „Wytrzeźwiałka”',
+      addr: 'ul. Teofila Lenartowicza 21, Szczecin',
+      specialty: 'Trunki regeneracyjne, analizy pomeczowe i toasty za Dumę Pomorza',
+      badge: '🍺 Trzecia Połowa',
+      desc: 'Osiedlowa przystań na pomeczowe dyskusje i toasty za zwycięstwa Portowców.',
+      coords: [53.44792, 14.54205]
     }
   ];
 
