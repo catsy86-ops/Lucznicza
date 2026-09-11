@@ -228,8 +228,9 @@ function initMap() {
     ];
 
     const niebuszewoBoundaryCoords = [
-      [53.4470, 14.5445], // Rondo Giedroycia / Kołłątaja
-      [53.4495, 14.5410], // Staszica / Krasińskiego
+      [53.4465, 14.5440], // Rondo Giedroycia / Kołłątaja
+      [53.4470, 14.5410], // Lenartowicza / Staszica południe
+      [53.4495, 14.5400], // Staszica / Krasińskiego
       [53.4525, 14.5380], // Niemierzyńska / Krasińskiego zachód
       [53.4570, 14.5405], // Krasińskiego / Przyjaciół Żołnierza
       [53.4615, 14.5460], // Przyjaciół Żołnierza (północ)
@@ -238,7 +239,7 @@ function initMap() {
       [53.4550, 14.5650], // Stacja Szczecin Niebuszewo wschód
       [53.4505, 14.5610], // Orzeszkowej / Kołłątaja wschód
       [53.4475, 14.5530], // Dworzec Niebuszewo powrót do Kołłątaja
-      [53.4470, 14.5445]
+      [53.4465, 14.5440]
     ];
 
     // Inverted mask polygon (outer world with gentle dark tint, keeping Niebuszewo vibrant)

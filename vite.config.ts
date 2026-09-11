@@ -15,7 +15,7 @@ function copyLegacyScripts() {
       for (const file of rootFiles) {
         if (file === 'dist' || file === 'node_modules' || file === 'src' || file.startsWith('.')) continue;
         const ext = file.substring(file.lastIndexOf('.')).toLowerCase();
-        if (['.js', '.json', '.png', '.svg', '.ico', '.webp', '.jpg', '.jpeg'].includes(ext) || file === 'offline.html') {
+        if (['.js', '.json', '.png', '.svg', '.ico', '.webp', '.jpg', '.jpeg', '.css'].includes(ext) || file === 'offline.html') {
           const src = resolve(rootDir, file);
           const dest = resolve(distDir, file);
           try {

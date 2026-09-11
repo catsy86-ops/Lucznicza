@@ -1032,5 +1032,57 @@ export const PLACES: PlacePOI[] = [
       "legenda",
       "humor"
     ]
+  },
+  {
+    "id": 48,
+    "cat": "park",
+    "name": "Osiedlowy Murek przy Sklepie Anka",
+    "addr": "ul. Łucznicza / okolice sklepu Anka, Niebuszewo",
+    "emoji": "🧱",
+    "desc": "Kultowy nieformalny klub dyskusyjny pod gołym niebem. Stali bywalcy zbierają się tu niezależnie od pogody, pory roku i stanu portfela. Tematyka debat: Pogoń Szczecin, drożyzna w Społem i czemu autobus 89 znowu się spóźnił. Wstęp wolny, klimat obowiązkowy.",
+    "hours": "Całą dobę (szczyt aktywności: 10:00–20:00)",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.5500,
+      53.4538
+    ],
+    "rating": 4.5,
+    "tags": [
+      "murek",
+      "Anka",
+      "miejscowi",
+      "lokalny",
+      "spotkania",
+      "humor",
+      "Niebuszewo"
+    ]
+  },
+  {
+    "id": 49,
+    "cat": "food",
+    "name": "Przystań Pijacka „Wytrzeźwiałka”",
+    "addr": "ul. Teofila Lenartowicza 21, Szczecin",
+    "emoji": "🍺",
+    "desc": "Legendarne osiedlowe miejsce spotkań i nieformalna „przystań wytrzeźwień”. Wszyscy lokalni koneserzy trunków i amatorzy głębokich nocnych rozmów zbiegają się właśnie tutaj, by wspólnie debatować o życiu, dzielić się kapslami i łapać równowagę.",
+    "hours": "Czynne 24/7 (szczyt frekwencji o każdej pełnej godzinie)",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.54205,
+      53.44792
+    ],
+    "rating": 5.0,
+    "tags": [
+      "wytrzeźwiałka",
+      "przystań",
+      "piwo",
+      "Lenartowicza",
+      "Lenartowicza 21",
+      "spotkania",
+      "klimat",
+      "humor",
+      "lokalne"
+    ]
   }
 ];
