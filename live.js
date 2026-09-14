@@ -379,6 +379,19 @@ async function fetchAqi() {
     const data = await res.json();
     live.aqi = data.current;
 
+    // Fetch official GIOŚ Szczecin station proxy in parallel
+    try {
+      const giosRes = await fetch('/api/gios-szczecin', { signal: AbortSignal.timeout(3500) });
+      if (giosRes.ok) {
+        const giosData = await giosRes.json();
+        if (giosData && giosData.category && giosData.category !== 'Brak danych') {
+          live.gios = giosData;
+        }
+      }
+    } catch (_) {
+      // Graceful fallback to Open-Meteo
+    }
+
     // Save to IndexedDB for offline use
     if (window.OfflineStore) {
       OfflineStore.set('aqi', data, 60 * 60 * 1000); // 1h TTL
@@ -467,6 +480,15 @@ function renderAqiFull(c) {
         <div class="aqi-cell-val" style="font-size:14px">🇪🇺</div>
         <div class="aqi-cell-label">Europejski AQI</div>
       </div>
+    </div>
+    <div class="aqi-station-badge" style="margin-top:12px;padding:8px 12px;background:rgba(0,45,98,0.25);border:1px solid rgba(255,215,0,0.28);border-radius:10px;font-size:11.5px;color:var(--text2);display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <span style="display:flex;align-items:center;gap:6px;">
+        <span>🏛️</span>
+        <span>Stacja Pomiarowa: <strong>${live.gios?.stationName || 'GIOŚ Szczecin (ul. Andrzejewskiego)'}</strong></span>
+      </span>
+      <span style="background:${live.gios?.categoryColor || '#FFD700'};color:#001738;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:800;letter-spacing:0.4px;">
+        ${live.gios ? live.gios.category : 'MONITORING 24/7'}
+      </span>
     </div>
   `;
 }

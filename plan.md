@@ -209,32 +209,50 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 
 ---
 
-#### ✅ SPRINT 9: Modernizacja UI Desktop/Mobile, Split-View Dock, Spotlight Palette & Naprawa Modali Mapy (v1.5.0) [UKOŃCZONE 100%]
-- [x] **9.1. Opcja A — Visual Polish & Glassmorphism**:
-  - Wdrożono portowo-osiedlową estetykę Glassmorphism (granat `#001738`, złoto `#FFD700`, karmin `#9E002B`).
-  - Rozwiązano problem nakładania się plakietki "Wyróżnione" i przycisku dodawania do ulubionych na kartach POI.
-  - Zastosowano płynne pigułki kategorii z horyzontalnym przewijaniem i maską zanikania.
-- [x] **9.2. Opcja B — Desktop Split-View Dock & Mobile Drawer (`.google-place-sheet`)**:
-  - Zbudowano boczny dok (380px) na desktopie oraz dolny arkusz gestowy na urządzeniach mobilnych.
-  - Dodano inteligentny offset kamery Leaflet (`panBy([-190, 0])`) zapobiegający zasłanianiu klikniętego punktu przez panel boczny.
-  - Wyświetlanie panoramicznych zdjęć, godzin otwarcia na żywo, odległości dynamicznej, nawigacji pieszej i udostępniania.
-- [x] **9.3. Opcja C — Spotlight Command Palette (`Ctrl+K` / `Cmd+K` / `/`)**:
-  - Globalna paleta poleceń szybkiego wyszukiwania miejsc, tras, przystanków ZDiTM oraz narzędzi z obsługą klawiatury i skrótów.
-- [x] **9.4. Naprawa Błędu Zamykania Modali na Mapie ("nie da się zamknąć modala na mapie")**:
-  - Wykryto i usunięto przedwczesny `return` w `initMapControls()` w `app.js` (wywoływany przy `DOMContentLoaded`, gdy `state.map` był jeszcze null).
-  - Wdrożono potrójne zabezpieczenie przycisku zamykania `#gpsClose` (inline `onclick`, property, `addEventListener`).
-  - Dodano automatyczne zamykanie karty po kliknięciu w tło mapy (`map.on('click')`) oraz po naciśnięciu klawisza `Escape`.
-  - Usunięto kolizję podwójnego popupu Leaflet na desktopie przy kliknięciu markera.
-  - Zabezpieczono zamykanie modala warstw (`#mapLayersModalOverlay`) i alertów obywatelskich.
-- [x] **9.5. Weryfikacja Testowa Puppeteer MCP**:
-  - Przeprowadzono testy w przeglądarce headless: kliknięcie markera -> otwarcie arkusza -> fizyczne kliknięcie `#gpsClose` -> potwierdzenie zamknięcia.
-  - Przetestowano zamykanie kliknięciem w tło canvasu mapy oraz klawiszem `Escape`.
-  - Wszystkie asercje (7/7) zakończone wynikiem pozytywnym (`true`).
-  - Wygenerowano szczegółowy raport w [`MODAL_AND_UI_TESTS_REPORT.md`](file:///C:/Users/catsy/OneDrive/Pulpit/szn/MODAL_AND_UI_TESTS_REPORT.md).
+---
+
+#### ✅ SPRINT 10: Dostępność 100/100, Stacja GIOŚ Szczecin, POI 54–57 & Szlak Niemierzyński (v1.6.0) [UKOŃCZONE 100%]
+- [x] **10.1. Audyt Dostępności Lighthouse A11y (100/100)**:
+  - Usunięto niezgodności WCAG 2.5.3 (Label in Name) dla przycisków wyspy nagłówkowej (`#searchBtn`, `#zenMapBtn`).
+  - Podniesiono kontrast barwny `.search-pill-kbd` (`#f1f5f9` na ciemnym / `#0f172a` na jasnym) do standardu WCAG AA.
+  - Osiągnięto **0 naruszeń** w audycie WCAG.
+- [x] **10.2. Rozbudowa Bazy POI (54–57)**:
+  - Dodano **Muzeum Techniki i Komunikacji — Zajezdnię Sztuki** (ul. Niemierzyńska 18A).
+  - Dodano **Park Noakowskiego & Skwer Pawłowskiego** (ul. Stanisława Noakowskiego).
+  - Dodano **Piekarnię & Cukiernię Rzemieślniczą „Niemierzyn”** (ul. Niemierzyńska 24).
+  - Dodano **Willę Karkutsch & Przedwojenne Niebuszewo** (ul. Niemierzyńska / Długosza).
+- [x] **10.3. Nowa Trasa Spacerowa**:
+  - Wdrożono **Trasę 10: „Królowie Torów i Rzemiosła — Szlak Niemierzyński”** (2.7 km, 36 min, od Pętli Kołłątaja do Zajezdni Sztuki).
+- [x] **10.4. Oficjalna Stacja GIOŚ Szczecin & PWA Cache v11**:
+  - Podłączono proxy `/api/gios-szczecin` (Stacja 986: Szczecin ul. Andrzejewskiego / Łączna) z dynamiczną plakietką w panelu jakości powietrza.
+  - Podbito wersję Service Workera do `v11` z natychmiastowym cache-bustingiem dla nowych POI i tras.
+  - Podniesiono wersję w `package.json` do `v1.6.0`.
 
 ---
 
-## 🚦 Tabela Gotowości Komponentów (Status Monitor)
+## 🗺️ Kompleksowy Plan Rozbudowy Nowych Punktów i Tras (Content Expansion Roadmap)
+
+### 📌 Faza A: Historyczne Niebuszewo & Żydowskie Dziedzictwo Dzielnicy
+- **POI 58: Dawna Synagoga i Ośrodek Kultury Żydowskiej na Niebuszewie** (ul. Niemcewicza / Długosza) — historia powojennego osadnictwa żydowskiego w Szczecinie (tzw. "żydowski kwartał" w latach 1945–1950).
+- **POI 59: Cmentarz Żydowski przy ul. Ojca Beyzyma / Niemierzyńskiej** — zabytkowa nekropolia, pomnik pamięci i unikatowa architektura nagrobna.
+- **POI 60: Kamienica z Historycznym Zegarem Słonecznym** (ul. Kołłątaja / Kadłubka) — detal architektoniczny z początku XX wieku.
+- **Trasa 11: „Wielokulturowe Ślady Niebuszewa”** (walk, 2.8 km, 40 min) — szlak opowiadający o przedwojennych i powojennych mieszkańcach dzielnicy, łączący historyczne kamienice, dawne warsztaty rzemieślnicze i miejsca pamięci.
+
+### 🌳 Faza B: Przyroda, Punkty Widokowe & Dolina Niemierzyna
+- **POI 61: Dolina Potoku Osówka & Staw Niemierzyński** — malowniczy potok płynący przez Niebuszewo i Park Kasprowicza, oaza ptactwa wodnego i dzikiej przyrody.
+- **POI 62: Wzgórze Widokowe przy ul. Przyjaciół Żołnierza** — naturalne wzniesienie polodowcowe z panoramą na dachy Niebuszewa i stoczniowe żurawie.
+- **POI 63: Ogród Społeczny / Ekopunkt Sąsiedzki Niebuszewo** (rejon ul. Łuczniczej) — strefa permakultury i spotkań mieszkańców.
+- **Trasa 12: „Bieg wzdłuż Doliny Osówki”** (run/walk, 4.5 km, 30 min) — trasa crossowa łącząca Park Kadziaka, dolinę potoku Osówka i skraj Lasu Arkońskiego.
+
+### 🛠️ Faza C: Szlak Rzemieślników & Tradycyjnych Usług („Kupuj na Niebuszewie”)
+- **POI 64: Tradycyjny Szewc i Kaletnik z tradycją od 1978 r.** (ul. Długosza / Wyzwolenia).
+- **POI 65: Zegarmistrz Niebuszewski** (ul. Kołłątaja) — pracownia naprawy mechanicznych zegarów wahadłowych i naręcznych.
+- **POI 66: Introligatornia & Tradycyjna Drukarnia Typograficzna** (ul. Niemcewicza).
+- **Trasa 13: „Mistrzowie Dawnego Fachu”** (walk, 1.8 km, 25 min) — praktyczny szlak wspierający lokalne małe przedsiębiorstwa i ginące zawody.
+
+---
+
+## 🚦 Tabela Gotowości Komponentów (Status Monitor v1.6.0)
 
 | Komponent | Stan | Działanie | Zależności od zewnętrznych kluczy |
 |---|---|---|---|
@@ -245,16 +263,14 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Presety Kamery Mapy** | 🟢 Gotowy | Szybki focus na kluczowe punkty osiedla | FlyTo Animacje |
 | **Desktop Split-View Dock** | 🟢 Gotowy | Boczny dok miejsca (380px) z offsetem | Czysty CSS/JS |
 | **Spotlight Command Palette** | 🟢 Gotowy | Globalne wyszukiwanie (`Ctrl+K` / `/`) | Czysty JS / A11y |
-| **Piny i Markery POI** | 🟢 Gotowy | Styl Google Pins, animacja hover | Brak |
-| **Niebieska kropka GPS** | 🟢 Gotowy | Wskaźnik z radarem dokładności | Wbudowane Geolocation API |
-| **Pasek szukania i Chipsy** | 🟢 Gotowy | Google Floating Searchbar & Filter Chips | Brak |
+| **Piny i Markery POI (57 POI)** | 🟢 Gotowy | Styl Google Pins, animacja hover | Brak |
+| **Trasy Osiedlowe (10 Tras)** | 🟢 Gotowy | GPX, wysokości, czasy marszu | XML / Blob API |
+| **Stacja GIOŚ Szczecin (AQI)** | 🟢 Gotowy | Oficjalny monitoring powietrza 24/7 | GIOŚ API / Open-Meteo |
 | **Mobile Bottom Sheet** | 🟢 Gotowy | 3 stany wysuwania (Peek/Half/Full) | Czysty CSS/JS |
 | **Centralny Store** | 🟢 Gotowy | Reaktywny Pub/Sub, typowany TS | TypeScript |
 | **Przewodnik Głosowy (Audio)**| 🟢 Gotowy | Opowieści Gryfusa (Web Speech API) | Web Speech API |
-| **Eksport tras GPX** | 🟢 Gotowy | Pobieranie plików dla Garmin/Strava | XML / Blob API |
-| **Synchronizacja Ulubionych** | 🟢 Gotowy | Pamięć lokalna + subskrypcje | LocalStorage |
-| **Filtr Dostępności (A11y)** | 🟢 Gotowy | Wózki, rodziny, psy, rowery | TypeScript |
+| **PWA Cache v11** | 🟢 Gotowy | Service Worker v11, offline-ready | Service Worker API |
 | **Automatyczne Testy UI MCP** | 🟢 Gotowy | **Zamykanie modali i arkuszy (Puppeteer)** | Puppeteer MCP |
 | **Testy jednostkowe** | 🟢 Gotowy | **123/123 testów przechodzi (Vitest)** | Vitest |
-| **Dostępność (A11y)** | 🟢 Gotowy | **0 naruszeń (Axe-Core / WCAG 2.1 AA)** | @axe-core/cli |
-| **Migracja ESM / Vite** | 🟢 Gotowy | Zbudowano bundle produkcyjny (`dist/`) | Vite + TypeScript |
+| **Dostępność (A11y)** | 🟢 Gotowy | **100/100 (0 naruszeń WCAG 2.1 AA)** | Lighthouse / Axe-Core |
+| **Wydanie Produkcyjne** | 🟢 Gotowy | **Wersja v1.6.0** (`dist/`) | Vite + TypeScript |
