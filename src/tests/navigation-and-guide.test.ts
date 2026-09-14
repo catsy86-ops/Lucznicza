@@ -264,3 +264,55 @@ describe('StreetViewer 360 Panoramic Virtual Tour Tests (Krok 4)', () => {
     expect(swJs).toContain('/street-viewer.js');
   });
 });
+
+describe('CustomRouteBuilder Interactive Creator Tests (Krok 5)', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const rootDir = path.resolve(__dirname, '../..');
+  const crbJs = fs.readFileSync(path.join(rootDir, 'custom-route-builder.js'), 'utf8');
+  const indexHtml = fs.readFileSync(path.join(rootDir, 'index.html'), 'utf8');
+  const appJs = fs.readFileSync(path.join(rootDir, 'app.js'), 'utf8');
+  const styleCss = fs.readFileSync(path.join(rootDir, 'style.css'), 'utf8');
+  const swJs = fs.readFileSync(path.join(rootDir, 'sw.js'), 'utf8');
+
+  it('verifies CustomRouteBuilder module methods and state management', () => {
+    expect(crbJs).toContain('const CustomRouteBuilder =');
+    expect(crbJs).toContain('window.CustomRouteBuilder = CustomRouteBuilder;');
+    expect(crbJs).toContain('openBuilder');
+    expect(crbJs).toContain('closeBuilder');
+    expect(crbJs).toContain('togglePoi');
+    expect(crbJs).toContain('setRouteType');
+    expect(crbJs).toContain('recalculateRoute');
+    expect(crbJs).toContain('startCustomRoute');
+    expect(crbJs).toContain('downloadCustomGpx');
+  });
+
+  it('verifies customRouteModal DOM structure, buttons, stats preview in index.html', () => {
+    expect(indexHtml).toContain('id="customRouteModal"');
+    expect(indexHtml).toContain('id="crbTitle"');
+    expect(indexHtml).toContain('id="crbPoiList"');
+    expect(indexHtml).toContain('id="crbDist"');
+    expect(indexHtml).toContain('id="crbTime"');
+    expect(indexHtml).toContain('id="crbKcal"');
+    expect(indexHtml).toContain('id="crbStopsCount"');
+    expect(indexHtml).toContain('id="crbStartBtn"');
+    expect(indexHtml).toContain('id="crbGpxBtn"');
+    expect(indexHtml).toContain('src="custom-route-builder.js"');
+  });
+
+  it('verifies route builder open trigger in routes section in app.js', () => {
+    expect(appJs).toContain('id="btnOpenRouteBuilder"');
+    expect(appJs).toContain('CustomRouteBuilder.open()');
+    expect(appJs).toContain('Stwórz Własną Trasę');
+  });
+
+  it('verifies CustomRouteBuilder styling and SW caching', () => {
+    expect(styleCss).toContain('.custom-route-modal');
+    expect(styleCss).toContain('.routes-create-btn');
+    expect(styleCss).toContain('.crb-poi-chip');
+    expect(styleCss).toContain('.crb-summary-bar');
+    expect(styleCss).toContain('.crb-type-btn');
+
+    expect(swJs).toContain('/custom-route-builder.js');
+  });
+});

@@ -11630,3 +11630,210 @@ html {
   }
 }
 
+/* ===================================================== */
+/* ===== CUSTOM ROUTE BUILDER MODAL (Krok 5) =========== */
+/* ===================================================== */
+.routes-create-btn {
+  background: linear-gradient(135deg, #002D62 0%, #001433 100%);
+  color: #FFD700;
+  border: 1.5px solid rgba(255, 215, 0, 0.6);
+  padding: 10px 18px;
+  border-radius: 24px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 45, 98, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.routes-create-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 45, 98, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);
+  border-color: #FFD700;
+}
+
+.custom-route-modal {
+  max-width: 680px !important;
+  width: 95% !important;
+  background: var(--bg2) !important;
+  border: 1.5px solid rgba(255, 215, 0, 0.4) !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7) !important;
+}
+
+.crb-header {
+  margin-bottom: 16px;
+}
+.crb-badge {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #00c6ff;
+  letter-spacing: 0.5px;
+}
+.crb-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  margin: 4px 0 6px;
+}
+.crb-header p {
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.crb-type-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.crb-type-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text2);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.crb-type-btn.active {
+  background: rgba(0, 198, 255, 0.15);
+  border-color: #00c6ff;
+  color: #00c6ff;
+}
+
+.crb-section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2);
+  margin-bottom: 8px;
+}
+
+.crb-poi-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+.crb-poi-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.crb-poi-chip:hover {
+  border-color: #00c6ff;
+  transform: scale(1.02);
+}
+.crb-poi-chip.selected {
+  background: rgba(0, 198, 255, 0.2);
+  border-color: #00c6ff;
+  color: #fff;
+  font-weight: 700;
+}
+.crb-poi-order {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+}
+.crb-poi-chip.selected .crb-poi-order {
+  background: #00c6ff;
+  color: #000;
+}
+
+.crb-summary-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+.crb-stat-val {
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  color: #FFD700;
+}
+.crb-stat-lbl {
+  font-size: 10.5px;
+  color: var(--text2);
+  text-transform: uppercase;
+}
+
+.crb-actions {
+  display: flex;
+  gap: 10px;
+}
+.crb-btn {
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+.crb-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+.crb-btn.primary {
+  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 114, 255, 0.4);
+}
+.crb-btn.primary:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+}
+.crb-btn.secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.crb-btn.secondary:not(:disabled):hover {
+  background: var(--surface3);
+}
+
+@media (max-width: 768px) {
+  .crb-summary-bar {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .crb-actions {
+    flex-direction: column;
+  }
+}
+

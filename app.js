@@ -1952,6 +1952,11 @@ function renderRoutes() {
     <div class="section-hero">
       <h2>🚶 Trasy spacerowe</h2>
       <p>Odkryj dzielnicę pieszo, rowerem lub biegiem</p>
+      <div style="margin-top:12px">
+        <button class="routes-create-btn" id="btnOpenRouteBuilder" onclick="CustomRouteBuilder.open()">
+          🛠️ Stwórz Własną Trasę (Kreator POI)
+        </button>
+      </div>
     </div>
 
     <!-- Stats bar -->

@@ -1145,6 +1145,56 @@
       </div>
     </div>
 
+    <!-- CUSTOM ROUTE BUILDER MODAL (Krok 5) -->
+    <div class="modal-overlay hidden" id="customRouteModal" role="dialog" aria-modal="true" aria-labelledby="crbTitle">
+      <div class="modal custom-route-modal">
+        <button class="modal-close" id="customRouteClose" aria-label="Zamknij" onclick="closeCustomRouteBuilder()">✕</button>
+        <div class="crb-header">
+          <span class="crb-badge">🛠️ Kreator Tras</span>
+          <h2 id="crbTitle">Stwórz Własną Trasę</h2>
+          <p>Wybierz punkty na Niebuszewie, a aplikacja wyznaczy optymalne przejście i przygotuje audioprzewodnik.</p>
+        </div>
+
+        <div class="crb-type-selector">
+          <button class="crb-type-btn active" data-type="walk" onclick="CustomRouteBuilder.setRouteType('walk')">🚶 Pieszo</button>
+          <button class="crb-type-btn" data-type="bike" onclick="CustomRouteBuilder.setRouteType('bike')">🚴 Rower</button>
+          <button class="crb-type-btn" data-type="run" onclick="CustomRouteBuilder.setRouteType('run')">🏃 Bieg</button>
+        </div>
+
+        <div class="crb-section-label">📍 Wybierz punkty kontrolne (kliknij, by dodać/usunąć):</div>
+        <div class="crb-poi-list" id="crbPoiList"></div>
+
+        <!-- Live Route Stats Preview -->
+        <div class="crb-summary-bar">
+          <div class="crb-stat">
+            <span class="crb-stat-val" id="crbDist">0.0 km</span>
+            <span class="crb-stat-lbl">Dystans</span>
+          </div>
+          <div class="crb-stat">
+            <span class="crb-stat-val" id="crbTime">0 min</span>
+            <span class="crb-stat-lbl">Czas</span>
+          </div>
+          <div class="crb-stat">
+            <span class="crb-stat-val" id="crbKcal">0 kcal</span>
+            <span class="crb-stat-lbl">Kalorie</span>
+          </div>
+          <div class="crb-stat">
+            <span class="crb-stat-val" id="crbStopsCount">0</span>
+            <span class="crb-stat-lbl">Punktów</span>
+          </div>
+        </div>
+
+        <div class="crb-actions">
+          <button class="crb-btn secondary" id="crbGpxBtn" onclick="CustomRouteBuilder.downloadCustomGpx()" disabled>
+            📥 Pobierz GPX
+          </button>
+          <button class="crb-btn primary" id="crbStartBtn" onclick="CustomRouteBuilder.startCustomRoute()" disabled>
+            🎧 Rozpocznij Trasę ("Idź ze mną")
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- MAP LAYERS OVERLAY MODAL -->
     <div class="modal-overlay hidden" id="mapLayersModalOverlay" role="dialog" aria-modal="true" aria-labelledby="mapLayersTitle">
       <div class="modal layers-modal" id="mapLayersModal">
@@ -1376,6 +1426,7 @@
   <script src="navigation.js"></script>
   <script src="poi-radar-compass.js"></script>
   <script src="street-viewer.js"></script>
+  <script src="custom-route-builder.js"></script>
   <script src="search.js"></script>
   <script src="place-images.js"></script>
   <script src="user-profile.js"></script>
