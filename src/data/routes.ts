@@ -714,5 +714,87 @@ export const ROUTES: WalkingRoute[] = [
         53.44720
       ]
     ]
+  },
+  {
+    "id": 10,
+    "name": "Królowie Torów i Rzemiosła — Szlak Niemierzyński",
+    "emoji": "🚋",
+    "type": "walk",
+    "color": "#9E002B",
+    "distance": "2.7 km",
+    "distanceNum": 2.7,
+    "time": "36 min",
+    "timeMin": 36,
+    "difficulty": "Łatwa",
+    "difficultyLevel": 1,
+    "calories": 160,
+    "terrain": "Chodnik + alejki parkowe",
+    "bestTime": "Przedpołudnie / Popołudnie (Wt–Ndz)",
+    "tags": [
+      "niemierzyn",
+      "tramwaje",
+      "muzeum",
+      "park",
+      "piekarnia",
+      "architektura",
+      "spacer"
+    ],
+    "desc": "Fascynująca wyprawa od Pętli Kołłątaja przez zielone alejki Parku Noakowskiego do historycznej Zajezdni Sztuki (Muzeum Techniki). W programie legendy szczecińskich tramwajów, motocykle Junak, zabytkowe kamienice i świeże wypieki rzemieślnicze.",
+    "highlights": [
+      "Węzeł Kołłątaja",
+      "Park Noakowskiego & Skwer Pawłowskiego",
+      "Muzeum Techniki i Komunikacji (Zajezdnia)",
+      "Piekarnia Rzemieślnicza Niemierzyn",
+      "Willa Karkutsch & Zabytkowe Kamienice"
+    ],
+    "stops": [
+      {
+        "name": "Start: Węzeł Kołłątaja",
+        "addr": "al. Wyzwolenia / Kołłątaja",
+        "emoji": "🚋"
+      },
+      {
+        "name": "Park Noakowskiego",
+        "addr": "ul. Noakowskiego",
+        "emoji": "🌳"
+      },
+      {
+        "name": "Muzeum Techniki i Komunikacji",
+        "addr": "ul. Niemierzyńska 18A",
+        "emoji": "🏛️"
+      },
+      {
+        "name": "Piekarnia Rzemieślnicza Niemierzyn",
+        "addr": "ul. Niemierzyńska 24",
+        "emoji": "🥐"
+      },
+      {
+        "name": "Meta: Willa Karkutsch & Kamienice",
+        "addr": "ul. Niemierzyńska / Długosza",
+        "emoji": "🏛️"
+      }
+    ],
+    "coords": [
+      [
+        14.54480,
+        53.44720
+      ],
+      [
+        14.54120,
+        53.44910
+      ],
+      [
+        14.53750,
+        53.45040
+      ],
+      [
+        14.53980,
+        53.45010
+      ],
+      [
+        14.54280,
+        53.44850
+      ]
+    ]
   }
 ];

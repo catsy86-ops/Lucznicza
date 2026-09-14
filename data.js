@@ -687,6 +687,54 @@ const APP_DATA = {
       coords: [14.54480, 53.44720],
       rating: 4.7,
       tags: ['tramwaj', 'autobus', 'kołłątaja', 'giedroyć', 'zditm', 'komunikacja', 'transport', 'przesiadka', 'skm']
+    },
+    {
+      id: 54, cat: 'edu',
+      name: 'Muzeum Techniki i Komunikacji — Zajezdnia Sztuki',
+      addr: 'ul. Niemierzyńska 18A, Szczecin',
+      emoji: '🚋',
+      desc: 'Zabytkowa zajezdnia tramwajowa z 1912 roku przekształcona w jedno z największych muzeów techniki w Polsce. Kolekcja kultowych szczecińskich motocykli Junak, zabytkowych tramwajów, pojazdów Stoewer oraz prototypów polskiej motoryzacji.',
+      hours: 'Wt–Ndz 10:00–18:00 (Czw bezpłatny)',
+      phone: '91 45 99 200', website: 'muzeumtechniki.eu',
+      coords: [14.53750, 53.45040],
+      rating: 4.9,
+      tags: ['muzeum', 'tramwaj', 'junak', 'technika', 'zabytki', 'Niemierzyńska', 'historia', 'kultura', 'edukacja']
+    },
+    {
+      id: 55, cat: 'park',
+      name: 'Park Noakowskiego & Skwer Pawłowskiego',
+      addr: 'ul. Stanisława Noakowskiego, Szczecin',
+      emoji: '🌳',
+      desc: 'Urokliwy, zaciszny park i skwer im. Waleriana Pawłowskiego na styku Niebuszewa i Bolinka. Wiekowy drzewostan (platany, dęby), ogrodzony wybieg dla psów, strefa sensoryczna i nowoczesny plac zabaw.',
+      hours: 'Czynne całą dobę',
+      phone: null, website: null,
+      coords: [14.54120, 53.44910],
+      rating: 4.7,
+      tags: ['park', 'zieleń', 'drzewa', 'pieski', 'plac zabaw', 'Noakowskiego', 'relaks', 'cień']
+    },
+    {
+      id: 56, cat: 'food',
+      name: 'Piekarnia & Cukiernia Rzemieślnicza „Niemierzyn”',
+      addr: 'ul. Niemierzyńska 24, Szczecin',
+      emoji: '🥐',
+      desc: 'Klimatyczna piekarnia rzemieślnicza słynąca z tradycyjnego pieczywa na zakwasie orkiszowym i żytnim oraz świeżych drożdżówek ze szczecińskimi owocami. Do tego lokalnie palona kawa specialty.',
+      hours: 'Pon–Pt 06:30–18:00, Sob 07:00–14:00',
+      phone: null, website: null,
+      coords: [14.53980, 53.45010],
+      rating: 4.8,
+      tags: ['piekarnia', 'kawiarnia', 'chleb', 'zakwas', 'drożdżówki', 'kawa', 'śniadanie', 'rzemiosło']
+    },
+    {
+      id: 57, cat: 'edu',
+      name: 'Willa Karkutsch & Przedwojenne Niebuszewo',
+      addr: 'ul. Niemierzyńska / Długosza, Szczecin',
+      emoji: '🏛️',
+      desc: 'Zabytkowa rezydencja i zespół historycznych kamienic z przełomu XIX i XX wieku. Świadectwo industrialnego i mieszczańskiego rozwoju Niebuszewa, z zachowanymi detalami sztukatorskimi i kutymi bramami.',
+      hours: 'Widok z zewnątrz całodobowo',
+      phone: null, website: null,
+      coords: [14.54280, 53.44850],
+      rating: 4.6,
+      tags: ['architektura', 'zabytki', 'kamienice', 'historia', 'willa', 'szczecin', 'spacer']
     }
   ],
 
@@ -989,6 +1037,45 @@ const APP_DATA = {
         [14.55780, 53.45420],
         [14.54820, 53.44980],
         [14.54480, 53.44720]
+      ]
+    },
+    {
+      id: 10,
+      name: 'Królowie Torów i Rzemiosła — Szlak Niemierzyński',
+      emoji: '🚋',
+      type: 'walk',
+      color: '#9E002B',
+      distance: '2.7 km',
+      distanceNum: 2.7,
+      time: '36 min',
+      timeMin: 36,
+      difficulty: 'Łatwa',
+      difficultyLevel: 1,
+      calories: 160,
+      terrain: 'Chodnik + alejki parkowe',
+      bestTime: 'Przedpołudnie / Popołudnie (Wt–Ndz)',
+      tags: ['niemierzyn', 'tramwaje', 'muzeum', 'park', 'piekarnia', 'architektura', 'spacer'],
+      desc: 'Fascynująca wyprawa od Pętli Kołłątaja przez zielone alejki Parku Noakowskiego do historycznej Zajezdni Sztuki (Muzeum Techniki). W programie legendy szczecińskich tramwajów, motocykle Junak, zabytkowe kamienice i świeże wypieki rzemieślnicze.',
+      highlights: [
+        'Węzeł Kołłątaja',
+        'Park Noakowskiego & Skwer Pawłowskiego',
+        'Muzeum Techniki i Komunikacji (Zajezdnia)',
+        'Piekarnia Rzemieślnicza Niemierzyn',
+        'Willa Karkutsch & Zabytkowe Kamienice'
+      ],
+      stops: [
+        { name: 'Start: Węzeł Kołłątaja', addr: 'al. Wyzwolenia / Kołłątaja', emoji: '🚋' },
+        { name: 'Park Noakowskiego', addr: 'ul. Noakowskiego', emoji: '🌳' },
+        { name: 'Muzeum Techniki i Komunikacji', addr: 'ul. Niemierzyńska 18A', emoji: '🏛️' },
+        { name: 'Piekarnia Rzemieślnicza Niemierzyn', addr: 'ul. Niemierzyńska 24', emoji: '🥐' },
+        { name: 'Meta: Willa Karkutsch & Kamienice', addr: 'ul. Niemierzyńska / Długosza', emoji: '🏛️' }
+      ],
+      coords: [
+        [14.54480, 53.44720],
+        [14.54120, 53.44910],
+        [14.53750, 53.45040],
+        [14.53980, 53.45010],
+        [14.54280, 53.44850]
       ]
     }
   ],

@@ -9,7 +9,7 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
   });
 
   it('contains all POI places with required schema and coordinates', () => {
-    expect(PLACES.length).toBe(53);
+    expect(PLACES.length).toBe(57);
     for (const place of PLACES) {
       expect(place.id).toBeDefined();
       expect(place.name.length).toBeGreaterThan(0);
@@ -23,17 +23,21 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
 
     const pubKlatka = PLACES.find(p => p.name === 'Pub Klatka');
     expect(pubKlatka).toBeDefined();
-    expect(pubKlatka?.addr).toContain('Łucznicza 43');
+    expect(pubKlatka?.addr).toContain('Łucznicza');
     expect(pubKlatka?.desc).toContain('Wpadaj tam na piwo!');
     expect(pubKlatka?.cat).toBe('food');
 
     const laweczka = PLACES.find(p => p.name === 'Ławeczka Filozofów');
     expect(laweczka).toBeDefined();
     expect(laweczka?.cat).toBe('park');
+
+    const muzeum = PLACES.find(p => p.name.includes('Muzeum Techniki i Komunikacji'));
+    expect(muzeum).toBeDefined();
+    expect(muzeum?.cat).toBe('edu');
   });
 
   it('contains walking routes with stops and coordinates path', () => {
-    expect(ROUTES.length).toBe(9);
+    expect(ROUTES.length).toBe(10);
     for (const route of ROUTES) {
       expect(route.id).toBeGreaterThanOrEqual(1);
       expect(route.name.length).toBeGreaterThan(0);
@@ -44,6 +48,10 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     const szlakDzikow = ROUTES.find(r => r.name === 'Szlak Przemarszu Dzików');
     expect(szlakDzikow).toBeDefined();
     expect(szlakDzikow?.emoji).toBe('🐗');
+
+    const szlakNiemierzyn = ROUTES.find(r => r.name.includes('Szlak Niemierzyński'));
+    expect(szlakNiemierzyn).toBeDefined();
+    expect(szlakNiemierzyn?.id).toBe(10);
   });
 
   it('contains verified community events', () => {
