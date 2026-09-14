@@ -771,6 +771,42 @@ const APP_DATA = {
       coords: [14.54650, 53.44810],
       rating: 4.9,
       tags: ['kamienica', 'zegar', 'architektura', 'secesja', 'kołłątaja', 'sztuka', 'detal', 'zabytek']
+    },
+    {
+      id: 61, cat: 'park',
+      name: 'Dolina Potoku Osówka & Kładka Niemierzyńska',
+      addr: 'Dolina Potoku Osówka / Park Kasprowicza, Szczecin',
+      emoji: '🦆',
+      desc: 'Malowniczy przełom potoku Osówka z drewnianymi pomostami i kładkami widokowymi. Bogata flora nadrzeczna, ostoja dzikiego ptactwa (kaczki krzyżówki, pliszki górskie) i wspaniałe miejsce na regenerujący spacer w otoczeniu szumu wody.',
+      hours: 'Dostępne całodobowo',
+      phone: null, website: null,
+      coords: [14.53210, 53.45180],
+      rating: 4.9,
+      tags: ['potok', 'osówka', 'przyroda', 'woda', 'kładka', 'ptaki', 'spacer', 'relaks', 'park']
+    },
+    {
+      id: 62, cat: 'park',
+      name: 'Wzgórze Widokowe przy ul. Przyjaciół Żołnierza',
+      addr: 'ul. Przyjaciół Żołnierza / ul. Obotrycka, Szczecin',
+      emoji: '🌄',
+      desc: 'Naturalne wzniesienie morenowe oferujące rozległą panoramę dachów Niebuszewa, wież kościołów i stoczniowych żurawi nad Odrą. Idealny punkt obserwacyjny o zachodzie słońca z ławkami widokowymi.',
+      hours: 'Dostępne całodobowo',
+      phone: null, website: null,
+      coords: [14.56680, 53.45520],
+      rating: 4.8,
+      tags: ['punktwidokowy', 'panorama', 'wzgórze', 'zachódsłońca', 'przyjaciółżołnierza', 'foto', 'krajobraz']
+    },
+    {
+      id: 63, cat: 'park',
+      name: 'Ogród Społeczny & Sąsiedzki Zakątek Łucznicza',
+      addr: 'ul. Łucznicza / ul. Tarczowa, Szczecin',
+      emoji: '🌻',
+      desc: 'Oddolna inicjatywa sąsiedzka mieszkańców Łuczniczej i Tarczowej. Skrzynie z ziołami i kwiatami miododajnymi, hotel dla owadów, budki lęgowe dla jerzyków oraz zacieniona pergola z ławkami do wymiany książek (bookcrossing).',
+      hours: 'Dostępne całodobowo',
+      phone: null, website: null,
+      coords: [14.54890, 53.45330],
+      rating: 4.9,
+      tags: ['ogród', 'społeczny', 'łucznicza', 'tarczowa', 'zioła', 'bookcrossing', 'sąsiedzi', 'ekologia']
     }
   ],
 
@@ -1148,6 +1184,42 @@ const APP_DATA = {
         [14.54910, 53.44880],
         [14.54280, 53.44850],
         [14.53610, 53.44680]
+      ]
+    },
+    {
+      id: 12,
+      name: 'Bieg i Spacer wzdłuż Doliny Osówki',
+      emoji: '🏃',
+      type: 'run',
+      color: '#2ecc71',
+      distance: '4.2 km',
+      distanceNum: 4.2,
+      time: '28 min',
+      timeMin: 28,
+      difficulty: 'Średnia',
+      difficultyLevel: 2,
+      calories: 310,
+      terrain: 'Ścieżki parkowe i szutrowe',
+      bestTime: 'Poranek / Wczesny wieczór',
+      tags: ['bieganie', 'osówka', 'dolina', 'przyroda', 'potok', 'parkkadziaka', 'trening'],
+      desc: 'Świetna trasa biegowo-spacerowa łącząca osiedlowe alejki Parku Kadziaka z naturalną Doliną Potoku Osówka. Zmienna rzeźba terenu, czyste powietrze, zacienione ścieżki i szum strumienia sprawiają, że to ulubiony szlak biegaczy z Niebuszewa.',
+      highlights: [
+        'Start na Orliku przy Łuczniczej',
+        'Park Antoniego Kadziaka',
+        'Dolina Potoku Osówka & Kładka Niemierzyńska',
+        'Sąsiedzki Ogród Społeczny Łucznicza'
+      ],
+      stops: [
+        { name: 'Start: Orlik & Boiska Łucznicza', addr: 'ul. Łucznicza', emoji: '⚽' },
+        { name: 'Park Antoniego Kadziaka', addr: 'Niebuszewo', emoji: '🌳' },
+        { name: 'Dolina Potoku Osówka', addr: 'Park Kasprowicza / Osówka', emoji: '🦆' },
+        { name: 'Meta: Ogród Społeczny Łucznicza', addr: 'ul. Łucznicza / Tarczowa', emoji: '🌻' }
+      ],
+      coords: [
+        [14.54920, 53.45180],
+        [14.54365, 53.45100],
+        [14.53210, 53.45180],
+        [14.54890, 53.45330]
       ]
     }
   ],

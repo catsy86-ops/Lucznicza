@@ -9,7 +9,7 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
   });
 
   it('contains all POI places with required schema and coordinates', () => {
-    expect(PLACES.length).toBe(60);
+    expect(PLACES.length).toBe(63);
     for (const place of PLACES) {
       expect(place.id).toBeDefined();
       expect(place.name.length).toBeGreaterThan(0);
@@ -38,10 +38,14 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     const perec = PLACES.find(p => p.name.includes('Dom Pereca'));
     expect(perec).toBeDefined();
     expect(perec?.cat).toBe('edu');
+
+    const osowka = PLACES.find(p => p.name.includes('Potoku Osówka'));
+    expect(osowka).toBeDefined();
+    expect(osowka?.cat).toBe('park');
   });
 
   it('contains walking routes with stops and coordinates path', () => {
-    expect(ROUTES.length).toBe(11);
+    expect(ROUTES.length).toBe(12);
     for (const route of ROUTES) {
       expect(route.id).toBeGreaterThanOrEqual(1);
       expect(route.name.length).toBeGreaterThan(0);
@@ -60,6 +64,10 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     const szlakWielokulturowy = ROUTES.find(r => r.name.includes('Wielokulturowe Ślady'));
     expect(szlakWielokulturowy).toBeDefined();
     expect(szlakWielokulturowy?.id).toBe(11);
+
+    const szlakOsowka = ROUTES.find(r => r.name.includes('Doliny Osówki'));
+    expect(szlakOsowka).toBeDefined();
+    expect(szlakOsowka?.id).toBe(12);
   });
 
   it('contains verified community events', () => {

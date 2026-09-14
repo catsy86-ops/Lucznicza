@@ -868,5 +868,77 @@ export const ROUTES: WalkingRoute[] = [
         53.44680
       ]
     ]
+  },
+  {
+    "id": 12,
+    "name": "Bieg i Spacer wzdłuż Doliny Osówki",
+    "emoji": "🏃",
+    "type": "run",
+    "color": "#2ecc71",
+    "distance": "4.2 km",
+    "distanceNum": 4.2,
+    "time": "28 min",
+    "timeMin": 28,
+    "difficulty": "Średnia",
+    "difficultyLevel": 2,
+    "calories": 310,
+    "terrain": "Ścieżki parkowe i szutrowe",
+    "bestTime": "Poranek / Wczesny wieczór",
+    "tags": [
+      "bieganie",
+      "osówka",
+      "dolina",
+      "przyroda",
+      "potok",
+      "parkkadziaka",
+      "trening"
+    ],
+    "desc": "Świetna trasa biegowo-spacerowa łącząca osiedlowe alejki Parku Kadziaka z naturalną Doliną Potoku Osówka. Zmienna rzeźba terenu, czyste powietrze, zacienione ścieżki i szum strumienia sprawiają, że to ulubiony szlak biegaczy z Niebuszewa.",
+    "highlights": [
+      "Start na Orliku przy Łuczniczej",
+      "Park Antoniego Kadziaka",
+      "Dolina Potoku Osówka & Kładka Niemierzyńska",
+      "Sąsiedzki Ogród Społeczny Łucznicza"
+    ],
+    "stops": [
+      {
+        "name": "Start: Orlik & Boiska Łucznicza",
+        "addr": "ul. Łucznicza",
+        "emoji": "⚽"
+      },
+      {
+        "name": "Park Antoniego Kadziaka",
+        "addr": "Niebuszewo",
+        "emoji": "🌳"
+      },
+      {
+        "name": "Dolina Potoku Osówka",
+        "addr": "Park Kasprowicza / Osówka",
+        "emoji": "🦆"
+      },
+      {
+        "name": "Meta: Ogród Społeczny Łucznicza",
+        "addr": "ul. Łucznicza / Tarczowa",
+        "emoji": "🌻"
+      }
+    ],
+    "coords": [
+      [
+        14.54920,
+        53.45180
+      ],
+      [
+        14.54365,
+        53.45100
+      ],
+      [
+        14.53210,
+        53.45180
+      ],
+      [
+        14.54890,
+        53.45330
+      ]
+    ]
   }
 ];
