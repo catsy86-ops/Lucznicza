@@ -999,7 +999,7 @@
     <!-- PLACE DETAIL MODAL -->
     <div class="modal-overlay hidden" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal" id="placeModal">
-        <button class="modal-close" id="modalClose">✕</button>
+        <button class="modal-close" id="modalClose" aria-label="Zamknij" onclick="if(typeof closeModal==='function'){closeModal();}else{document.getElementById('modalOverlay').classList.add('hidden');}">✕</button>
         <div class="modal-content" id="modalContent"></div>
       </div>
     </div>
@@ -1007,7 +1007,7 @@
     <!-- CITIZEN ALERT MODAL (Dzik / Awaria / Usterka) -->
     <div class="modal-overlay hidden" id="alertModalOverlay" role="dialog" aria-modal="true" aria-labelledby="alertModalTitle">
       <div class="modal alert-modal" id="alertModal">
-        <button class="modal-close" id="alertModalClose" aria-label="Zamknij">✕</button>
+        <button class="modal-close" id="alertModalClose" aria-label="Zamknij" onclick="document.getElementById('alertModalOverlay').classList.add('hidden');">✕</button>
         <div class="modal-content" id="alertModalContent">
           <div class="alert-modal-header">
             <span class="alert-modal-badge">📢 Obywatelski Alert</span>
@@ -1067,14 +1067,24 @@
       </div>
     </div>
 
-    <!-- GOOGLE STYLE PLACE QUICK PEEK SHEET -->
+    <!-- GOOGLE STYLE PLACE QUICK PEEK SHEET / DESKTOP SPLIT-VIEW DOCK -->
     <div class="google-place-sheet hidden" id="googlePlaceSheet" role="region" aria-label="Podgląd miejsca">
+      <div class="gps-hero" id="gpsHero" style="display:none;">
+        <img id="gpsHeroImg" class="gps-hero-img" src="" alt="" loading="lazy" />
+        <div class="gps-hero-overlay"></div>
+      </div>
       <div class="gps-top">
         <div class="gps-title-wrap">
           <span class="gps-emoji" id="gpsEmoji">📍</span>
-          <h3 class="gps-title" id="gpsTitle">Nazwa Miejsca</h3>
+          <div>
+            <div class="gps-cat-pill" id="gpsCat">MIEJSCE</div>
+            <h3 class="gps-title" id="gpsTitle">Nazwa Miejsca</h3>
+          </div>
         </div>
-        <button class="gps-close" id="gpsClose" aria-label="Zamknij podgląd">✕</button>
+        <div class="gps-top-actions">
+          <button class="gps-fav-btn" id="gpsFavBtn" title="Dodaj do ulubionych" aria-label="Dodaj do ulubionych">🤍</button>
+          <button class="gps-close" id="gpsClose" aria-label="Zamknij podgląd" onclick="if(typeof closeGooglePlaceSheet==='function'){closeGooglePlaceSheet();}else{document.getElementById('googlePlaceSheet').classList.add('hidden');}">✕</button>
+        </div>
       </div>
       <div class="gps-meta">
         <span class="gps-status" id="gpsStatus">🟢 Otwarte</span>
@@ -1082,9 +1092,13 @@
         <span class="gps-dist" id="gpsDist">📍 320 m stąd</span>
       </div>
       <div class="gps-addr" id="gpsAddr">ul. Łucznicza 15, Szczecin</div>
+      <div class="gps-hours" id="gpsHours"><span class="gps-hours-icon">⏰</span> <span id="gpsHoursText">Pon–Pt 8:00–20:00</span></div>
+      <div class="gps-desc" id="gpsDesc"></div>
+      <div class="gps-tags" id="gpsTags"></div>
       <div class="gps-actions">
         <button class="gps-btn primary" id="gpsNavigateBtn">🧭 Prowadź pieszo</button>
         <button class="gps-btn" id="gpsDetailsBtn">ℹ️ Szczegóły</button>
+        <button class="gps-btn" id="gpsCallBtn" style="display:none;">📞 Zadzwoń</button>
         <button class="gps-btn" id="gpsShareBtn">🔗 Udostępnij</button>
       </div>
     </div>
@@ -1092,7 +1106,7 @@
     <!-- MAP LAYERS OVERLAY MODAL -->
     <div class="modal-overlay hidden" id="mapLayersModalOverlay" role="dialog" aria-modal="true" aria-labelledby="mapLayersTitle">
       <div class="modal layers-modal" id="mapLayersModal">
-        <button class="modal-close" id="mapLayersModalClose" aria-label="Zamknij">✕</button>
+        <button class="modal-close" id="mapLayersModalClose" aria-label="Zamknij" onclick="document.getElementById('mapLayersModalOverlay').classList.add('hidden');">✕</button>
         <div class="modal-content">
           <h2 id="mapLayersTitle">🎛️ Warstwy Mapy Niebuszewa</h2>
           <p>Włączaj i wyłączaj warstwy tematyczne na mapie:</p>

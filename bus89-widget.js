@@ -1,4 +1,4 @@
-﻿/**
+/**
  * bus89-widget.js — Mini-widget "Następny autobus 89"
  * Wyświetla odliczanie do najbliższego odjazdu linii 89
  * z przystanku Kołłątaja/Łucznicza na mapie głównej.
@@ -96,25 +96,9 @@ const Bus89Widget = (() => {
     if (!widget) {
       widget = document.createElement('div');
       widget.id = 'bus89Widget';
+      widget.className = 'bus89-widget';
       widget.title = 'Kliknij → rozkład jazdy (Transport)';
       widget.onclick = function() { if (typeof navigateTo === 'function') navigateTo('transport'); };
-      widget.style.cssText = [
-        'position:fixed',
-        'bottom:calc(var(--bnav-h, 64px) + 80px)',
-        'right:12px',
-        'background:rgba(10,18,35,0.92)',
-        'backdrop-filter:blur(12px)',
-        '-webkit-backdrop-filter:blur(12px)',
-        'border:1.5px solid rgba(67,233,123,0.4)',
-        'border-radius:16px',
-        'padding:8px 14px',
-        'cursor:pointer',
-        'z-index:200',
-        'box-shadow:0 4px 20px rgba(0,0,0,0.4)',
-        'transition:border-color 0.4s ease',
-        'font-family:inherit',
-        'animation:toastIn 0.4s cubic-bezier(0.16,1,0.3,1)'
-      ].join(';');
       document.body.appendChild(widget);
     }
     render();

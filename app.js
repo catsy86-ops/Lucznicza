@@ -360,6 +360,13 @@ function initMap() {
     window.state = state;
     initGoogleMapControls();
 
+    // Clicking map background dismisses peek sheet / split-view dock
+    map.on('click', () => {
+      if (typeof closeGooglePlaceSheet === 'function') {
+        closeGooglePlaceSheet();
+      }
+    });
+
     // CRITICAL: force Leaflet to recalculate container size so tiles load.
     map.invalidateSize(true);
     if (typeof ResizeObserver !== 'undefined') {
@@ -441,28 +448,44 @@ function createPoiMarker(place) {
     </div>
   `;
 
-  // On desktop screens bind traditional popup; on mobile prefer bottom sheet to prevent double UI
-  if (typeof window !== 'undefined' && window.innerWidth > 768) {
-    marker.bindPopup(popupHtml, { maxWidth: 260, minWidth: 220, closeButton: true, className: 'map-popup-wrapper' });
-  }
-
-  marker.on('click', () => {
+  // On marker click open modern Place Sheet / Split-View Dock cleanly
+  marker.on('click', (e) => {
+    if (e && e.originalEvent && e.originalEvent.stopPropagation) {
+      e.originalEvent.stopPropagation();
+    }
+    if (state.map && typeof state.map.closePopup === 'function') {
+      state.map.closePopup();
+    }
     showGooglePlaceSheet(place);
   });
 
   return marker;
 }
 
-// ===== GOOGLE PLACE PEEK SHEET CONTROLLER =====
+// ===== GOOGLE PLACE PEEK SHEET & DESKTOP SPLIT-VIEW CONTROLLER =====
 let activePlaceForSheet = null;
+
+function closeGooglePlaceSheet() {
+  const sheet = document.getElementById('googlePlaceSheet');
+  if (sheet) {
+    sheet.classList.add('hidden');
+  }
+}
+window.closeGooglePlaceSheet = closeGooglePlaceSheet;
 
 function showGooglePlaceSheet(place) {
   activePlaceForSheet = place;
   const sheet = document.getElementById('googlePlaceSheet');
   if (!sheet) return;
 
+  // Close any open Leaflet popup so we never have colliding popups
+  if (state.map && typeof state.map.closePopup === 'function') {
+    state.map.closePopup();
+  }
+
   const PE = window.placesEnhanced;
   const status = PE ? PE.getOpenStatus(place) : null;
+  const isFav = PE ? PE.isFavorite(place.id) : false;
 
   const emojiEl = document.getElementById('gpsEmoji');
   const titleEl = document.getElementById('gpsTitle');
@@ -470,11 +493,76 @@ function showGooglePlaceSheet(place) {
   const ratingEl = document.getElementById('gpsRating');
   const distEl = document.getElementById('gpsDist');
   const addrEl = document.getElementById('gpsAddr');
+  const catEl = document.getElementById('gpsCat');
+  const hoursEl = document.getElementById('gpsHours');
+  const hoursTextEl = document.getElementById('gpsHoursText');
+  const descEl = document.getElementById('gpsDesc');
+  const tagsEl = document.getElementById('gpsTags');
+  const callBtn = document.getElementById('gpsCallBtn');
+  const favBtn = document.getElementById('gpsFavBtn');
+  const heroEl = document.getElementById('gpsHero');
+  const heroImg = document.getElementById('gpsHeroImg');
 
   if (emojiEl) emojiEl.textContent = place.emoji || '📍';
   if (titleEl) titleEl.textContent = place.name;
   if (addrEl) addrEl.textContent = place.addr;
   if (ratingEl) ratingEl.textContent = `⭐ ${place.rating || '–'}`;
+
+  // Category pill
+  if (catEl) {
+    catEl.textContent = (place.cat || 'MIEJSCE').toUpperCase();
+    catEl.className = `gps-cat-pill cat-${place.cat || 'default'}`;
+  }
+
+  // Favorite button state
+  if (favBtn) {
+    favBtn.textContent = isFav ? '❤️' : '🤍';
+    favBtn.classList.toggle('active', isFav);
+  }
+
+  // Hero image or fallback gradient
+  if (heroEl && heroImg) {
+    if (place.image) {
+      heroImg.src = place.image;
+      heroImg.alt = place.name;
+      heroEl.style.display = 'block';
+    } else {
+      heroEl.style.display = 'none';
+    }
+  }
+
+  // Hours
+  if (hoursEl && hoursTextEl) {
+    hoursTextEl.textContent = status ? status.sub || place.hours : place.hours || 'Godziny nieznane';
+    hoursEl.style.display = place.hours ? 'flex' : 'none';
+  }
+
+  // Description
+  if (descEl) {
+    descEl.textContent = place.desc || '';
+  }
+
+  // Tags
+  if (tagsEl) {
+    if (place.tags && place.tags.length) {
+      tagsEl.innerHTML = place.tags.slice(0, 4).map(t => `<span class="gps-tag">#${t}</span>`).join('');
+      tagsEl.style.display = 'flex';
+    } else {
+      tagsEl.style.display = 'none';
+      tagsEl.innerHTML = '';
+    }
+  }
+
+  // Phone action
+  if (callBtn) {
+    if (place.phone) {
+      callBtn.style.display = 'inline-flex';
+      callBtn.onclick = () => { window.location.href = `tel:${place.phone}`; };
+    } else {
+      callBtn.style.display = 'none';
+      callBtn.onclick = null;
+    }
+  }
 
   if (statusEl) {
     if (status) {
@@ -482,6 +570,7 @@ function showGooglePlaceSheet(place) {
       statusEl.className = `gps-status ${status.open ? 'open' : 'closed'}`;
     } else {
       statusEl.textContent = '🟢 Otwarte';
+      statusEl.className = 'gps-status open';
     }
   }
 
@@ -502,9 +591,16 @@ function showGooglePlaceSheet(place) {
 
   sheet.classList.remove('hidden');
 
-  // Center slightly offset to accommodate the sheet
+  // Center with smart offset for Desktop Split-View vs Mobile Drawer
   if (state.map) {
+    const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
     state.map.panTo([place.coords[1], place.coords[0]], { animate: true, duration: 0.5 });
+    if (isDesktop) {
+      // Offset center 190px to right so marker is perfectly visible beside 380px left dock
+      setTimeout(() => {
+        if (state.map) state.map.panBy([-190, 0], { animate: true, duration: 0.3 });
+      }, 500);
+    }
   }
 }
 
@@ -526,10 +622,31 @@ function initGooglePlaceSheetEvents() {
   const navBtn = document.getElementById('gpsNavigateBtn');
   const detailsBtn = document.getElementById('gpsDetailsBtn');
   const shareBtn = document.getElementById('gpsShareBtn');
+  const favBtn = document.getElementById('gpsFavBtn');
 
-  if (closeBtn && sheet) {
-    closeBtn.addEventListener('click', () => {
-      sheet.classList.add('hidden');
+  if (closeBtn) {
+    closeBtn.onclick = (e) => {
+      if (e) e.stopPropagation();
+      closeGooglePlaceSheet();
+    };
+    closeBtn.addEventListener('click', (e) => {
+      if (e) e.stopPropagation();
+      closeGooglePlaceSheet();
+    });
+  }
+
+  if (favBtn) {
+    favBtn.addEventListener('click', () => {
+      if (!activePlaceForSheet) return;
+      const PE = window.placesEnhanced;
+      if (!PE) return;
+      const isFav = PE.toggleFavorite(activePlaceForSheet.id);
+      favBtn.textContent = isFav ? '❤️' : '🤍';
+      favBtn.classList.toggle('active', isFav);
+      showToast(isFav ? '❤️ Dodano do ulubionych' : '🤍 Usunięto z ulubionych');
+      if (state.showFavoritesOnly && state.currentSection === 'places') {
+        renderPlaces(state.searchQuery);
+      }
     });
   }
 
@@ -547,6 +664,7 @@ function initGooglePlaceSheetEvents() {
   if (detailsBtn) {
     detailsBtn.addEventListener('click', () => {
       if (!activePlaceForSheet) return;
+      closeGooglePlaceSheet();
       openPlaceModal(activePlaceForSheet.id);
     });
   }
@@ -567,7 +685,15 @@ function initGooglePlaceSheetEvents() {
       }
     });
   }
+
+  // Keyboard close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeGooglePlaceSheet();
+    }
+  });
 }
+window.initGooglePlaceSheetEvents = initGooglePlaceSheetEvents;
 
 let showOnlyOpenNow = false;
 
@@ -626,9 +752,6 @@ function filterMarkers(cat) {
 
 // ===== MAP CONTROLS (Leaflet-compatible) =====
 function initMapControls() {
-  const map = state.map;
-  if (!map) return;
-
   initGooglePlaceSheetEvents();
 
   // 'Otwarte teraz' toggle button
@@ -1032,13 +1155,16 @@ function initBottomSheet() {
     if (sheet.classList.contains('state-half')) {
       sheet.classList.remove('state-half');
       sheet.classList.add('state-full');
+      document.body.classList.add('sheet-open');
       if (toggleBtn) toggleBtn.textContent = 'Zwiń 🔽';
     } else if (sheet.classList.contains('state-full')) {
       sheet.classList.remove('state-full');
       sheet.classList.remove('state-half');
+      document.body.classList.remove('sheet-open');
       if (toggleBtn) toggleBtn.textContent = 'Rozwiń 🔼';
     } else {
       sheet.classList.add('state-half');
+      document.body.classList.add('sheet-open');
       if (toggleBtn) toggleBtn.textContent = 'Więcej 🔼';
     }
   }
@@ -1540,6 +1666,7 @@ function navigateTo(section) {
     } else {
       sheet.classList.add('hidden');
       sheet.classList.remove('state-half', 'state-full');
+      document.body.classList.remove('sheet-open');
       const toggleBtn = document.getElementById('sheetToggleBtn');
       if (toggleBtn) toggleBtn.textContent = 'Rozwiń 🔼';
     }
@@ -1747,6 +1874,7 @@ function flyToPlace(id) {
   const place = APP_DATA.places.find(p => p.id === id);
   if (!place || !state.map) return;
   navigateTo('map');
+  showGooglePlaceSheet(place);
   setTimeout(() => {
     const targetMarker = state.markers.find(m => m.placeData && m.placeData.id === id);
     const cluster = state.poiClusterGroup || (window.MAP_ENHANCEMENTS && window.MAP_ENHANCEMENTS.clusterGroup);
@@ -2676,8 +2804,11 @@ function notifyNearby(place, meters) {
 }
 
 function closeModal() {
-  document.getElementById('modalOverlay').classList.add('hidden');
-  document.getElementById('modalOverlay').style.display = 'none';
+  const overlay = document.getElementById('modalOverlay');
+  if (overlay) {
+    overlay.classList.add('hidden');
+    overlay.style.display = 'none';
+  }
   // Restore focus to the element that opened the modal
   if (state._lastFocusedElement) {
     state._lastFocusedElement.focus();
@@ -2686,6 +2817,8 @@ function closeModal() {
   // Remove keyboard trap
   document.removeEventListener('keydown', trapModalFocus);
 }
+window.closeModal = closeModal;
+window.openPlaceModal = openPlaceModal;
 
 // Focus trap for modal (accessibility)
 function trapModalFocus(e) {

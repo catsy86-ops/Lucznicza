@@ -3,9 +3,10 @@
 Nowoczesna, interaktywna aplikacja miejska i PWA (Progressive Web App) stworzona dla mieszkańców i gości osiedla Niebuszewo w Szczecinie (rejon ulic Łucznicza, Tarczowa, Kołłątaja i stacji SKM).
 
 **🌐 Live Production**: https://szn-theta.vercel.app  
-**📦 Wersja**: `v1.4.1` (Production Ready)  
+**📦 Wersja**: `v1.5.0` (Production Ready)  
 **🛡️ Dostępność**: 100% WCAG 2.1 AA (0 naruszeń Axe-Core)  
-**🧪 Testy**: 123/123 zdanych testów jednostkowych i integracyjnych (Vitest)  
+**🧪 Testy**: 123/123 zdanych testów Vitest + Pełna weryfikacja Puppeteer MCP  
+**📋 Raport UI/UX**: [MODAL_AND_UI_TESTS_REPORT.md](MODAL_AND_UI_TESTS_REPORT.md)  
 
 ---
 
@@ -48,6 +49,8 @@ Aplikacja nie wymaga żadnych płatnych tokenów ani zewnętrznych kluczy komerc
 
 | Moduł | Opis | Status |
 |---|---|---|
+| 🖥️ **Desktop Split-View Dock** | Boczny panel miejsca (380px) z inteligentnym offsetem kamery i zamykaniem na kliknięcie tła / Escape | ✅ Live |
+| ⚡ **Spotlight Command Palette** | Błyskawiczne wyszukiwanie `Ctrl+K` / `Cmd+K` / `/` miejsc, tras i przystanków z obsługą klawiatury | ✅ Live |
 | 🧭 **Google Maps Experience** | Pływający pasek szukania, chipsy kategorii, dolny arkusz gestowy (Bottom Sheet) | ✅ Live |
 | 📍 **45 Miejsc (POI)** | Punkty usługowe, gastronomia, sklepy, parki z godzinami otwarcia w czasie rzeczywistym | ✅ Live |
 | 🚶 **Trasy Spacerowe & GPX** | 6 tras ze śladami GPS i możliwością eksportu do Garmin, Strava i Komoot | ✅ Live |

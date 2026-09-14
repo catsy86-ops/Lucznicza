@@ -209,11 +209,28 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 
 ---
 
-### ✅ FAZA 6: Wdrożenie i Publikacja v1.0.0 – v1.4.1 [UKOŃCZONE 100%]
-- [x] **6.1. Pełny pakiet testów jednostkowych i integracyjnych (Vitest: 123/123 zdanych)**.
-- [x] **6.2. Weryfikacja produkcyjnego bundle Vite (`tsc && vite build`)**.
-- [x] **6.3. Zrealizowano priorytety audytu UI/UX oraz dostępności**.
-- [x] **6.4. Zaktualizowano dokumentację projektu (README.md, plan.md)**.
+#### ✅ SPRINT 9: Modernizacja UI Desktop/Mobile, Split-View Dock, Spotlight Palette & Naprawa Modali Mapy (v1.5.0) [UKOŃCZONE 100%]
+- [x] **9.1. Opcja A — Visual Polish & Glassmorphism**:
+  - Wdrożono portowo-osiedlową estetykę Glassmorphism (granat `#001738`, złoto `#FFD700`, karmin `#9E002B`).
+  - Rozwiązano problem nakładania się plakietki "Wyróżnione" i przycisku dodawania do ulubionych na kartach POI.
+  - Zastosowano płynne pigułki kategorii z horyzontalnym przewijaniem i maską zanikania.
+- [x] **9.2. Opcja B — Desktop Split-View Dock & Mobile Drawer (`.google-place-sheet`)**:
+  - Zbudowano boczny dok (380px) na desktopie oraz dolny arkusz gestowy na urządzeniach mobilnych.
+  - Dodano inteligentny offset kamery Leaflet (`panBy([-190, 0])`) zapobiegający zasłanianiu klikniętego punktu przez panel boczny.
+  - Wyświetlanie panoramicznych zdjęć, godzin otwarcia na żywo, odległości dynamicznej, nawigacji pieszej i udostępniania.
+- [x] **9.3. Opcja C — Spotlight Command Palette (`Ctrl+K` / `Cmd+K` / `/`)**:
+  - Globalna paleta poleceń szybkiego wyszukiwania miejsc, tras, przystanków ZDiTM oraz narzędzi z obsługą klawiatury i skrótów.
+- [x] **9.4. Naprawa Błędu Zamykania Modali na Mapie ("nie da się zamknąć modala na mapie")**:
+  - Wykryto i usunięto przedwczesny `return` w `initMapControls()` w `app.js` (wywoływany przy `DOMContentLoaded`, gdy `state.map` był jeszcze null).
+  - Wdrożono potrójne zabezpieczenie przycisku zamykania `#gpsClose` (inline `onclick`, property, `addEventListener`).
+  - Dodano automatyczne zamykanie karty po kliknięciu w tło mapy (`map.on('click')`) oraz po naciśnięciu klawisza `Escape`.
+  - Usunięto kolizję podwójnego popupu Leaflet na desktopie przy kliknięciu markera.
+  - Zabezpieczono zamykanie modala warstw (`#mapLayersModalOverlay`) i alertów obywatelskich.
+- [x] **9.5. Weryfikacja Testowa Puppeteer MCP**:
+  - Przeprowadzono testy w przeglądarce headless: kliknięcie markera -> otwarcie arkusza -> fizyczne kliknięcie `#gpsClose` -> potwierdzenie zamknięcia.
+  - Przetestowano zamykanie kliknięciem w tło canvasu mapy oraz klawiszem `Escape`.
+  - Wszystkie asercje (7/7) zakończone wynikiem pozytywnym (`true`).
+  - Wygenerowano szczegółowy raport w [`MODAL_AND_UI_TESTS_REPORT.md`](file:///C:/Users/catsy/OneDrive/Pulpit/szn/MODAL_AND_UI_TESTS_REPORT.md).
 
 ---
 
@@ -226,6 +243,8 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Maska Spotlight Niebuszewa** | 🟢 Gotowy | Odwrócony poligon wyciemniający tło | **GeoJSON / Leaflet** |
 | **Świetlny Kontur Granic** | 🟢 Gotowy | Barwy Pogoni Szczecin (#002D62 / #FFD700) | SVG / Leaflet Path |
 | **Presety Kamery Mapy** | 🟢 Gotowy | Szybki focus na kluczowe punkty osiedla | FlyTo Animacje |
+| **Desktop Split-View Dock** | 🟢 Gotowy | Boczny dok miejsca (380px) z offsetem | Czysty CSS/JS |
+| **Spotlight Command Palette** | 🟢 Gotowy | Globalne wyszukiwanie (`Ctrl+K` / `/`) | Czysty JS / A11y |
 | **Piny i Markery POI** | 🟢 Gotowy | Styl Google Pins, animacja hover | Brak |
 | **Niebieska kropka GPS** | 🟢 Gotowy | Wskaźnik z radarem dokładności | Wbudowane Geolocation API |
 | **Pasek szukania i Chipsy** | 🟢 Gotowy | Google Floating Searchbar & Filter Chips | Brak |
@@ -235,6 +254,7 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Eksport tras GPX** | 🟢 Gotowy | Pobieranie plików dla Garmin/Strava | XML / Blob API |
 | **Synchronizacja Ulubionych** | 🟢 Gotowy | Pamięć lokalna + subskrypcje | LocalStorage |
 | **Filtr Dostępności (A11y)** | 🟢 Gotowy | Wózki, rodziny, psy, rowery | TypeScript |
+| **Automatyczne Testy UI MCP** | 🟢 Gotowy | **Zamykanie modali i arkuszy (Puppeteer)** | Puppeteer MCP |
 | **Testy jednostkowe** | 🟢 Gotowy | **123/123 testów przechodzi (Vitest)** | Vitest |
 | **Dostępność (A11y)** | 🟢 Gotowy | **0 naruszeń (Axe-Core / WCAG 2.1 AA)** | @axe-core/cli |
 | **Migracja ESM / Vite** | 🟢 Gotowy | Zbudowano bundle produkcyjny (`dist/`) | Vite + TypeScript |

@@ -8,8 +8,8 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     expect(APP_CENTER[1]).toBeCloseTo(53.4559, 3); // Latitude
   });
 
-  it('contains all 47 POI places with required schema and coordinates', () => {
-    expect(PLACES.length).toBe(47);
+  it('contains all POI places with required schema and coordinates', () => {
+    expect(PLACES.length).toBe(53);
     for (const place of PLACES) {
       expect(place.id).toBeDefined();
       expect(place.name.length).toBeGreaterThan(0);
@@ -33,7 +33,7 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
   });
 
   it('contains walking routes with stops and coordinates path', () => {
-    expect(ROUTES.length).toBe(7);
+    expect(ROUTES.length).toBe(9);
     for (const route of ROUTES) {
       expect(route.id).toBeGreaterThanOrEqual(1);
       expect(route.name.length).toBeGreaterThan(0);
