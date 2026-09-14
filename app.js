@@ -166,16 +166,12 @@ function initMap() {
       maxZoom: 19
     });
 
-    // Esri Dark Gray Canvas — 100% Free, zero API key required, beautiful dark theme
-    const darkLayer = L.layerGroup([
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-        attribution: '© Esri',
-        maxZoom: 16
-      }),
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 16
-      })
-    ]);
+    // CartoDB Dark Matter — High-contrast, sharp midnight map up to zoom 20 (100% Free, zero API key)
+    const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap contributors, © CARTO',
+      subdomains: 'abcd',
+      maxZoom: 20
+    });
 
     // OpenStreetMap standard light layer — clean, crisp, 100% free
     const lightLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -944,6 +940,15 @@ function applyTheme(themeName) {
   state.isDark = themeName !== 'light';
   document.documentElement.setAttribute('data-theme', themeName);
   localStorage.setItem('lucznicza_theme', themeName);
+
+  // Synchronize map base layer if currently in standard day/night mode
+  if (state.map && state.baseLayers && state.currentBaseLayer) {
+    if (state.currentBaseLayer === 'osm' && (themeName === 'dark' || themeName === 'pogon')) {
+      switchMapLayer('dark');
+    } else if (state.currentBaseLayer === 'dark' && themeName === 'light') {
+      switchMapLayer('osm');
+    }
+  }
   
   const themeBtn = document.getElementById('themeBtn');
   if (themeBtn) {
@@ -1256,23 +1261,11 @@ function initGoogleMapControls() {
       if (!map || !state.baseLayers) return;
 
       if (state.currentBaseLayer === 'satellite') {
-        if (map.hasLayer(state.baseLayers.satellite)) {
-          map.removeLayer(state.baseLayers.satellite);
-        }
-        state.baseLayers.osm.addTo(map);
-        state.currentBaseLayer = 'osm';
-        thumbBtn.style.backgroundImage = "url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/10762/17709')";
-        if (thumbLabel) thumbLabel.textContent = 'SATELITA';
-        showToast('🗺️ Widok Mapy (OpenStreetMap)');
+        const isNight = state.isDark || state.currentTheme === 'dark' || state.currentTheme === 'pogon';
+        switchMapLayer(isNight ? 'dark' : 'osm');
+        showToast(isNight ? '🌙 Widok Nocny (CartoDB Dark)' : '🗺️ Widok Mapy (OpenStreetMap)');
       } else {
-        const currentLayer = state.baseLayers[state.currentBaseLayer];
-        if (currentLayer && map.hasLayer(currentLayer)) {
-          map.removeLayer(currentLayer);
-        }
-        state.baseLayers.satellite.addTo(map);
-        state.currentBaseLayer = 'satellite';
-        thumbBtn.style.backgroundImage = "url('https://a.tile.openstreetmap.org/15/17709/10762.png')";
-        if (thumbLabel) thumbLabel.textContent = 'MAPA';
+        switchMapLayer('satellite');
         showToast('🛰️ Widok Satelitarny HD (Esri)');
       }
     };
@@ -1468,8 +1461,11 @@ function switchMapLayer(styleKey) {
   const thumbLabel = document.getElementById('googleLayerThumbLabel');
   if (thumbBtn && thumbLabel) {
     if (styleKey === 'satellite') {
-      thumbBtn.style.backgroundImage = "url('https://a.tile.openstreetmap.org/15/17709/10762.png')";
-      thumbLabel.textContent = 'MAPA';
+      const isNight = state.isDark || state.currentTheme === 'dark' || state.currentTheme === 'pogon';
+      thumbBtn.style.backgroundImage = isNight
+        ? "url('https://a.basemaps.cartocdn.com/dark_all/15/17709/10762.png')"
+        : "url('https://a.tile.openstreetmap.org/15/17709/10762.png')";
+      thumbLabel.textContent = isNight ? 'NOC' : 'MAPA';
     } else {
       thumbBtn.style.backgroundImage = "url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/10762/17709')";
       thumbLabel.textContent = 'SATELITA';

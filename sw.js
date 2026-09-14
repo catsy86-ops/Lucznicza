@@ -101,6 +101,8 @@ self.addEventListener('fetch', e => {
 function isTileRequest(url) {
   return url.includes('tile.openstreetmap.org') ||
          url.includes('cyclosm.openstreetmap.fr') ||
+         url.includes('basemaps.cartocdn.com') ||
+         url.includes('cartocdn.com') ||
          url.includes('arcgisonline.com/ArcGIS');
 }
 

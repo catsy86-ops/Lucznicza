@@ -1,4 +1,4 @@
-﻿import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 
@@ -48,5 +48,23 @@ describe('Map Controls Dock, 6 Basemap Modes & Category Scroll Tests', () => {
     expect(uxJs).toContain('e.stopPropagation()');
     expect(uxJs).toContain('el.setPointerCapture');
     expect(styleCss).toContain('.widget-close-btn:hover');
+  });
+
+  it('verifies CartoDB Dark Matter layer integration, zoom 20, theme sync and SW caching', () => {
+    const swJs = fs.readFileSync(path.join(rootDir, 'sw.js'), 'utf8');
+
+    // CartoDB Dark Matter tile layer in app.js
+    expect(appJs).toContain('basemaps.cartocdn.com/dark_all');
+    expect(appJs).toContain('maxZoom: 20');
+
+    // Theme sync in app.js
+    expect(appJs).toContain("switchMapLayer('dark')");
+    expect(appJs).toContain("switchMapLayer('osm')");
+
+    // SW tile cache recognition
+    expect(swJs).toContain('cartocdn.com');
+
+    // HTML preconnect
+    expect(indexHtml).toContain('https://a.basemaps.cartocdn.com');
   });
 });

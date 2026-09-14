@@ -14,7 +14,7 @@ const MAP_PRO = {
   styleNames: {
     osm:       { label: 'OpenStreetMap', icon: '🌍' },
     satellite: { label: 'Satelita HD',  icon: '🛰️' },
-    dark:      { label: 'Ciemna (Esri)', icon: '🌙' },
+    dark:      { label: 'Ciemna (CartoDB)', icon: '🌙' },
     cyclosm:   { label: 'Rowerowa',     icon: '🚲' },
     voyager:   { label: 'Rowerowa',     icon: '🚲' },
     light:     { label: 'Jasna',        icon: '☀️' }

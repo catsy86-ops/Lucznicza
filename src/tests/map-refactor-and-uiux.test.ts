@@ -13,28 +13,27 @@ describe('Map Refactoring & UI/UX Designer Upgrade Test Suite', () => {
   const mapDarkModeJs = fs.readFileSync(path.join(rootDir, 'map-dark-mode.js'), 'utf8');
   const swJs = fs.readFileSync(path.join(rootDir, 'sw.js'), 'utf8');
 
-  // 1. Zero 'API key required' Tile Layers
-  it('ensures all map tile layers are 100% free and do not use cartocdn requiring API keys', () => {
+  // 1. Zero 'API key required' Tile Layers (OSM, Esri Satellite, CartoDB Dark Matter, CyclOSM)
+  it('ensures all map tile layers are 100% free with high resolution (CartoDB Dark Matter & Esri Satellite)', () => {
     // OpenStreetMap as default
     expect(appJs).toContain('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-    // Esri Satellite & Dark Canvas (100% free, 0 API keys)
+    // Esri Satellite & CartoDB Dark Matter (100% free, 0 API keys, up to zoom 20)
     expect(appJs).toContain('World_Imagery/MapServer');
-    expect(appJs).toContain('World_Dark_Gray_Base/MapServer');
+    expect(appJs).toContain('basemaps.cartocdn.com/dark_all');
     expect(appJs).toContain('tile-cyclosm.openstreetmap.fr');
-    expect(appJs).not.toContain('basemaps.cartocdn.com');
 
     // map-dark-mode.js uses keyless Esri and OSM
     expect(mapDarkModeJs).toContain('World_Dark_Gray_Base');
-    expect(mapDarkModeJs).not.toContain('basemaps.cartocdn.com');
 
     // map-pro.js includes keyless styles
-    expect(mapProJs).toContain('Ciemna (Esri)');
+    expect(mapProJs).toContain('Ciemna (CartoDB)');
     expect(mapProJs).toContain('Rowerowa');
     expect(mapProJs).toContain('OpenStreetMap');
 
-    // Service Worker caches open providers
+    // Service Worker caches open providers including CartoDB
     expect(swJs).toContain('tile.openstreetmap.org');
     expect(swJs).toContain('cyclosm.openstreetmap.fr');
+    expect(swJs).toContain('cartocdn.com');
     expect(swJs).toContain('arcgisonline.com/ArcGIS');
   });
 
