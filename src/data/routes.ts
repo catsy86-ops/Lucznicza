@@ -940,5 +940,77 @@ export const ROUTES: WalkingRoute[] = [
         53.45330
       ]
     ]
+  },
+  {
+    "id": 13,
+    "name": "Mistrzowie Dawnego Fachu — Szlak Rzemieślniczy",
+    "emoji": "🛠️",
+    "type": "walk",
+    "color": "#d35400",
+    "distance": "1.9 km",
+    "distanceNum": 1.9,
+    "time": "26 min",
+    "timeMin": 26,
+    "difficulty": "Łatwa",
+    "difficultyLevel": 1,
+    "calories": 115,
+    "terrain": "Chodnik miejski",
+    "bestTime": "Dni powszednie (10:00–16:00)",
+    "tags": [
+      "rzemiosło",
+      "szewc",
+      "zegarmistrz",
+      "introligator",
+      "usługi",
+      "kupujlokalnie",
+      "spacer"
+    ],
+    "desc": "Praktyczny i sentymentalny spacer po żywych warsztatach rzemieślniczych Niebuszewa. Szlak promuje lokalnych rzemieślników dbających o tradycyjne naprawy i renowacje: od pracowni szewskiej, przez mistrza zegarmistrza, aż po zabytkową introligatornię.",
+    "highlights": [
+      "Węzeł Kołłątaja",
+      "Mistrz Zegarmistrzowski (Kołłątaja 22)",
+      "Pracownia Szewsko-Kaletnicza (Długosza 12)",
+      "Tradycyjna Introligatornia (Niemcewicza 17)"
+    ],
+    "stops": [
+      {
+        "name": "Start: Węzeł Kołłątaja",
+        "addr": "al. Wyzwolenia / Kołłątaja",
+        "emoji": "🚋"
+      },
+      {
+        "name": "Mistrz Zegarmistrzowski",
+        "addr": "ul. Kołłątaja 22",
+        "emoji": "⌚"
+      },
+      {
+        "name": "Pracownia Szewsko-Kaletnicza",
+        "addr": "ul. Długosza 12",
+        "emoji": "👞"
+      },
+      {
+        "name": "Meta: Tradycyjna Introligatornia",
+        "addr": "ul. Niemcewicza 17",
+        "emoji": "📖"
+      }
+    ],
+    "coords": [
+      [
+        14.54480,
+        53.44720
+      ],
+      [
+        14.54590,
+        53.44760
+      ],
+      [
+        14.54520,
+        53.44780
+      ],
+      [
+        14.55120,
+        53.44960
+      ]
+    ]
   }
 ];

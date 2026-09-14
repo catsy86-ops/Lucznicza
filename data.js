@@ -807,6 +807,42 @@ const APP_DATA = {
       coords: [14.54890, 53.45330],
       rating: 4.9,
       tags: ['ogród', 'społeczny', 'łucznicza', 'tarczowa', 'zioła', 'bookcrossing', 'sąsiedzi', 'ekologia']
+    },
+    {
+      id: 64, cat: 'service',
+      name: 'Pracownia Szewsko-Kaletnicza z tradycją od 1978 r.',
+      addr: 'ul. Jana Długosza 12 / Wyzwolenia, Szczecin',
+      emoji: '👞',
+      desc: 'Autentyczny zakład szewski i kaletniczy prowadzony przez mistrza rzemiosła od ponad 45 lat. Ręczna naprawa obuwia, renowacja skór, szycie toreb i pasów z dbałością o każdy szew i detal. Żywa tradycja lokalnego rzemiosła.',
+      hours: 'Pon–Pt 09:00–17:00',
+      phone: null, website: null,
+      coords: [14.54520, 53.44780],
+      rating: 4.9,
+      tags: ['szewc', 'kaletnik', 'rzemiosło', 'naprawa', 'skóra', 'buty', 'długosza', 'tradycja', 'usługi']
+    },
+    {
+      id: 65, cat: 'service',
+      name: 'Mistrz Zegarmistrzowski Niebuszewo',
+      addr: 'ul. Hugona Kołłątaja 22, Szczecin',
+      emoji: '⌚',
+      desc: 'Tradycyjna pracownia zegarmistrzowska z zapachem oliwy zegarowej i miarowym tykaniem mechanizmów. Renowacja zabytkowych zegarów ściennych, kurantów, zegarków naręcznych mechanicznych i automatycznych.',
+      hours: 'Pon–Pt 10:00–18:00, Sob 10:00–13:00',
+      phone: null, website: null,
+      coords: [14.54590, 53.44760],
+      rating: 4.8,
+      tags: ['zegarmistrz', 'zegarki', 'mechanika', 'renowacja', 'kołłątaja', 'rzemiosło', 'precyzja']
+    },
+    {
+      id: 66, cat: 'service',
+      name: 'Tradycyjna Introligatornia & Druk Typograficzny',
+      addr: 'ul. Juliana Ursyna Niemcewicza 17, Szczecin',
+      emoji: '📖',
+      desc: 'Rzemieślnicza pracownia introligatorska zajmująca się ręczną oprawą ksiąg, renowacją starodruków, złoceniem brzegów i tradycyjnym tłoczeniem matrycowym. Miejsce pachnące papierem czerpanym i klejem kostnym.',
+      hours: 'Pon–Pt 08:30–16:30',
+      phone: null, website: null,
+      coords: [14.55120, 53.44960],
+      rating: 4.9,
+      tags: ['introligator', 'książki', 'oprawa', 'druk', 'papier', 'niemcewicza', 'rzemiosło', 'unikat']
     }
   ],
 
@@ -1220,6 +1256,42 @@ const APP_DATA = {
         [14.54365, 53.45100],
         [14.53210, 53.45180],
         [14.54890, 53.45330]
+      ]
+    },
+    {
+      id: 13,
+      name: 'Mistrzowie Dawnego Fachu — Szlak Rzemieślniczy',
+      emoji: '🛠️',
+      type: 'walk',
+      color: '#d35400',
+      distance: '1.9 km',
+      distanceNum: 1.9,
+      time: '26 min',
+      timeMin: 26,
+      difficulty: 'Łatwa',
+      difficultyLevel: 1,
+      calories: 115,
+      terrain: 'Chodnik miejski',
+      bestTime: 'Dni powszednie (10:00–16:00)',
+      tags: ['rzemiosło', 'szewc', 'zegarmistrz', 'introligator', 'usługi', 'kupujlokalnie', 'spacer'],
+      desc: 'Praktyczny i sentymentalny spacer po żywych warsztatach rzemieślniczych Niebuszewa. Szlak promuje lokalnych rzemieślników dbających o tradycyjne naprawy i renowacje: od pracowni szewskiej, przez mistrza zegarmistrza, aż po zabytkową introligatornię.',
+      highlights: [
+        'Węzeł Kołłątaja',
+        'Mistrz Zegarmistrzowski (Kołłątaja 22)',
+        'Pracownia Szewsko-Kaletnicza (Długosza 12)',
+        'Tradycyjna Introligatornia (Niemcewicza 17)'
+      ],
+      stops: [
+        { name: 'Start: Węzeł Kołłątaja', addr: 'al. Wyzwolenia / Kołłątaja', emoji: '🚋' },
+        { name: 'Mistrz Zegarmistrzowski', addr: 'ul. Kołłątaja 22', emoji: '⌚' },
+        { name: 'Pracownia Szewsko-Kaletnicza', addr: 'ul. Długosza 12', emoji: '👞' },
+        { name: 'Meta: Tradycyjna Introligatornia', addr: 'ul. Niemcewicza 17', emoji: '📖' }
+      ],
+      coords: [
+        [14.54480, 53.44720],
+        [14.54590, 53.44760],
+        [14.54520, 53.44780],
+        [14.55120, 53.44960]
       ]
     }
   ],
