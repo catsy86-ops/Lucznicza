@@ -230,25 +230,25 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 
 ---
 
-## 🗺️ Kompleksowy Plan Rozbudowy Nowych Punktów i Tras (Content Expansion Roadmap)
+## 🗺️ Kompleksowy Plan Rozbudowy Nowych Punktów i Tras (Content Expansion Roadmap) [UKOŃCZONE 100%]
 
-### 📌 Faza A: Historyczne Niebuszewo & Żydowskie Dziedzictwo Dzielnicy
-- **POI 58: Dawna Synagoga i Ośrodek Kultury Żydowskiej na Niebuszewie** (ul. Niemcewicza / Długosza) — historia powojennego osadnictwa żydowskiego w Szczecinie (tzw. "żydowski kwartał" w latach 1945–1950).
-- **POI 59: Cmentarz Żydowski przy ul. Ojca Beyzyma / Niemierzyńskiej** — zabytkowa nekropolia, pomnik pamięci i unikatowa architektura nagrobna.
-- **POI 60: Kamienica z Historycznym Zegarem Słonecznym** (ul. Kołłątaja / Kadłubka) — detal architektoniczny z początku XX wieku.
-- **Trasa 11: „Wielokulturowe Ślady Niebuszewa”** (walk, 2.8 km, 40 min) — szlak opowiadający o przedwojennych i powojennych mieszkańcach dzielnicy, łączący historyczne kamienice, dawne warsztaty rzemieślnicze i miejsca pamięci.
+### ✅ Faza A: Historyczne Niebuszewo & Żydowskie Dziedzictwo Dzielnicy [UKOŃCZONE]
+- [x] **POI 58: Dawny Ośrodek Kultury Żydowskiej & Dom Pereca** (ul. Niemcewicza / Długosza).
+- [x] **POI 59: Zabytkowy Cmentarz Żydowski & Miejsce Pamięci** (ul. Ojca Beyzyma / ul. Wendeńska).
+- [x] **POI 60: Zabytkowa Kamienica z Zegarem Słonecznym** (ul. Kołłątaja 31 / Kadłubka).
+- [x] **Trasa 11: „Wielokulturowe Ślady Niebuszewa”** (walk, 2.8 km, 40 min).
 
-### 🌳 Faza B: Przyroda, Punkty Widokowe & Dolina Niemierzyna
-- **POI 61: Dolina Potoku Osówka & Staw Niemierzyński** — malowniczy potok płynący przez Niebuszewo i Park Kasprowicza, oaza ptactwa wodnego i dzikiej przyrody.
-- **POI 62: Wzgórze Widokowe przy ul. Przyjaciół Żołnierza** — naturalne wzniesienie polodowcowe z panoramą na dachy Niebuszewa i stoczniowe żurawie.
-- **POI 63: Ogród Społeczny / Ekopunkt Sąsiedzki Niebuszewo** (rejon ul. Łuczniczej) — strefa permakultury i spotkań mieszkańców.
-- **Trasa 12: „Bieg wzdłuż Doliny Osówki”** (run/walk, 4.5 km, 30 min) — trasa crossowa łącząca Park Kadziaka, dolinę potoku Osówka i skraj Lasu Arkońskiego.
+### ✅ Faza B: Przyroda, Punkty Widokowe & Dolina Niemierzyna [UKOŃCZONE]
+- [x] **POI 61: Dolina Potoku Osówka & Kładka Niemierzyńska** (Park Kasprowicza / Osówka).
+- [x] **POI 62: Wzgórze Widokowe przy ul. Przyjaciół Żołnierza** (panorama Niebuszewa i stoczni).
+- [x] **POI 63: Ogród Społeczny & Sąsiedzki Zakątek Łucznicza** (ul. Łucznicza / Tarczowa).
+- [x] **Trasa 12: „Bieg i Spacer wzdłuż Doliny Osówki”** (run, 4.2 km, 28 min / spacer 50 min).
 
-### 🛠️ Faza C: Szlak Rzemieślników & Tradycyjnych Usług („Kupuj na Niebuszewie”)
-- **POI 64: Tradycyjny Szewc i Kaletnik z tradycją od 1978 r.** (ul. Długosza / Wyzwolenia).
-- **POI 65: Zegarmistrz Niebuszewski** (ul. Kołłątaja) — pracownia naprawy mechanicznych zegarów wahadłowych i naręcznych.
-- **POI 66: Introligatornia & Tradycyjna Drukarnia Typograficzna** (ul. Niemcewicza).
-- **Trasa 13: „Mistrzowie Dawnego Fachu”** (walk, 1.8 km, 25 min) — praktyczny szlak wspierający lokalne małe przedsiębiorstwa i ginące zawody.
+### ✅ Faza C: Szlak Rzemieślników & Tradycyjnych Usług („Kupuj na Niebuszewie”) [UKOŃCZONE]
+- [x] **POI 64: Pracownia Szewsko-Kaletnicza z tradycją od 1978 r.** (ul. Długosza 12).
+- [x] **POI 65: Mistrz Zegarmistrzowski Niebuszewo** (ul. Kołłątaja 22).
+- [x] **POI 66: Tradycyjna Introligatornia & Druk Typograficzny** (ul. Niemcewicza 17).
+- [x] **Trasa 13: „Mistrzowie Dawnego Fachu — Szlak Rzemieślniczy”** (walk, 1.9 km, 26 min).
 
 ---
 
@@ -263,8 +263,8 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Presety Kamery Mapy** | 🟢 Gotowy | Szybki focus na kluczowe punkty osiedla | FlyTo Animacje |
 | **Desktop Split-View Dock** | 🟢 Gotowy | Boczny dok miejsca (380px) z offsetem | Czysty CSS/JS |
 | **Spotlight Command Palette** | 🟢 Gotowy | Globalne wyszukiwanie (`Ctrl+K` / `/`) | Czysty JS / A11y |
-| **Piny i Markery POI (57 POI)** | 🟢 Gotowy | Styl Google Pins, animacja hover | Brak |
-| **Trasy Osiedlowe (10 Tras)** | 🟢 Gotowy | GPX, wysokości, czasy marszu | XML / Blob API |
+| **Piny i Markery POI (66 POI)** | 🟢 Gotowy | Styl Google Pins, animacja hover | Brak |
+| **Trasy Osiedlowe (13 Tras)** | 🟢 Gotowy | GPX, wysokości, czasy marszu | XML / Blob API |
 | **Stacja GIOŚ Szczecin (AQI)** | 🟢 Gotowy | Oficjalny monitoring powietrza 24/7 | GIOŚ API / Open-Meteo |
 | **Mobile Bottom Sheet** | 🟢 Gotowy | 3 stany wysuwania (Peek/Half/Full) | Czysty CSS/JS |
 | **Centralny Store** | 🟢 Gotowy | Reaktywny Pub/Sub, typowany TS | TypeScript |
