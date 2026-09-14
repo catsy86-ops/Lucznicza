@@ -2110,6 +2110,9 @@ function renderRouteCard(r, isFav) {
 
         <!-- Action buttons -->
         <div class="rc2-actions">
+          <button class="rc2-btn guide-me" onclick="startRouteGuide(${r.id})" title="Nawigacja krok po kroku z audioprzewodnikiem głosowym">
+            🎧 Idź ze mną
+          </button>
           <button class="rc2-btn primary" onclick="showRouteOnMap(${r.id})">
             🗺️ Pokaż na mapie
           </button>

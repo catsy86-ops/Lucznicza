@@ -122,3 +122,36 @@ describe('GeofenceRadarService Tests', () => {
     expect(ev2.length).toBe(0);
   });
 });
+
+describe('Active Route Guide "Idź ze mną" & Navigation Voice Tests', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const rootDir = path.resolve(__dirname, '../..');
+  const navJs = fs.readFileSync(path.join(rootDir, 'navigation.js'), 'utf8');
+  const appJs = fs.readFileSync(path.join(rootDir, 'app.js'), 'utf8');
+  const styleCss = fs.readFileSync(path.join(rootDir, 'style.css'), 'utf8');
+
+  it('verifies startRouteGuide and voice synthesis methods are exposed in navigation.js', () => {
+    expect(navJs).toContain('window.startRouteGuide = startRouteGuide;');
+    expect(navJs).toContain('window.toggleVoiceGuidance = toggleVoiceGuidance;');
+    expect(navJs).toContain('window.speakGuidance = speakGuidance;');
+    expect(navJs).toContain('SpeechSynthesisUtterance');
+    expect(navJs).toContain('pl-PL');
+  });
+
+  it('verifies proximity checks for route stops triggering spoken audio and story badges', () => {
+    expect(navJs).toContain('NAV_STATE.activeRoute');
+    expect(navJs).toContain('NAV_STATE.visitedStops');
+    expect(navJs).toContain('calcNavDist(lat, lon, stop.coords[0], stop.coords[1])');
+    expect(navJs).toContain('npRouteStory');
+    expect(navJs).toContain('Audioprzewodnik Trasy');
+  });
+
+  it('verifies "Idź ze mną" button is rendered in route cards in app.js with appropriate styling', () => {
+    expect(appJs).toContain('class="rc2-btn guide-me" onclick="startRouteGuide(${r.id})"');
+    expect(appJs).toContain('Idź ze mną');
+    expect(styleCss).toContain('.rc2-btn.guide-me');
+    expect(styleCss).toContain('.np-voice-btn');
+    expect(styleCss).toContain('.np-route-story');
+  });
+});

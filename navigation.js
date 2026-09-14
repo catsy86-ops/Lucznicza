@@ -14,8 +14,51 @@ const NAV_STATE = {
   currentStep: 0,
   watchId: null,
   destination: null,
-  panel: null
+  panel: null,
+  voiceEnabled: true,
+  lastSpokenText: '',
+  activeRoute: null,
+  activeRouteStopIndex: 0,
+  visitedStops: new Set()
 };
+
+// Voice synthesis helper for Polish speech
+function speakGuidance(text, force = false) {
+  if (!NAV_STATE.voiceEnabled && !force) return;
+  if (!text || text === NAV_STATE.lastSpokenText) return;
+  NAV_STATE.lastSpokenText = text;
+
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    try {
+      window.speechSynthesis.cancel();
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.lang = 'pl-PL';
+      utt.rate = 1.0;
+      utt.pitch = 1.05;
+      const voices = window.speechSynthesis.getVoices();
+      const plVoice = voices.find(v => v.lang.startsWith('pl'));
+      if (plVoice) utt.voice = plVoice;
+      window.speechSynthesis.speak(utt);
+    } catch (e) {
+      console.warn('[Navigation Voice] Speech synthesis error:', e);
+    }
+  }
+}
+
+function toggleVoiceGuidance() {
+  NAV_STATE.voiceEnabled = !NAV_STATE.voiceEnabled;
+  if (!NAV_STATE.voiceEnabled && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  const voiceBtn = document.getElementById('npVoiceBtn');
+  if (voiceBtn) {
+    voiceBtn.textContent = NAV_STATE.voiceEnabled ? '🔊 Dźwięk' : '🔇 Wycisz';
+    voiceBtn.classList.toggle('muted', !NAV_STATE.voiceEnabled);
+  }
+  showToast(NAV_STATE.voiceEnabled ? '🔊 Lektor głosowy włączony' : '🔇 Lektor wyciszony');
+}
+window.toggleVoiceGuidance = toggleVoiceGuidance;
+window.speakGuidance = speakGuidance;
 
 const OSRM_BASE = 'https://router.project-osrm.org/route/v1';
 
@@ -145,6 +188,9 @@ function renderNavPanel(destName, distKm, timeMin) {
     <div class="np-header">
       <div class="np-dest">🏁 ${destName}</div>
       <div class="np-meta">${remDist} km · ~${Math.round(remaining.reduce((s,r)=>s+r.duration,0)/60)} min</div>
+      <button id="npVoiceBtn" class="np-voice-btn ${NAV_STATE.voiceEnabled ? '' : 'muted'}" onclick="toggleVoiceGuidance()" title="Włącz/wyłącz lektora">
+        ${NAV_STATE.voiceEnabled ? '🔊 Głos' : '🔇 Wycisz'}
+      </button>
       <button class="np-close" onclick="stopNavigation(true)">✕</button>
     </div>
     ${step ? `
@@ -156,6 +202,12 @@ function renderNavPanel(destName, distKm, timeMin) {
         </div>
       </div>
     ` : '<div class="np-arrived">🎉 Dotarłeś do celu!</div>'}
+    ${NAV_STATE.activeRoute ? `
+      <div class="np-route-story" id="npRouteStory">
+        <span class="np-story-badge">🎧 Audioprzewodnik Trasy</span>
+        <span class="np-story-stop">Punkt: ${NAV_STATE.activeRoute.stops?.[NAV_STATE.activeRouteStopIndex]?.name || 'Trasa'}</span>
+      </div>
+    ` : ''}
     <div class="np-steps-list">
       ${NAV_STATE.steps.slice(NAV_STATE.currentStep, NAV_STATE.currentStep + 3).map((s, i) => `
         <div class="np-step-mini ${i === 0 ? 'current' : ''}">
@@ -171,7 +223,7 @@ function renderNavPanel(destName, distKm, timeMin) {
   `;
 }
 
-// ===== TRACKING =====
+// ===== TRACKING & POSITION UPDATE =====
 function startTracking() {
   if (NAV_STATE.watchId) navigator.geolocation.clearWatch(NAV_STATE.watchId);
   NAV_STATE.watchId = navigator.geolocation.watchPosition(
@@ -185,20 +237,88 @@ function updatePosition(lat, lon) {
   if (!NAV_STATE.active || !NAV_STATE.destination) return;
   const map = window.state?.map;
 
-  // Check if arrived
+  // Check if arrived at main destination
   const dist = calcNavDist(lat, lon, NAV_STATE.destination.lat, NAV_STATE.destination.lon);
   if (dist < 0.03) { // 30m
+    speakGuidance(`Dotarłeś do celu: ${NAV_STATE.destination.name}! Gratulacje.`);
     showToast('🎉 Dotarłeś do celu!');
     stopNavigation(true);
     return;
   }
 
-  // Update step based on proximity
+  // Active Route Guided Tour Proximity Check (Stops along the route)
+  if (NAV_STATE.activeRoute && Array.isArray(NAV_STATE.activeRoute.stops)) {
+    NAV_STATE.activeRoute.stops.forEach((stop, idx) => {
+      if (!NAV_STATE.visitedStops.has(stop.name)) {
+        const sDist = calcNavDist(lat, lon, stop.coords[0], stop.coords[1]);
+        if (sDist < 0.035) { // 35m proximity
+          NAV_STATE.visitedStops.add(stop.name);
+          NAV_STATE.activeRouteStopIndex = idx;
+          const speechText = `Zbliżasz się do punktu: ${stop.name}. ${stop.desc || stop.addr || ''}`;
+          speakGuidance(speechText);
+          showToast(`🎧 ${stop.emoji || '📍'} Punkt trasy: ${stop.name}`);
+          const storyEl = document.getElementById('npRouteStory');
+          if (storyEl) {
+            storyEl.innerHTML = `<span class="np-story-badge">🎧 Dotarłeś do: ${stop.name}</span>`;
+          }
+        }
+      }
+    });
+  }
+
+  // Update navigation step based on proximity
   if (NAV_STATE.steps.length > NAV_STATE.currentStep + 1) {
+    const nextStep = NAV_STATE.steps[NAV_STATE.currentStep + 1];
     NAV_STATE.currentStep++;
     if (NAV_STATE.panel) renderNavPanel(NAV_STATE.destination.name, dist.toFixed(2), Math.round(dist * 12));
+    if (nextStep && nextStep.instruction) {
+      speakGuidance(nextStep.instruction);
+    }
   }
 }
+
+// ===== ACTIVE ROUTE AUDIO GUIDE: "IDŹ ZE MNĄ" =====
+async function startRouteGuide(routeId) {
+  const route = window.APP_DATA?.routes?.find(r => r.id === routeId);
+  if (!route) {
+    showToast('❌ Nie znaleziono trasy');
+    return;
+  }
+
+  if (!route.stops || !route.stops.length) {
+    showToast('⚠️ Ta trasa nie ma zdefiniowanych punktów kontrolnych');
+    return;
+  }
+
+  if (window.navigateTo) window.navigateTo('map');
+
+  const firstStop = route.stops[0];
+  const lastStop = route.stops[route.stops.length - 1];
+
+  NAV_STATE.activeRoute = route;
+  NAV_STATE.activeRouteStopIndex = 0;
+  NAV_STATE.visitedStops = new Set();
+
+  showToast(`🎧 Uruchomiono tryb "Idź ze mną": ${route.name}`);
+  speakGuidance(`Rozpoczynamy przewodnik po trasie: ${route.name}. Udaj się do pierwszego punktu: ${firstStop.name}.`, true);
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async pos => {
+        const { latitude: lat, longitude: lon } = pos.coords;
+        await buildRoute(lat, lon, lastStop.coords[0], lastStop.coords[1], `${route.name} (Meta)`);
+      },
+      async () => {
+        // Fallback from first stop to last stop
+        await buildRoute(firstStop.coords[0], firstStop.coords[1], lastStop.coords[0], lastStop.coords[1], `${route.name} (Meta)`);
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+    );
+  } else {
+    await buildRoute(firstStop.coords[0], firstStop.coords[1], lastStop.coords[0], lastStop.coords[1], `${route.name} (Meta)`);
+  }
+}
+window.startRouteGuide = startRouteGuide;
 
 function calcNavDist(lat1, lon1, lat2, lon2) {
   const R = 6371;
@@ -224,6 +344,13 @@ function stopNavigation(showMsg = true) {
   NAV_STATE.watchId = null;
   NAV_STATE.panel = null;
   NAV_STATE.steps = [];
+  NAV_STATE.activeRoute = null;
+  NAV_STATE.activeRouteStopIndex = 0;
+  NAV_STATE.visitedStops.clear();
+  NAV_STATE.lastSpokenText = '';
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    try { window.speechSynthesis.cancel(); } catch {}
+  }
 
   if (showMsg) showToast('🗺️ Nawigacja zakończona');
 }
