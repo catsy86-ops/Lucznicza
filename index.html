@@ -366,6 +366,20 @@
                 <small>Klub sąsiedzki, debaty i zimne piwo</small>
               </div>
             </button>
+            <button class="idm-item" data-action="quest" style="background: rgba(255, 215, 0, 0.12); border: 1px solid rgba(255, 215, 0, 0.4);">
+              <span class="idm-icon">🧭</span>
+              <div class="idm-text">
+                <strong style="color: #FFD700;">Gra Miejska: Odkrywca Niebuszewa</strong>
+                <small>Zagadki, punkty EXP i sekrety dzielnicy</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="feedback" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.4);">
+              <span class="idm-icon">💬</span>
+              <div class="idm-text">
+                <strong style="color: #10b981;">Zgłoś Uwagę Testera (Beta)</strong>
+                <small>Błędy, pomysły i opinie o aplikacji</small>
+              </div>
+            </button>
             <button class="idm-item" data-action="ogloszenia">
               <span class="idm-icon">📜</span>
               <div class="idm-text">
@@ -664,10 +678,13 @@
             <button class="filter-tab" data-filter="edu">Edukacja</button>
           </div>
 
-          <!-- Toolbar: sortowanie + ulubione -->
+          <!-- Toolbar: sortowanie + ulubione + otwarte teraz -->
           <div class="places-toolbar">
             <div class="places-count" id="placesCount"></div>
             <div class="places-tools">
+              <button class="places-tool-btn" id="openNowToggleBtn" title="Pokaż tylko otwarte teraz">
+                🟢 Otwarte teraz
+              </button>
               <button class="places-tool-btn" id="favToggleBtn" title="Pokaż ulubione">
                 🤍 Ulubione
               </button>
@@ -1427,6 +1444,10 @@
   <script src="poi-radar-compass.js"></script>
   <script src="street-viewer.js"></script>
   <script src="custom-route-builder.js"></script>
+  <script src="niebuszewo-quest.js"></script>
+  <script src="route-elevation.js"></script>
+  <script src="offline-tour-packager.js"></script>
+  <script src="tester-feedback.js"></script>
   <script src="search.js"></script>
   <script src="place-images.js"></script>
   <script src="user-profile.js"></script>

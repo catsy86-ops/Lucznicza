@@ -248,18 +248,24 @@ function updatePosition(lat, lon) {
 
   // Active Route Guided Tour Proximity Check (Stops along the route)
   if (NAV_STATE.activeRoute && Array.isArray(NAV_STATE.activeRoute.stops)) {
+    const routeCoords = NAV_STATE.activeRoute.coords || [];
     NAV_STATE.activeRoute.stops.forEach((stop, idx) => {
       if (!NAV_STATE.visitedStops.has(stop.name)) {
-        const sDist = calcNavDist(lat, lon, stop.coords[0], stop.coords[1]);
-        if (sDist < 0.035) { // 35m proximity
-          NAV_STATE.visitedStops.add(stop.name);
-          NAV_STATE.activeRouteStopIndex = idx;
-          const speechText = `Zbliżasz się do punktu: ${stop.name}. ${stop.desc || stop.addr || ''}`;
-          speakGuidance(speechText);
-          showToast(`🎧 ${stop.emoji || '📍'} Punkt trasy: ${stop.name}`);
-          const storyEl = document.getElementById('npRouteStory');
-          if (storyEl) {
-            storyEl.innerHTML = `<span class="np-story-badge">🎧 Dotarłeś do: ${stop.name}</span>`;
+        if (!stop.coords && routeCoords[idx]) {
+          stop.coords = [routeCoords[idx][1], routeCoords[idx][0]];
+        }
+        if (stop.coords) {
+          const sDist = calcNavDist(lat, lon, stop.coords[0], stop.coords[1]);
+          if (sDist < 0.035) { // 35m proximity
+            NAV_STATE.visitedStops.add(stop.name);
+            NAV_STATE.activeRouteStopIndex = idx;
+            const speechText = `Zbliżasz się do punktu: ${stop.name}. ${stop.desc || stop.addr || ''}`;
+            speakGuidance(speechText);
+            showToast(`🎧 ${stop.emoji || '📍'} Punkt trasy: ${stop.name}`);
+            const storyEl = document.getElementById('npRouteStory');
+            if (storyEl) {
+              storyEl.innerHTML = `<span class="np-story-badge">🎧 Dotarłeś do: ${stop.name}</span>`;
+            }
           }
         }
       }
@@ -295,6 +301,10 @@ async function startRouteGuide(routeId) {
   const firstStop = route.stops[0];
   const lastStop = route.stops[route.stops.length - 1];
 
+  // Coords fallback: stop.coords [lat, lng] or route.coords [lng, lat]
+  const firstCoords = firstStop.coords || (route.coords?.[0] ? [route.coords[0][1], route.coords[0][0]] : [53.45399, 14.54773]);
+  const lastCoords = lastStop.coords || (route.coords?.[route.coords.length - 1] ? [route.coords[route.coords.length - 1][1], route.coords[route.coords.length - 1][0]] : [53.452, 14.551]);
+
   NAV_STATE.activeRoute = route;
   NAV_STATE.activeRouteStopIndex = 0;
   NAV_STATE.visitedStops = new Set();
@@ -306,16 +316,16 @@ async function startRouteGuide(routeId) {
     navigator.geolocation.getCurrentPosition(
       async pos => {
         const { latitude: lat, longitude: lon } = pos.coords;
-        await buildRoute(lat, lon, lastStop.coords[0], lastStop.coords[1], `${route.name} (Meta)`);
+        await buildRoute(lat, lon, lastCoords[0], lastCoords[1], `${route.name} (Meta)`);
       },
       async () => {
         // Fallback from first stop to last stop
-        await buildRoute(firstStop.coords[0], firstStop.coords[1], lastStop.coords[0], lastStop.coords[1], `${route.name} (Meta)`);
+        await buildRoute(firstCoords[0], firstCoords[1], lastCoords[0], lastCoords[1], `${route.name} (Meta)`);
       },
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+      { enableHighAccuracy: false, timeout: 2500, maximumAge: 60000 }
     );
   } else {
-    await buildRoute(firstStop.coords[0], firstStop.coords[1], lastStop.coords[0], lastStop.coords[1], `${route.name} (Meta)`);
+    await buildRoute(firstCoords[0], firstCoords[1], lastCoords[0], lastCoords[1], `${route.name} (Meta)`);
   }
 }
 window.startRouteGuide = startRouteGuide;

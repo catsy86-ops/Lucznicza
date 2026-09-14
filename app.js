@@ -14,7 +14,8 @@ const state = {
   flyInterval: null,
   searchQuery: '',
   sortBy: 'default',      // default | rating | distance | name
-  showFavoritesOnly: false
+  showFavoritesOnly: false,
+  showOnlyOpenNow: false
 };
 
 // Expose state globally for other modules
@@ -765,10 +766,17 @@ function initMapControls() {
   if (openNowBtn) {
     openNowBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      showOnlyOpenNow = !showOnlyOpenNow;
-      openNowBtn.classList.toggle('active', showOnlyOpenNow);
+      state.showOnlyOpenNow = !state.showOnlyOpenNow;
+      showOnlyOpenNow = state.showOnlyOpenNow;
+      openNowBtn.classList.toggle('active', state.showOnlyOpenNow);
+
+      // Synchronize places list toggle button if exists
+      const listOpenBtn = document.getElementById('openNowToggleBtn');
+      if (listOpenBtn) listOpenBtn.classList.toggle('active', state.showOnlyOpenNow);
+
       filterMarkers();
-      showToast(showOnlyOpenNow ? '🟢 Filtruję: Tylko otwarte teraz' : '⚪ Pokazuję wszystkie godziny');
+      if (state.currentSection === 'places') renderPlaces(state.searchQuery);
+      showToast(state.showOnlyOpenNow ? '🟢 Filtruję: Tylko otwarte teraz' : '⚪ Pokazuję wszystkie godziny');
     });
   }
 
@@ -1081,6 +1089,18 @@ function executeIslandAction(action) {
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 200);
       showToast('🍻 Witaj w Pubie Klatka pod 39! Zimne piwko czeka!');
+      break;
+    case 'quest':
+      if (window.NiebuszewoQuest) {
+        window.NiebuszewoQuest.open();
+        showToast('🧭 Odkrywca Niebuszewa — Gra Miejska & Quiz');
+      }
+      break;
+    case 'feedback':
+      if (window.TesterFeedback) {
+        window.TesterFeedback.open();
+        showToast('🧪 Zgłoś uwagę lub błąd w wersji beta');
+      }
       break;
     case 'ogloszenia':
       navigateTo('szczecin');
@@ -1543,6 +1563,23 @@ function initPlacesToolbar() {
     });
   }
 
+  const openNowToggleBtn = document.getElementById('openNowToggleBtn');
+  if (openNowToggleBtn) {
+    openNowToggleBtn.addEventListener('click', () => {
+      state.showOnlyOpenNow = !state.showOnlyOpenNow;
+      showOnlyOpenNow = state.showOnlyOpenNow;
+      openNowToggleBtn.classList.toggle('active', state.showOnlyOpenNow);
+      
+      // Synchronize map button if present
+      const mapOpenBtn = document.getElementById('catOpenNowBtn');
+      if (mapOpenBtn) mapOpenBtn.classList.toggle('active', state.showOnlyOpenNow);
+      if (typeof filterMarkers === 'function') filterMarkers();
+
+      renderPlaces(state.searchQuery);
+      showToast(state.showOnlyOpenNow ? '🟢 Pokazuję tylko otwarte miejsca' : '⚪ Pokazuję wszystkie miejsca');
+    });
+  }
+
   const favToggleBtn = document.getElementById('favToggleBtn');
   if (favToggleBtn) {
     favToggleBtn.addEventListener('click', () => {
@@ -1628,9 +1665,11 @@ function navigateTo(section) {
     // Smooth scroll to top of section
     target.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Render dynamic sections: pogon|szczecin and bikes
-    if (/pogon|szczecin/.test(section) || section === 'bikes') {
-      if (section === 'pogon') {
+    // Render dynamic sections: pogon|szczecin, bikes and places
+    if (/pogon|szczecin/.test(section) || section === 'bikes' || section === 'places') {
+      if (section === 'places') {
+        renderPlaces(state.searchQuery);
+      } else if (section === 'pogon') {
         if (window.PogonFeature?.render) window.PogonFeature.render();
       } else if (section === 'szczecin') {
         if (window.SzczecinLocalFlavor?.render) window.SzczecinLocalFlavor.render(true);
@@ -1729,6 +1768,13 @@ function renderPlaces(query = '') {
   // Filter favorites
   if (state.showFavoritesOnly && PE) {
     places = places.filter(p => PE.isFavorite(p.id));
+  }
+  // Filter open now
+  if (state.showOnlyOpenNow && PE) {
+    places = places.filter(p => {
+      const status = PE.getOpenStatus(p);
+      return status ? status.open : true;
+    });
   }
   // Search
   if (query) {
@@ -2133,6 +2179,12 @@ function renderRouteCard(r, isFav) {
           </button>
           <button class="rc2-btn timer ${routeState.timerRouteId === r.id ? 'active' : ''}" id="timer-btn-${r.id}" onclick="toggleRouteTimer(${r.id})">
             ${routeState.timerRouteId === r.id ? '⏹ Stop' : '▶ Start trasy'}
+          </button>
+          <button class="rc2-btn elev" onclick="RouteElevation.open(${r.id})" title="Zobacz profil wysokościowy, przewyższenia i spadki na trasie">
+            ⛰️ Profil
+          </button>
+          <button class="rc2-btn offline-pkg ${window.OfflineTourPackager?.isPackageDownloaded(r.id) ? 'active' : ''}" id="offline-pkg-btn-${r.id}" onclick="OfflineTourPackager.togglePackage(${r.id})" title="${window.OfflineTourPackager?.isPackageDownloaded(r.id) ? 'Trasa pobrana offline. Kliknij, aby usunąć.' : 'Pobierz trasę i kafelki mapy do pamięci offline'}">
+            ${window.OfflineTourPackager?.isPackageDownloaded(r.id) ? '💾 Offline' : '📥 Pobierz Offline'}
           </button>
           <button class="rc2-btn gpx" onclick="downloadRouteGpx(${r.id})" title="Pobierz plik GPX do Garmina, Stravy lub Komoot">
             📥 GPX
