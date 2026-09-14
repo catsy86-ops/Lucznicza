@@ -735,6 +735,42 @@ const APP_DATA = {
       coords: [14.54280, 53.44850],
       rating: 4.6,
       tags: ['architektura', 'zabytki', 'kamienice', 'historia', 'willa', 'szczecin', 'spacer']
+    },
+    {
+      id: 58, cat: 'edu',
+      name: 'Dawny Ośrodek Kultury Żydowskiej & Dom Pereca',
+      addr: 'ul. Juliana Ursyna Niemcewicza 2 / Długosza, Szczecin',
+      emoji: '📜',
+      desc: 'Kluczowe miejsce powojennej historii Niebuszewa (lata 1945–1950), gdy dzielnica stanowiła unikalne w skali Europy centrum osadnictwa żydowskiego. Działały tu szkoły, spółdzielnie pracy, teatr oraz dom kultury im. I. L. Pereca.',
+      hours: 'Tablica pamiątkowa i widok całodobowo',
+      phone: null, website: null,
+      coords: [14.54910, 53.44880],
+      rating: 4.8,
+      tags: ['historia', 'perec', 'niemcewicza', 'kultura', 'dziedzictwo', 'zabytki', 'niebuszewo', 'pamięć']
+    },
+    {
+      id: 59, cat: 'park',
+      name: 'Zabytkowy Cmentarz Żydowski & Miejsce Pamięci',
+      addr: 'ul. Ojca Beyzyma / ul. Wendeńska, Szczecin',
+      emoji: '🌿',
+      desc: 'Zabytkowa nekropolia założona w 1821 roku. Oaza ciszy i zieleni pośród zabytkowego starodrzewu dębów i buków, z zachowanymi macewami i lapidarium upamiętniającym dawnych mieszkańców Szczecina.',
+      hours: 'Otwarte w ciągu dnia (wstęp wolny)',
+      phone: null, website: null,
+      coords: [14.53610, 53.44680],
+      rating: 4.7,
+      tags: ['cmentarz', 'lapidarium', 'historia', 'zabytki', 'pamięć', 'drzewa', 'cisza', 'spacer']
+    },
+    {
+      id: 60, cat: 'edu',
+      name: 'Zabytkowa Kamienica z Zegarem Słonecznym',
+      addr: 'ul. Hugona Kołłątaja 31 / Kadłubka, Szczecin',
+      emoji: '☀️',
+      desc: 'Wspaniała secesyjna kamienica z 1904 roku z unikatowym zegarem słonecznym na elewacji frontowej oraz bogatą sztukaterią przedstawiającą motywy roślinne i alegoryczne. Perła architektury u wrót Niebuszewa.',
+      hours: 'Widok z ulicy całodobowo',
+      phone: null, website: null,
+      coords: [14.54650, 53.44810],
+      rating: 4.9,
+      tags: ['kamienica', 'zegar', 'architektura', 'secesja', 'kołłątaja', 'sztuka', 'detal', 'zabytek']
     }
   ],
 
@@ -1076,6 +1112,42 @@ const APP_DATA = {
         [14.53750, 53.45040],
         [14.53980, 53.45010],
         [14.54280, 53.44850]
+      ]
+    },
+    {
+      id: 11,
+      name: 'Wielokulturowe Ślady Niebuszewa',
+      emoji: '📜',
+      type: 'walk',
+      color: '#e67e22',
+      distance: '2.8 km',
+      distanceNum: 2.8,
+      time: '40 min',
+      timeMin: 40,
+      difficulty: 'Łatwa',
+      difficultyLevel: 1,
+      calories: 175,
+      terrain: 'Chodnik + alejki',
+      bestTime: 'Popołudnie (14:00–18:00)',
+      tags: ['historia', 'wielokulturowość', 'pamięć', 'kamienice', 'zegarsłoneczny', 'perec', 'szlak'],
+      desc: 'Fascynująca podróż w głąb wielokulturowej historii dzielnicy z lat 1945–1950 oraz początków XX wieku. Szlak prowadzi od secesyjnej kamienicy z zegarem słonecznym przy Kołłątaja, przez dawny Dom Kultury im. Pereca przy Niemcewicza, aż po zabytkową nekropolię i lapidarium przy Beyzyma.',
+      highlights: [
+        'Kamienica z Zegarem Słonecznym (1904 r.)',
+        'Dawny Ośrodek Kultury Żydowskiej & Dom Pereca',
+        'Przedwojenne Kamienice przy ul. Długosza',
+        'Zabytkowy Cmentarz Żydowski & Lapidarium'
+      ],
+      stops: [
+        { name: 'Start: Kamienica z Zegarem Słonecznym', addr: 'ul. Kołłątaja 31', emoji: '☀️' },
+        { name: 'Dom Pereca & Ośrodek Kultury', addr: 'ul. Niemcewicza 2', emoji: '📜' },
+        { name: 'Willa Karkutsch & Kamienice', addr: 'ul. Niemierzyńska / Długosza', emoji: '🏛️' },
+        { name: 'Meta: Zabytkowy Cmentarz & Lapidarium', addr: 'ul. Beyzyma / Wendeńska', emoji: '🌿' }
+      ],
+      coords: [
+        [14.54650, 53.44810],
+        [14.54910, 53.44880],
+        [14.54280, 53.44850],
+        [14.53610, 53.44680]
       ]
     }
   ],

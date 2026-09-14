@@ -9,7 +9,7 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
   });
 
   it('contains all POI places with required schema and coordinates', () => {
-    expect(PLACES.length).toBe(57);
+    expect(PLACES.length).toBe(60);
     for (const place of PLACES) {
       expect(place.id).toBeDefined();
       expect(place.name.length).toBeGreaterThan(0);
@@ -34,10 +34,14 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     const muzeum = PLACES.find(p => p.name.includes('Muzeum Techniki i Komunikacji'));
     expect(muzeum).toBeDefined();
     expect(muzeum?.cat).toBe('edu');
+
+    const perec = PLACES.find(p => p.name.includes('Dom Pereca'));
+    expect(perec).toBeDefined();
+    expect(perec?.cat).toBe('edu');
   });
 
   it('contains walking routes with stops and coordinates path', () => {
-    expect(ROUTES.length).toBe(10);
+    expect(ROUTES.length).toBe(11);
     for (const route of ROUTES) {
       expect(route.id).toBeGreaterThanOrEqual(1);
       expect(route.name.length).toBeGreaterThan(0);
@@ -52,6 +56,10 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     const szlakNiemierzyn = ROUTES.find(r => r.name.includes('Szlak Niemierzyński'));
     expect(szlakNiemierzyn).toBeDefined();
     expect(szlakNiemierzyn?.id).toBe(10);
+
+    const szlakWielokulturowy = ROUTES.find(r => r.name.includes('Wielokulturowe Ślady'));
+    expect(szlakWielokulturowy).toBeDefined();
+    expect(szlakWielokulturowy?.id).toBe(11);
   });
 
   it('contains verified community events', () => {

@@ -1296,5 +1296,83 @@ export const PLACES: PlacePOI[] = [
       "szczecin",
       "spacer"
     ]
+  },
+  {
+    "id": 58,
+    "cat": "edu",
+    "name": "Dawny Ośrodek Kultury Żydowskiej & Dom Pereca",
+    "addr": "ul. Juliana Ursyna Niemcewicza 2 / Długosza, Szczecin",
+    "emoji": "📜",
+    "desc": "Kluczowe miejsce powojennej historii Niebuszewa (lata 1945–1950), gdy dzielnica stanowiła unikalne w skali Europy centrum osadnictwa żydowskiego. Działały tu szkoły, spółdzielnie pracy, teatr oraz dom kultury im. I. L. Pereca.",
+    "hours": "Tablica pamiątkowa i widok całodobowo",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.54910,
+      53.44880
+    ],
+    "rating": 4.8,
+    "tags": [
+      "historia",
+      "perec",
+      "niemcewicza",
+      "kultura",
+      "dziedzictwo",
+      "zabytki",
+      "niebuszewo",
+      "pamięć"
+    ]
+  },
+  {
+    "id": 59,
+    "cat": "park",
+    "name": "Zabytkowy Cmentarz Żydowski & Miejsce Pamięci",
+    "addr": "ul. Ojca Beyzyma / ul. Wendeńska, Szczecin",
+    "emoji": "🌿",
+    "desc": "Zabytkowa nekropolia założona w 1821 roku. Oaza ciszy i zieleni pośród zabytkowego starodrzewu dębów i buków, z zachowanymi macewami i lapidarium upamiętniającym dawnych mieszkańców Szczecina.",
+    "hours": "Otwarte w ciągu dnia (wstęp wolny)",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.53610,
+      53.44680
+    ],
+    "rating": 4.7,
+    "tags": [
+      "cmentarz",
+      "lapidarium",
+      "historia",
+      "zabytki",
+      "pamięć",
+      "drzewa",
+      "cisza",
+      "spacer"
+    ]
+  },
+  {
+    "id": 60,
+    "cat": "edu",
+    "name": "Zabytkowa Kamienica z Zegarem Słonecznym",
+    "addr": "ul. Hugona Kołłątaja 31 / Kadłubka, Szczecin",
+    "emoji": "☀️",
+    "desc": "Wspaniała secesyjna kamienica z 1904 roku z unikatowym zegarem słonecznym na elewacji frontowej oraz bogatą sztukaterią przedstawiającą motywy roślinne i alegoryczne. Perła architektury u wrót Niebuszewa.",
+    "hours": "Widok z ulicy całodobowo",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.54650,
+      53.44810
+    ],
+    "rating": 4.9,
+    "tags": [
+      "kamienica",
+      "zegar",
+      "architektura",
+      "secesja",
+      "kołłątaja",
+      "sztuka",
+      "detal",
+      "zabytek"
+    ]
   }
 ];

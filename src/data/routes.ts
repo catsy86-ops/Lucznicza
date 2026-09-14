@@ -796,5 +796,77 @@ export const ROUTES: WalkingRoute[] = [
         53.44850
       ]
     ]
+  },
+  {
+    "id": 11,
+    "name": "Wielokulturowe Ślady Niebuszewa",
+    "emoji": "📜",
+    "type": "walk",
+    "color": "#e67e22",
+    "distance": "2.8 km",
+    "distanceNum": 2.8,
+    "time": "40 min",
+    "timeMin": 40,
+    "difficulty": "Łatwa",
+    "difficultyLevel": 1,
+    "calories": 175,
+    "terrain": "Chodnik + alejki",
+    "bestTime": "Popołudnie (14:00–18:00)",
+    "tags": [
+      "historia",
+      "wielokulturowość",
+      "pamięć",
+      "kamienice",
+      "zegarsłoneczny",
+      "perec",
+      "szlak"
+    ],
+    "desc": "Fascynująca podróż w głąb wielokulturowej historii dzielnicy z lat 1945–1950 oraz początków XX wieku. Szlak prowadzi od secesyjnej kamienicy z zegarem słonecznym przy Kołłątaja, przez dawny Dom Kultury im. Pereca przy Niemcewicza, aż po zabytkową nekropolię i lapidarium przy Beyzyma.",
+    "highlights": [
+      "Kamienica z Zegarem Słonecznym (1904 r.)",
+      "Dawny Ośrodek Kultury Żydowskiej & Dom Pereca",
+      "Przedwojenne Kamienice przy ul. Długosza",
+      "Zabytkowy Cmentarz Żydowski & Lapidarium"
+    ],
+    "stops": [
+      {
+        "name": "Start: Kamienica z Zegarem Słonecznym",
+        "addr": "ul. Kołłątaja 31",
+        "emoji": "☀️"
+      },
+      {
+        "name": "Dom Pereca & Ośrodek Kultury",
+        "addr": "ul. Niemcewicza 2",
+        "emoji": "📜"
+      },
+      {
+        "name": "Willa Karkutsch & Kamienice",
+        "addr": "ul. Niemierzyńska / Długosza",
+        "emoji": "🏛️"
+      },
+      {
+        "name": "Meta: Zabytkowy Cmentarz & Lapidarium",
+        "addr": "ul. Beyzyma / Wendeńska",
+        "emoji": "🌿"
+      }
+    ],
+    "coords": [
+      [
+        14.54650,
+        53.44810
+      ],
+      [
+        14.54910,
+        53.44880
+      ],
+      [
+        14.54280,
+        53.44850
+      ],
+      [
+        14.53610,
+        53.44680
+      ]
+    ]
   }
 ];
