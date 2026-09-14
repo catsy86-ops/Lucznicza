@@ -18,7 +18,7 @@ const APP_SHELL = [
   '/map-extras.js', '/map-extras2.js',
   '/buildings-3d.js',
   '/map-vehicles.js',
-  '/navigation.js', '/poi-radar-compass.js', '/search.js', '/pwa.js',
+  '/navigation.js', '/poi-radar-compass.js', '/street-viewer.js', '/search.js', '/pwa.js',
   '/community-data.js', '/community-ui.js',
   '/routes-meetup.js', '/user-profile.js',
   '/place-images.js', '/ux-enhancements.js', '/pogon-mascot.js',

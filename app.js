@@ -665,6 +665,16 @@ function initGooglePlaceSheetEvents() {
     });
   }
 
+  const svBtn = document.getElementById('gpsStreetViewBtn');
+  if (svBtn) {
+    svBtn.addEventListener('click', () => {
+      if (!activePlaceForSheet) return;
+      if (typeof openStreetViewer === 'function') {
+        openStreetViewer(activePlaceForSheet.id);
+      }
+    });
+  }
+
   if (shareBtn) {
     shareBtn.addEventListener('click', async () => {
       if (!activePlaceForSheet) return;
@@ -2657,6 +2667,9 @@ function openPlaceModal(id) {
       </button>
       <button class="modal-action-btn btn-secondary" onclick="startNavigation(${place.coords[1]},${place.coords[0]},'${place.name.replace(/'/g,"\\'")}');closeModal()">
         🧭 Nawiguj
+      </button>
+      <button class="modal-action-btn btn-secondary" onclick="openStreetViewer(${place.id})" title="Otwórz interaktywny wirtualny spacer 360°">
+        👁️ Spacer 360°
       </button>
     </div>
     <div class="modal-actions" style="margin-top:8px">

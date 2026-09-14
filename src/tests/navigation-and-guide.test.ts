@@ -217,3 +217,50 @@ describe('POI Smart Radar Compass Tests (Krok 3)', () => {
     expect(swJs).toContain('/poi-radar-compass.js');
   });
 });
+
+describe('StreetViewer 360 Panoramic Virtual Tour Tests (Krok 4)', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const rootDir = path.resolve(__dirname, '../..');
+  const streetViewerJs = fs.readFileSync(path.join(rootDir, 'street-viewer.js'), 'utf8');
+  const indexHtml = fs.readFileSync(path.join(rootDir, 'index.html'), 'utf8');
+  const appJs = fs.readFileSync(path.join(rootDir, 'app.js'), 'utf8');
+  const styleCss = fs.readFileSync(path.join(rootDir, 'style.css'), 'utf8');
+  const swJs = fs.readFileSync(path.join(rootDir, 'sw.js'), 'utf8');
+
+  it('verifies StreetViewer module structure and API methods', () => {
+    expect(streetViewerJs).toContain('const StreetViewer =');
+    expect(streetViewerJs).toContain('window.StreetViewer = StreetViewer;');
+    expect(streetViewerJs).toContain('window.openStreetViewer =');
+    expect(streetViewerJs).toContain('window.closeStreetViewer =');
+    expect(streetViewerJs).toContain('initDragControls');
+  });
+
+  it('verifies streetViewerModal DOM structure, buttons and open links in index.html', () => {
+    expect(indexHtml).toContain('id="streetViewerModal"');
+    expect(indexHtml).toContain('id="svmTitle"');
+    expect(indexHtml).toContain('id="svmCanvas"');
+    expect(indexHtml).toContain('id="svmPanoImg"');
+    expect(indexHtml).toContain('id="svmMapillaryBtn"');
+    expect(indexHtml).toContain('id="svmOsmBtn"');
+    expect(indexHtml).toContain('id="gpsStreetViewBtn"');
+    expect(indexHtml).toContain('src="street-viewer.js"');
+  });
+
+  it('verifies "Spacer 360°" button integration in place modal and googlePlaceSheet in app.js', () => {
+    expect(appJs).toContain('onclick="openStreetViewer(${place.id})"');
+    expect(appJs).toContain('Spacer 360°');
+    expect(appJs).toContain('gpsStreetViewBtn');
+  });
+
+  it('verifies StreetViewer styling and SW caching', () => {
+    expect(styleCss).toContain('.street-viewer-modal');
+    expect(styleCss).toContain('.svm-viewport');
+    expect(styleCss).toContain('.svm-pano-img');
+    expect(styleCss).toContain('.svm-crosshair');
+    expect(styleCss).toContain('.svm-btn.mapillary');
+    expect(styleCss).toContain('.svm-btn.osm');
+
+    expect(swJs).toContain('/street-viewer.js');
+  });
+});

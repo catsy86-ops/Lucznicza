@@ -1112,8 +1112,36 @@
       <div class="gps-actions">
         <button class="gps-btn primary" id="gpsNavigateBtn">🧭 Prowadź pieszo</button>
         <button class="gps-btn" id="gpsDetailsBtn">ℹ️ Szczegóły</button>
+        <button class="gps-btn" id="gpsStreetViewBtn">👁️ Spacer 360°</button>
         <button class="gps-btn" id="gpsCallBtn" style="display:none;">📞 Zadzwoń</button>
         <button class="gps-btn" id="gpsShareBtn">🔗 Udostępnij</button>
+      </div>
+    </div>
+
+    <!-- STREET VIEWER 360 PANORAMA MODAL (Krok 4) -->
+    <div class="modal-overlay hidden" id="streetViewerModal" role="dialog" aria-modal="true" aria-labelledby="svmTitle">
+      <div class="modal street-viewer-modal">
+        <button class="modal-close" id="streetViewerClose" aria-label="Zamknij" onclick="closeStreetViewer()">✕</button>
+        <div class="svm-header">
+          <h2 id="svmTitle">👁️ Wirtualny Spacer 360°</h2>
+          <p id="svmDesc">Przeciągaj myszką lub palcem, aby rozglądać się dookoła.</p>
+        </div>
+        <div class="svm-viewport" id="svmCanvas">
+          <img id="svmPanoImg" class="svm-pano-img" src="" alt="Panorama" draggable="false" />
+          <div class="svm-crosshair"></div>
+          <div class="svm-drag-hint">🖐️ Przeciągnij, aby obrócić widok</div>
+        </div>
+        <div class="svm-footer">
+          <div class="svm-links">
+            <a id="svmMapillaryBtn" href="#" target="_blank" rel="noopener noreferrer" class="svm-btn mapillary">
+              📷 Zdjęcia Mapillary
+            </a>
+            <a id="svmOsmBtn" href="#" target="_blank" rel="noopener noreferrer" class="svm-btn osm">
+              🗺️ OpenStreetMap
+            </a>
+          </div>
+          <button class="svm-btn close-btn" onclick="closeStreetViewer()">Zamknij</button>
+        </div>
       </div>
     </div>
 
@@ -1347,6 +1375,7 @@
 
   <script src="navigation.js"></script>
   <script src="poi-radar-compass.js"></script>
+  <script src="street-viewer.js"></script>
   <script src="search.js"></script>
   <script src="place-images.js"></script>
   <script src="user-profile.js"></script>
