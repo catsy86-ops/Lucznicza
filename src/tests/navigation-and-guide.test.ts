@@ -155,3 +155,65 @@ describe('Active Route Guide "Idź ze mną" & Navigation Voice Tests', () => {
     expect(styleCss).toContain('.np-route-story');
   });
 });
+
+describe('POI Smart Radar Compass Tests (Krok 3)', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const rootDir = path.resolve(__dirname, '../..');
+  const compassJs = fs.readFileSync(path.join(rootDir, 'poi-radar-compass.js'), 'utf8');
+  const indexHtml = fs.readFileSync(path.join(rootDir, 'index.html'), 'utf8');
+  const styleCss = fs.readFileSync(path.join(rootDir, 'style.css'), 'utf8');
+  const swJs = fs.readFileSync(path.join(rootDir, 'sw.js'), 'utf8');
+
+  it('verifies PoiRadarCompass module structure and methods', () => {
+    expect(compassJs).toContain('const PoiRadarCompass =');
+    expect(compassJs).toContain('window.PoiRadarCompass = PoiRadarCompass;');
+    expect(compassJs).toContain('calcDistanceMeters');
+    expect(compassJs).toContain('calcBearingDeg');
+    expect(compassJs).toContain('findNearestPoi');
+    expect(compassJs).toContain('updatePosition');
+    expect(compassJs).toContain('deviceorientation');
+  });
+
+  it('verifies mathematical distance and bearing computations in node environment', () => {
+    // Distance between Park Kadziaka (53.4530, 14.5520) and PKP Niebuszewo (53.4554, 14.5587)
+    const lat1 = 53.4530, lon1 = 14.5520;
+    const lat2 = 53.4554, lon2 = 14.5587;
+    const R = 6371000;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const dist = Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+
+    expect(dist).toBeGreaterThan(400);
+    expect(dist).toBeLessThan(700);
+
+    // Bearing calculation should be roughly North-East (between 30 and 80 degrees)
+    const y = Math.sin(dLon) * Math.cos(lat2 * Math.PI / 180);
+    const x =
+      Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
+      Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos(dLon);
+    const bearing = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+
+    expect(bearing).toBeGreaterThan(30);
+    expect(bearing).toBeLessThan(80);
+  });
+
+  it('verifies poiCompassPill element in index.html, caching in sw.js and styling in style.css', () => {
+    expect(indexHtml).toContain('id="poiCompassPill"');
+    expect(indexHtml).toContain('id="poiCompassArrow"');
+    expect(indexHtml).toContain('id="poiCompassName"');
+    expect(indexHtml).toContain('id="poiCompassDist"');
+    expect(indexHtml).toContain('src="poi-radar-compass.js"');
+
+    expect(styleCss).toContain('.poi-compass-pill');
+    expect(styleCss).toContain('.pcr-dial');
+    expect(styleCss).toContain('.pcr-arrow');
+    expect(styleCss).toContain('body.zen-map-mode #poiCompassPill');
+
+    expect(swJs).toContain('/poi-radar-compass.js');
+  });
+});

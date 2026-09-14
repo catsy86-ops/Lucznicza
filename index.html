@@ -593,6 +593,18 @@
             <span class="google-layer-thumb-label" id="googleLayerThumbLabel">MAPA</span>
           </button>
 
+          <!-- POI Smart Radar Compass Pill (Krok 3) -->
+          <button class="poi-compass-pill hidden" id="poiCompassPill" title="Kliknij, aby zobaczyć najbliższe miejsce" aria-label="Wskaźnik najbliższego punktu">
+            <div class="pcr-dial">
+              <span class="pcr-arrow" id="poiCompassArrow">▲</span>
+            </div>
+            <span class="pcr-emoji" id="poiCompassEmoji">📍</span>
+            <div class="pcr-info">
+              <span class="pcr-name" id="poiCompassName">Szukam punktu...</span>
+              <span class="pcr-dist" id="poiCompassDist">...</span>
+            </div>
+          </button>
+
           <!-- Citizen Alert FAB: Dzik / Awaria / Usterka -->
           <button class="community-alert-fab" id="communityAlertFab" title="Zgłoś Dzika / Usterkę na Niebuszewie" aria-label="Zgłoś Dzika lub Awarię">
             🐗 <span class="caf-label">Alert</span>
@@ -1334,6 +1346,7 @@
 
 
   <script src="navigation.js"></script>
+  <script src="poi-radar-compass.js"></script>
   <script src="search.js"></script>
   <script src="place-images.js"></script>
   <script src="user-profile.js"></script>

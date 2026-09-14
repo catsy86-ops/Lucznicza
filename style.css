@@ -5896,6 +5896,7 @@ body.zen-map-mode .style-switcher,
 body.zen-map-mode .map-search-box,
 body.zen-map-mode #googleLayerThumbBtn,
 body.zen-map-mode #communityAlertFab,
+body.zen-map-mode #poiCompassPill,
 body.zen-map-mode #liveTransportBtn,
 body.zen-map-mode .live-transport-panel,
 body.zen-map-mode .map-fab-group,
@@ -11359,5 +11360,112 @@ body.zen-map-mode .map-left-dock {
 /* Smooth Scrolling for App Layout */
 html {
   scroll-padding-top: calc(var(--header-h) + 12px);
+}
+
+/* ===================================================== */
+/* ===== POI SMART RADAR COMPASS PILL (Krok 3) ========= */
+/* ===================================================== */
+.poi-compass-pill {
+  position: fixed;
+  bottom: calc(var(--bnav-h, 60px) + env(safe-area-inset-bottom, 0px) + 18px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1005;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 23, 56, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 215, 0, 0.55);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45), 0 0 12px rgba(255, 215, 0, 0.2);
+  border-radius: 28px;
+  padding: 6px 14px 6px 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  touch-action: manipulation;
+  max-width: calc(100vw - 32px);
+}
+
+.poi-compass-pill:hover {
+  transform: translateX(-50%) scale(1.04);
+  background: rgba(0, 45, 98, 0.96);
+  border-color: #FFD700;
+  box-shadow: 0 6px 24px rgba(0, 45, 98, 0.6), 0 0 18px rgba(255, 215, 0, 0.4);
+}
+
+.poi-compass-pill:active {
+  transform: translateX(-50%) scale(0.96);
+}
+
+.poi-compass-pill.hidden {
+  display: none !important;
+}
+
+.pcr-dial {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #002D62 0%, #001433 100%);
+  border: 1.5px solid #FFD700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.pcr-arrow {
+  color: #FF4757;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 900;
+  display: block;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+}
+
+.pcr-emoji {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.pcr-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  line-height: 1.15;
+  overflow: hidden;
+}
+
+.pcr-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.pcr-dist {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #FFD700;
+  letter-spacing: 0.3px;
+}
+
+@media (max-width: 768px) {
+  .poi-compass-pill {
+    bottom: calc(var(--bnav-h, 60px) + env(safe-area-inset-bottom, 0px) + 20px);
+    padding: 5px 12px 5px 6px;
+  }
+  .pcr-name {
+    max-width: 110px;
+  }
 }
 
