@@ -19,7 +19,7 @@ async function fetchWithTimeout(url, ms = 10000) {
     return await fetch(url, {
       signal: controller.signal,
       headers: {
-        'User-Agent': 'SzczecinGuide/1.0 (+https://szn-theta.vercel.app)',
+        'User-Agent': 'SzczecinGuide/1.0 (+https://lucznicza.vercel.app)',
         'Accept': 'application/json',
       },
     });

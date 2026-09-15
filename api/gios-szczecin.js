@@ -18,7 +18,7 @@ export default async function handler(req, res) {
           'User-Agent': 'Mozilla/5.0 SzczecinGuide/1.0',
           'Accept': 'application/json, text/plain, */*',
           'Accept-Language': 'pl-PL,pl;q=0.9',
-          'Referer': 'https://szn-theta.vercel.app/'
+          'Referer': 'https://lucznicza.vercel.app/'
         }
       }
     );

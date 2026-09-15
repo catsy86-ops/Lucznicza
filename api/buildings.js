@@ -33,7 +33,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'SzczecinGuide/1.0 (+https://szn-theta.vercel.app)'
+        'User-Agent': 'SzczecinGuide/1.0 (+https://lucznicza.vercel.app)'
       },
       body: `data=${encodeURIComponent(query)}`,
       signal: controller.signal
