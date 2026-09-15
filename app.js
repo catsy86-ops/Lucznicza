@@ -1279,6 +1279,42 @@ function executeIslandAction(action) {
         showToast('🧪 Zgłoś uwagę lub błąd w wersji beta');
       }
       break;
+    case 'notifications':
+      const appNotif = window.__SZCZECIN_APP__;
+      if (appNotif && appNotif.pushNotifications) {
+        appNotif.pushNotifications.requestPermission().then(perm => {
+          if (perm === 'granted') {
+            showToast('🔔 Włączono powiadomienia o meczach i alertach');
+            const sub = document.getElementById('idmPushSub');
+            if (sub) sub.textContent = 'Aktywne: mecze, zatory i alerty';
+          } else if (perm === 'denied') {
+            showToast('🔕 Powiadomienia zostały zablokowane w przeglądarce');
+          } else {
+            showToast('🔔 Powiadomienia: nie podjęto decyzji');
+          }
+        });
+      } else if ('Notification' in window) {
+        Notification.requestPermission().then(perm => {
+          showToast(perm === 'granted' ? '🔔 Włączono powiadomienia' : '🔕 Powiadomienia wyłączone');
+        });
+      } else {
+        showToast('ℹ️ Przeglądarka nie obsługuje Web Notifications');
+      }
+      break;
+    case 'language':
+      const appI18n = window.__SZCZECIN_APP__;
+      const current = (appI18n && appI18n.i18n) ? appI18n.i18n.getLanguage() : (localStorage.getItem('lucznicza_lang') || 'pl');
+      const next = current === 'pl' ? 'en' : (current === 'en' ? 'de' : 'pl');
+      if (appI18n && appI18n.i18n) {
+        appI18n.i18n.setLanguage(next);
+      } else {
+        localStorage.setItem('lucznicza_lang', next);
+      }
+      const names = { pl: 'Polski (PL) 🇵🇱', en: 'English (EN) 🇬🇧', de: 'Deutsch (DE) 🇩🇪' };
+      const langSub = document.getElementById('idmLangSub');
+      if (langSub) langSub.textContent = `Aktualny: ${names[next]}`;
+      showToast(`🌍 Język: ${names[next]}`);
+      break;
     case 'ogloszenia':
       navigateTo('szczecin');
       setTimeout(() => {

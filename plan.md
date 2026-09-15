@@ -278,6 +278,23 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 
 ---
 
+#### ✅ SPRINT 12: Production Live, Web Push, i18n & TS Modernization (v1.7.0) [UKOŃCZONE 100%]
+- [x] **12.1. Krok 1: Wdrożenie Produkcyjne (https://lucznicza.vercel.app)**:
+  - Zaktualizowano wszystkie referencje API, nagłówki CORS/Referer i User-Agent do oficjalnej domeny produkcyjnej `https://lucznicza.vercel.app`.
+  - Zaktualizowano dokumentację główną `README.md` oraz architekturę systemu.
+- [x] **12.2. Krok 2: Powiadomienia Web Push & Live Alerty (`push-notifications.ts`)**:
+  - Utworzono serwis `PushNotificationService` obsługujący powiadomienia o meczach Pogoni, zatorach Ronda Giedroycia i alertach osiedlowych.
+  - Zintegrowano Service Worker `sw.js` ze zdarzeniami `push` oraz `notificationclick` (obsługa focusu i otwierania okna).
+  - Dodano przycisk aktywacji powiadomień w wyspie nagłówkowej (`#idmPushBtn`).
+- [x] **12.3. Krok 3: Wielojęzyczność i18n (`i18n.ts` — PL / EN / DE)**:
+  - Utworzono serwis `I18nService` z pełnym słownikiem interfejsu, nawigacji, Zator-Metera i powitań kontekstowych.
+  - Zaimplementowano szybki przełącznik języków (`[ PL | EN | DE ]`) w menu wyspy dzielnicy.
+- [x] **12.4. Krok 4: Głęboki Refaktoring Legacy JS do TypeScript (`user-profile.ts`)**:
+  - Zmodernizowano logikę profilu użytkownika, statystyk eksploracji i odznak do w pełni typowanego modułu TypeScript z odpornym fallbackiem in-memory.
+  - Całkowity stan testów: **181/181 zdanych testów w 31 zestawach Vitest** (100% pass rate).
+
+---
+
 ## 🚦 Tabela Gotowości Komponentów (Status Monitor v1.7.0)
 
 | Komponent | Stan | Działanie | Zależności od zewnętrznych kluczy |
@@ -289,13 +306,16 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Smart Contextual Engine** | 🟢 Gotowy | Kontekst 5 pór dnia, porady Gryfusa | TypeScript / ESM |
 | **Rondo Giedroycia Zator-Meter**| 🟢 Gotowy | Analiza korków i zatorów u stóp osiedla | ZDiTM delays / Peak hours |
 | **Matchday Live Companion** | 🟢 Gotowy | Odliczanie meczowe, dojazd z Niebuszewa | TypeScript / ESM |
+| **Powiadomienia Web Push** | 🟢 Gotowy | Alerty o meczach, zatorach i dzikach | Web Notification & SW API |
+| **Wielojęzyczność (i18n)** | 🟢 Gotowy | Języki PL, EN, DE z natychmiastowym przełączaniem | TypeScript / ESM |
+| **Profil & Gamifikacja TS** | 🟢 Gotowy | Statystyki eksploracji, odznaki, odwiedzone miejsca | TypeScript / LocalStorage |
 | **Piny i Markery POI (76 POI)** | 🟢 Gotowy | 76 autentycznych punktów Niebuszewa | Brak |
 | **Trasy Osiedlowe (14 Tras)** | 🟢 Gotowy | GPX, profile wysokości, czasy, punkty | XML / Blob API |
 | **Stacja GIOŚ Szczecin (AQI)** | 🟢 Gotowy | Oficjalny monitoring powietrza 24/7 | GIOŚ API / Open-Meteo |
 | **Mobile Bottom Sheet** | 🟢 Gotowy | 3 stany wysuwania (Peek/Half/Full) | Czysty CSS/JS |
 | **Centralny Store** | 🟢 Gotowy | Reaktywny Pub/Sub, typowany TS | TypeScript |
 | **Przewodnik Głosowy (Audio)**| 🟢 Gotowy | Opowieści Gryfusa (Web Speech API) | Web Speech API |
-| **PWA Cache v11** | 🟢 Gotowy | Service Worker v11, offline-ready | Service Worker API |
-| **Testy jednostkowe** | 🟢 Gotowy | **168/168 testów przechodzi (Vitest)** | Vitest |
+| **PWA Cache v12** | 🟢 Gotowy | Service Worker v12, offline-ready | Service Worker API |
+| **Testy jednostkowe** | 🟢 Gotowy | **181/181 testów przechodzi (Vitest)** | Vitest |
 | **Dostępność (A11y)** | 🟢 Gotowy | **100/100 (0 naruszeń WCAG 2.1 AA)** | Lighthouse / Axe-Core |
-| **Wydanie Produkcyjne** | 🟢 Gotowy | **Wersja v1.7.0** (`dist/`) | Vite + TypeScript |
+| **Wydanie Produkcyjne Live** | 🟢 Gotowy | **https://lucznicza.vercel.app** | Vercel + Vite |

@@ -253,16 +253,49 @@ self.addEventListener('sync', e => {
   }
 });
 
-// ===== PUSH NOTIFICATIONS (for future use) =====
+// ===== PUSH NOTIFICATIONS & CLICKS =====
 self.addEventListener('push', e => {
   if (!e.data) return;
-  const data = e.data.json();
+  try {
+    const data = e.data.json();
+    e.waitUntil(
+      self.registration.showNotification(data.title || 'Niebuszewo Guide', {
+        body: data.body || '',
+        icon: '/manifest-icon-192.png',
+        badge: '/manifest-icon-192.png',
+        tag: data.tag || 'general',
+        data: data.data || { url: '/' }
+      })
+    );
+  } catch {
+    const text = e.data.text();
+    e.waitUntil(
+      self.registration.showNotification('Niebuszewo Guide', {
+        body: text,
+        icon: '/manifest-icon-192.png'
+      })
+    );
+  }
+});
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const targetUrl = (e.notification.data && e.notification.data.url) ? e.notification.data.url : '/';
+
   e.waitUntil(
-    self.registration.showNotification(data.title || 'Niebuszewo Guide', {
-      body: data.body || '',
-      icon: '/manifest-icon-192.png',
-      badge: '/manifest-icon-192.png',
-      tag: data.tag || 'general'
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          if ('navigate' in client && targetUrl !== '/') {
+            client.navigate(targetUrl);
+          }
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
     })
   );
 });
+

@@ -20,6 +20,10 @@ import { getContextualConfig, getTimeOfDay, sortCategoriesByContext } from './se
 import { calculateGiedroycStatus, extractAverageDelayFromDepartures } from './services/giedroyc-meter';
 import { calculateMatchCountdown, getMatchdayTransitRoute, NEXT_MATCH } from './services/matchday-companion';
 
+import { pushNotificationService, PushNotificationService } from './services/push-notifications';
+import { i18nService, I18nService } from './services/i18n';
+import { userProfileService, UserProfileService } from './services/user-profile';
+
 export * from './types';
 export * from './store';
 export * from './data';
@@ -39,6 +43,9 @@ export * from './services/niebuszewo-boundary';
 export * from './services/contextual-engine';
 export * from './services/giedroyc-meter';
 export * from './services/matchday-companion';
+export * from './services/push-notifications';
+export * from './services/i18n';
+export * from './services/user-profile';
 
 // Expose on global window object for interoperability with legacy components and console debugging
 if (typeof window !== 'undefined') {
@@ -75,7 +82,10 @@ if (typeof window !== 'undefined') {
       getMatchdayTransitRoute,
       NEXT_MATCH
     },
-    version: '1.6.0'
+    pushNotifications: pushNotificationService,
+    i18n: i18nService,
+    userProfile: userProfileService,
+    version: '1.7.0'
   };
 
   // Sync real-time transport arrivals on load
