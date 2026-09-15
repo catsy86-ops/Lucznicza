@@ -511,6 +511,89 @@
           <!-- Leaflet Map Container -->
           <div id="map" class="map-main"></div>
 
+          <!-- AMBIENT STATUS CAPSULE (Unified Weather, AQI & Time HUD) -->
+          <div class="ambient-status-capsule" id="ambientStatusCapsule" role="region" aria-label="Status środowiskowy Niebuszewa">
+            <button class="asc-pill-btn" id="ascPillBtn" aria-expanded="false" aria-controls="ascDropdown" title="Kliknij, aby rozwinąć szczegóły pogody i jakości powietrza">
+              <span class="asc-weather-chip" id="ascWeatherChip">
+                <span class="asc-icon" id="ascWeatherIcon">☀️</span>
+                <span class="asc-temp" id="ascWeatherTemp">--°C</span>
+              </span>
+              <span class="asc-divider" aria-hidden="true"></span>
+              <span class="asc-aqi-chip" id="ascAqiChip">
+                <span class="asc-dot" id="ascAqiDot" aria-hidden="true"></span>
+                <span class="asc-aqi-text" id="ascAqiText">AQI --</span>
+              </span>
+              <span class="asc-divider" aria-hidden="true"></span>
+              <span class="asc-time-chip" id="ascTimeChip">
+                <span class="asc-time-icon" aria-hidden="true">🕒</span>
+                <span class="asc-time" id="ascTime">--:--</span>
+              </span>
+              <span class="asc-caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="asc-dropdown hidden" id="ascDropdown" role="region" aria-label="Szczegółowe dane środowiskowe">
+              <div class="asc-dropdown-header">
+                <div class="asc-dh-title">
+                  <span class="asc-dh-icon" aria-hidden="true">📡</span>
+                  <strong>Stacja Niebuszewo & Łucznicza</strong>
+                </div>
+                <button class="asc-close-btn" id="ascCloseBtn" aria-label="Zamknij szczegóły">✕</button>
+              </div>
+              <div class="asc-dropdown-body">
+                <div class="asc-grid-row">
+                  <div class="asc-metric-card">
+                    <span class="asc-mc-lbl">Odczuwalna</span>
+                    <strong class="asc-mc-val" id="ascFeels">--°C</strong>
+                  </div>
+                  <div class="asc-metric-card">
+                    <span class="asc-mc-lbl">Wiatr</span>
+                    <strong class="asc-mc-val" id="ascWind">-- km/h</strong>
+                  </div>
+                  <div class="asc-metric-card">
+                    <span class="asc-mc-lbl">Wilgotność</span>
+                    <strong class="asc-mc-val" id="ascHumidity">--%</strong>
+                  </div>
+                  <div class="asc-metric-card">
+                    <span class="asc-mc-lbl">Ciśnienie</span>
+                    <strong class="asc-mc-val" id="ascPressure">-- hPa</strong>
+                  </div>
+                </div>
+                <div class="asc-status-strip">
+                  <div class="asc-strip-item">
+                    <span class="asc-si-icon" aria-hidden="true">🌊</span>
+                    <span id="ascHydroText">Odra (Most Długi): IMGW</span>
+                  </div>
+                  <div class="asc-strip-item">
+                    <span class="asc-si-icon" aria-hidden="true">🏭</span>
+                    <span id="ascGiosText">GIOŚ Stacja 986 Szczecin</span>
+                  </div>
+                </div>
+              </div>
+              <div class="asc-dropdown-footer">
+                <span class="asc-df-updated" id="ascUpdated">Aktualizacja: --:--</span>
+                <button class="asc-df-refresh" id="ascRefreshBtn" title="Odśwież dane pogodowe i powietrza">🔄 Odśwież</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- DESKTOP SPLIT-VIEW PANEL (Interactive Master-Detail Sidebar for Map) -->
+          <div class="desktop-split-panel hidden" id="desktopSplitPanel" role="complementary" aria-label="Panel boczny przeglądania">
+            <div class="dsp-header">
+              <div class="dsp-tabs" role="tablist">
+                <button class="dsp-tab active" id="dspTabPlaces" role="tab" aria-selected="true">📍 Miejsca</button>
+                <button class="dsp-tab" id="dspTabRoutes" role="tab" aria-selected="false">🚶 Trasy</button>
+                <button class="dsp-tab" id="dspTabZditm" role="tab" aria-selected="false">🚏 Odjazdy</button>
+              </div>
+              <button class="dsp-close-btn" id="dspCloseBtn" aria-label="Zamknij panel split-view" title="Zamknij panel i pokaż pełną mapę (Esc)">✕</button>
+            </div>
+            <div class="dsp-search-row">
+              <input type="search" id="dspSearchInput" class="dsp-search-input" placeholder="Filtruj listę w panelu..." autocomplete="off" />
+              <span class="dsp-count-badge" id="dspCountBadge">0</span>
+            </div>
+            <div class="dsp-content" id="dspContent" tabindex="0">
+              <!-- Dynamically populated with place cards, route cards or live departures -->
+            </div>
+          </div>
+
           <!-- Zen Mode Restore Button (floating pill in clean mode) -->
           <button class="zen-restore-pill hidden" id="zenRestorePill" title="Przywróć pełny interfejs mapy (skrót: Z)" aria-label="Przywróć widżety mapy">
             <span class="zrp-icon">👁️</span>
