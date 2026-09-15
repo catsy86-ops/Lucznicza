@@ -1,6 +1,6 @@
 {
   "name": "szczecin-lucznicza-guide",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Interaktywny przewodnik po Łuczniczej i Tarczowej w Szczecinie",
   "type": "module",
   "scripts": {

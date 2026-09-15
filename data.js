@@ -843,6 +843,126 @@ const APP_DATA = {
       coords: [14.55120, 53.44960],
       rating: 4.9,
       tags: ['introligator', 'książki', 'oprawa', 'druk', 'papier', 'niemcewicza', 'rzemiosło', 'unikat']
+    },
+    {
+      id: 67, cat: 'edu',
+      name: 'Dawna Fabryka Samochodów Stoewer / Gryf',
+      addr: 'ul. Zygmunta Krasińskiego 10/11, Szczecin',
+      emoji: '🚗',
+      desc: 'Historyczny kompleks dawnych zakładów Stoewer Werke AG — kolebki szczecińskiej motoryzacji. To tutaj powstawały legendarne przedwojenne limuzyny Stoewer Greif, rowery oraz maszyny do pisania. Ikona techniki Pomorza.',
+      hours: 'Teren zewnętrzny: całodobowo',
+      phone: null, website: null,
+      coords: [14.54350, 53.45020],
+      rating: 4.8,
+      tags: ['stoewer', 'motoryzacja', 'historia', 'krasińskiego', 'zabytki', 'technika', 'gryf']
+    },
+    {
+      id: 68, cat: 'edu',
+      name: 'Podziemny Schron Kolejowy pod Stacją Szczecin Niebuszewo',
+      addr: 'Dworzec SKM Szczecin Niebuszewo, ul. Elizy Orzeszkowej, Szczecin',
+      emoji: '🚇',
+      desc: 'Tajemniczy podziemny schron przeciwlotniczy (Luftschutzbunker) wybudowany pod torowiskiem stacji Niebuszewo. Miejsce owiane legendami o podziemnym Szczecinie, łączące historię węzła kolejowego z sekretami dzielnicy.',
+      hours: 'Widoczny z zewnątrz',
+      phone: null, website: null,
+      coords: [14.54880, 53.45560],
+      rating: 4.7,
+      tags: ['schron', 'podziemia', 'skm', 'stacja', 'tajemnice', 'historia', 'orzeszkowej', 'kolej']
+    },
+    {
+      id: 69, cat: 'service',
+      name: 'Zabytkowa Pompa Wodna z Gryfem (Sedina Pump)',
+      addr: 'Zbieg ul. Kołłątaja i Kadłubka, Szczecin',
+      emoji: '🚰',
+      desc: 'Oryginalna XIX-wieczna żeliwna pompa miejska zwieńczona herbem Szczecina z Gryfem i ozdobną koroną. Jeden z nielicznych ocalałych reliktów dawnego systemu zaopatrzenia w wodę przedwojennego Grünhof.',
+      hours: 'Dostępne całodobowo',
+      phone: null, website: null,
+      coords: [14.54710, 53.44850],
+      rating: 4.9,
+      tags: ['pompa', 'gryf', 'sedina', 'zabytek', 'kołłątaja', 'kadłubka', 'woda', 'folklor']
+    },
+    {
+      id: 70, cat: 'sport',
+      name: 'Polana Sportowa & Ścieżka Kalisteniczna w Dolinie Osówki',
+      addr: 'Dolina Potoku Osówka, rejon Parku Kasprowicza / Niemierzyna',
+      emoji: '💪',
+      desc: 'Leśna polana rekreacyjna wyposażona w certyfikowany tor do street workoutu, drążki, poręcze równoległe oraz pętlę do biegów przełajowych. Oaza ciszy i zieleni pośród szumu strumienia Osówka.',
+      hours: 'Całodobowo (oświetlenie do 22:00)',
+      phone: null, website: null,
+      coords: [14.53850, 53.45420],
+      rating: 4.8,
+      tags: ['sport', 'kalistenika', 'trening', 'osówka', 'bieganie', 'drążki', 'dolina', 'siłownia']
+    },
+    {
+      id: 71, cat: 'edu',
+      name: 'Miasteczko Ruchu Drogowego i Tor Rowerowy SP 47',
+      addr: 'ul. Łucznicza / Jagiellońska / Botaniczna, Szczecin',
+      emoji: '🚲',
+      desc: 'Profesjonalnie wytyczone miasteczko ruchu drogowego dla dzieci i młodzieży przy SP 47 na Łuczniczej. Miniatury rond, skrzyżowań ze znakami drogowymi i przejść dla pieszych do nauki jazdy na rowerze i hulajnodze.',
+      hours: 'Pon–Sob 8:00–20:00',
+      phone: null, website: null,
+      coords: [14.55180, 53.45190],
+      rating: 4.8,
+      tags: ['miasteczko', 'rower', 'sp47', 'łucznicza', 'edukacja', 'dzieci', 'bezpieczeństwo', 'nauka']
+    },
+    {
+      id: 72, cat: 'service',
+      name: 'Sąsiedzka Jadłodzielnia & Zniczodzielnia Niebuszewo',
+      addr: 'ul. Juliana Ursyna Niemcewicza / Długosza, Szczecin',
+      emoji: '🤝',
+      desc: 'Punkt sąsiedzkiej solidarności i ekologii zero-waste. Szafa wymiany żywności oraz regał na książki i znicze. Każdy może zostawić nadmiar dobrego jedzenia lub poczęstować się bezpłatnie.',
+      hours: 'Całodobowo 24/7',
+      phone: null, website: null,
+      coords: [14.54920, 53.45080],
+      rating: 4.9,
+      tags: ['jadłodzielnia', 'społeczność', 'pomoc', 'niemcewicza', 'długosza', 'zerowaste', 'sąsiedzi', 'eko']
+    },
+    {
+      id: 73, cat: 'food',
+      name: 'Targowisko Manhattan — Pawilon Ryb Bałtyckich & Wędzarstwa',
+      addr: 'ul. Stanisława Staszica 1, Szczecin (Targowisko Manhattan)',
+      emoji: '🐟',
+      desc: 'Kultowe stoisko ze świeżym dorszem, trocią wędzoną, śledziami po szczecińsku oraz autorskim paprykarzem z manufaktury. Zapach dymu bukowego i tradycja rybołówstwa Pomorza Zachodniego.',
+      hours: 'Wt–Sob 6:00–15:00',
+      phone: null, website: null,
+      coords: [14.54980, 53.44680],
+      rating: 4.9,
+      tags: ['ryby', 'manhattan', 'dorsz', 'wędzenie', 'staszica', 'paprykarz', 'tradycja', 'targowisko']
+    },
+    {
+      id: 74, cat: 'park',
+      name: 'Tor Agility & Park Psiego Niebuszewa',
+      addr: 'Park im. Bolesława Kadziaka (od strony ul. Tarczowej), Szczecin',
+      emoji: '🐕',
+      desc: 'Ogrodzona, bezpieczna strefa rekreacji dla psów ze specjalnymi przeszkodami: pochylnią A, tunelem, slalomem i kładką. Dostępne stacje z bezpłatnymi woreczkami i poidełka dla czworonogów.',
+      hours: 'Całodobowo',
+      phone: null, website: null,
+      coords: [14.55390, 53.45260],
+      rating: 4.9,
+      tags: ['pies', 'psy', 'wybieg', 'agility', 'kadziak', 'tarczowa', 'zwierzęta', 'park']
+    },
+    {
+      id: 75, cat: 'food',
+      name: 'Kultowy Bar Mleczny „Turysta” (Pawilon Niebuszewo)',
+      addr: 'ul. Hugona Kołłątaja 30, Szczecin',
+      emoji: '🥟',
+      desc: 'Legendarna filia najstarszego szczecińskiego baru mlecznego. Ręcznie lepione pierogi ruskie z okrasą, naleśniki z serem i domowy barszcz czerwony w cenach przyjaznych dla każdego sąsiada.',
+      hours: 'Pon–Pt 8:00–18:00, Sob 9:00–15:00',
+      phone: null, website: null,
+      coords: [14.54520, 53.44810],
+      rating: 4.8,
+      tags: ['turysta', 'barmleczny', 'pierogi', 'obiad', 'kołłątaja', 'tanie', 'klimat', 'tradycja']
+    },
+    {
+      id: 76, cat: 'park',
+      name: 'Punkt Widokowy na Wzgórzu Warszewskim (Panorama Niebuszewa)',
+      addr: 'Ścieżka spacerowa przy ul. Przyjaciół Żołnierza / Rostockiej, Szczecin',
+      emoji: '🌅',
+      desc: 'Otwarty punkt widokowy na wzniesieniu morenowym, oferujący spektakularną panoramę całego Niebuszewa, doliny Odry, stoczniowych dźwigów i wież szczecińskich kościołów. Niezrównane miejsce na zachód słońca.',
+      hours: 'Dostępne całodobowo',
+      phone: null, website: null,
+      coords: [14.55620, 53.46350],
+      rating: 4.9,
+      tags: ['panorama', 'widok', 'warszewo', 'niebuszewo', 'odra', 'zachódsłońca', 'spacer', 'punktwidokowy']
     }
   ],
 
@@ -1292,6 +1412,42 @@ const APP_DATA = {
         [14.54590, 53.44760],
         [14.54520, 53.44780],
         [14.55120, 53.44960]
+      ]
+    },
+    {
+      id: 14,
+      name: 'Śladami Pionierów Przemysłu i Podziemi',
+      emoji: '🏭',
+      type: 'walk',
+      color: '#e67e22',
+      distance: '3.2 km',
+      distanceNum: 3.2,
+      time: '42 min',
+      timeMin: 42,
+      difficulty: 'Łatwa',
+      difficultyLevel: 1,
+      calories: 185,
+      terrain: 'Chodnik miejski',
+      bestTime: 'Popołudnie lub weekend',
+      tags: ['technika', 'stoewer', 'schron', 'podziemia', 'skm', 'kultura', 'historia', 'przemysł'],
+      desc: 'Fascynująca trasa łącząca przedwojenne fabryki limuzyn Stoewer, podziemny schron pod dworcem Niebuszewo, Muzeum Techniki i Komunikacji oraz zabytkowe pompy miejskie Sediny.',
+      highlights: [
+        'Fabryka Samochodów Stoewer',
+        'Dworzec SKM i Podziemny Schron',
+        'Zajezdnia Sztuki (MTiK)',
+        'Zabytkowa Pompa z Gryfem'
+      ],
+      stops: [
+        { name: 'Start: Fabryka Stoewer', addr: 'ul. Krasińskiego 10/11', emoji: '🚗' },
+        { name: 'Dworzec SKM & Podziemny Schron', addr: 'ul. Elizy Orzeszkowej', emoji: '🚇' },
+        { name: 'Muzeum Techniki (Zajezdnia Sztuki)', addr: 'ul. Niemierzyńska 18A', emoji: '🚋' },
+        { name: 'Meta: Pompa z Gryfem', addr: 'ul. Kołłątaja / Kadłubka', emoji: '🚰' }
+      ],
+      coords: [
+        [14.54350, 53.45020],
+        [14.54880, 53.45560],
+        [14.54120, 53.45280],
+        [14.54710, 53.44850]
       ]
     }
   ],

@@ -1012,5 +1012,78 @@ export const ROUTES: WalkingRoute[] = [
         53.44960
       ]
     ]
+  },
+  {
+    "id": 14,
+    "name": "Śladami Pionierów Przemysłu i Podziemi",
+    "emoji": "🏭",
+    "type": "walk",
+    "color": "#e67e22",
+    "distance": "3.2 km",
+    "distanceNum": 3.2,
+    "time": "42 min",
+    "timeMin": 42,
+    "difficulty": "Łatwa",
+    "difficultyLevel": 1,
+    "calories": 185,
+    "terrain": "Chodnik miejski",
+    "bestTime": "Popołudnie lub weekend",
+    "tags": [
+      "technika",
+      "stoewer",
+      "schron",
+      "podziemia",
+      "skm",
+      "kultura",
+      "historia",
+      "przemysł"
+    ],
+    "desc": "Fascynująca trasa łącząca przedwojenne fabryki limuzyn Stoewer, podziemny schron pod dworcem Niebuszewo, Muzeum Techniki i Komunikacji oraz zabytkowe pompy miejskie Sediny.",
+    "highlights": [
+      "Fabryka Samochodów Stoewer",
+      "Dworzec SKM i Podziemny Schron",
+      "Zajezdnia Sztuki (MTiK)",
+      "Zabytkowa Pompa z Gryfem"
+    ],
+    "stops": [
+      {
+        "name": "Start: Fabryka Stoewer",
+        "addr": "ul. Krasińskiego 10/11",
+        "emoji": "🚗"
+      },
+      {
+        "name": "Dworzec SKM & Podziemny Schron",
+        "addr": "ul. Elizy Orzeszkowej",
+        "emoji": "🚇"
+      },
+      {
+        "name": "Muzeum Techniki (Zajezdnia Sztuki)",
+        "addr": "ul. Niemierzyńska 18A",
+        "emoji": "🚋"
+      },
+      {
+        "name": "Meta: Pompa z Gryfem",
+        "addr": "ul. Kołłątaja / Kadłubka",
+        "emoji": "🚰"
+      }
+    ],
+    "coords": [
+      [
+        14.54350,
+        53.45020
+      ],
+      [
+        14.54880,
+        53.45560
+      ],
+      [
+        14.54120,
+        53.45280
+      ],
+      [
+        14.54710,
+        53.44850
+      ]
+    ]
   }
 ];

@@ -757,9 +757,181 @@ function filterMarkers(cat) {
   });
 }
 
+// ===== DESKTOP SPLIT-VIEW PANEL CONTROLLER =====
+let splitViewActiveTab = 'places';
+
+function openDesktopSplitView(tab = 'places', category = null) {
+  const panel = document.getElementById('desktopSplitPanel');
+  if (!panel) return;
+
+  // On mobile (< 1024px) fallback to bottom sheet
+  if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+    const sheet = document.getElementById('modernBottomSheet');
+    if (sheet) {
+      sheet.classList.remove('hidden');
+      sheet.classList.add('state-half');
+      document.body.classList.add('sheet-open');
+    }
+    return;
+  }
+
+  // Desktop (>= 1024px)
+  document.body.classList.add('split-view-active');
+  panel.classList.remove('hidden');
+
+  // Close place peek sheet if open so they don't collide
+  const placeSheet = document.getElementById('googlePlaceSheet');
+  if (placeSheet) placeSheet.classList.add('hidden');
+
+  switchSplitViewTab(tab, category);
+
+  // Invalidate map and pan slightly
+  if (state.map) {
+    setTimeout(() => {
+      state.map.invalidateSize();
+      state.map.panBy([-180, 0], { animate: true, duration: 0.3 });
+    }, 150);
+  }
+}
+
+function closeDesktopSplitView() {
+  const panel = document.getElementById('desktopSplitPanel');
+  if (panel) panel.classList.add('hidden');
+  document.body.classList.remove('split-view-active');
+  if (state.map) {
+    setTimeout(() => state.map.invalidateSize(), 150);
+  }
+}
+
+function switchSplitViewTab(tab, category = null) {
+  splitViewActiveTab = tab;
+  const tabPlaces = document.getElementById('dspTabPlaces');
+  const tabRoutes = document.getElementById('dspTabRoutes');
+  const tabZditm = document.getElementById('dspTabZditm');
+  const content = document.getElementById('dspContent');
+  const countBadge = document.getElementById('dspCountBadge');
+  const searchInput = document.getElementById('dspSearchInput');
+  if (!content) return;
+
+  if (tabPlaces) tabPlaces.classList.toggle('active', tab === 'places');
+  if (tabRoutes) tabRoutes.classList.toggle('active', tab === 'routes');
+  if (tabZditm) tabZditm.classList.toggle('active', tab === 'zditm');
+
+  const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+  if (tab === 'places') {
+    let places = [...(APP_DATA.places || [])];
+    if (category && category !== 'all') {
+      places = places.filter(p => p.cat === category);
+    }
+    if (query) {
+      places = places.filter(p => p.name.toLowerCase().includes(query) || (p.desc && p.desc.toLowerCase().includes(query)));
+    }
+    if (countBadge) countBadge.textContent = String(places.length);
+
+    content.innerHTML = places.map(p => `
+      <div class="dsp-item-card" data-place-id="${p.id}" onclick="flyToPlace(${p.id})">
+        <div class="dsp-item-header">
+          <span class="dsp-item-emoji">${p.emoji || '📍'}</span>
+          <div class="dsp-item-title-block">
+            <h4 class="dsp-item-title">${p.name}</h4>
+            <span class="dsp-item-cat">${(p.cat || 'miejsce').toUpperCase()}</span>
+          </div>
+          <span class="dsp-item-rating">⭐ ${p.rating || '4.8'}</span>
+        </div>
+        <p class="dsp-item-desc">${(p.desc || '').substring(0, 75)}...</p>
+        <div class="dsp-item-footer">
+          <span class="dsp-item-addr">📍 ${p.addr || 'Niebuszewo'}</span>
+          <button class="dsp-card-btn" onclick="event.stopPropagation(); flyToPlace(${p.id});">Pokaż ➔</button>
+        </div>
+      </div>
+    `).join('');
+  } else if (tab === 'routes') {
+    let routes = [...(APP_DATA.routes || [])];
+    if (query) {
+      routes = routes.filter(r => r.name.toLowerCase().includes(query));
+    }
+    if (countBadge) countBadge.textContent = String(routes.length);
+
+    content.innerHTML = routes.map(r => `
+      <div class="dsp-item-card route-item" onclick="if(typeof showRouteOnMap==='function')showRouteOnMap('${r.id}')">
+        <div class="dsp-item-header">
+          <span class="dsp-item-emoji">🚶</span>
+          <div class="dsp-item-title-block">
+            <h4 class="dsp-item-title">${r.name}</h4>
+            <span class="dsp-item-cat">${r.distance || '2.5 km'} · ${r.duration || '35 min'}</span>
+          </div>
+        </div>
+        <p class="dsp-item-desc">${(r.desc || '').substring(0, 80)}...</p>
+        <div class="dsp-item-footer">
+          <span class="dsp-item-addr">🟢 Start: ${(r.stops && r.stops[0]) || 'Łucznicza'}</span>
+          <button class="dsp-card-btn" onclick="event.stopPropagation(); if(typeof showRouteOnMap==='function')showRouteOnMap('${r.id}')">Trasa ➔</button>
+        </div>
+      </div>
+    `).join('');
+  } else if (tab === 'zditm') {
+    if (countBadge) countBadge.textContent = 'Na żywo';
+    content.innerHTML = `
+      <div class="dsp-zditm-board">
+        <div class="dsp-zditm-hub">
+          <div class="dsp-hub-title">🚏 Węzeł Kołłątaja / Tarczowa / Łucznicza</div>
+          <div class="dsp-hub-subtitle">Najbliższe odjazdy w czasie rzeczywistym</div>
+        </div>
+        <div class="dsp-departures-list" id="dspDeparturesList">
+          <div class="dsp-dep-row"><span class="sdb-line-badge tram">12</span><span class="sdb-dest">Pomorzany przez Plac Rodła</span><span class="sdb-time">2 min</span></div>
+          <div class="dsp-dep-row"><span class="sdb-line-badge tram">3</span><span class="sdb-dest">Dworzec Niebuszewo</span><span class="sdb-time">5 min</span></div>
+          <div class="dsp-dep-row"><span class="sdb-line-badge bus">51</span><span class="sdb-dest">Kołłątaja</span><span class="sdb-time">7 min</span></div>
+          <div class="dsp-dep-row"><span class="sdb-line-badge bus">87</span><span class="sdb-dest">Podbórz przez Łuczniczą</span><span class="sdb-time">11 min</span></div>
+          <div class="dsp-dep-row"><span class="sdb-line-badge bus">69</span><span class="sdb-dest">Rugiańska</span><span class="sdb-time">14 min</span></div>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function initDesktopSplitView() {
+  const panel = document.getElementById('desktopSplitPanel');
+  const closeBtn = document.getElementById('dspCloseBtn');
+  const tabPlaces = document.getElementById('dspTabPlaces');
+  const tabRoutes = document.getElementById('dspTabRoutes');
+  const tabZditm = document.getElementById('dspTabZditm');
+  const searchInput = document.getElementById('dspSearchInput');
+
+  if (!panel) return;
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeDesktopSplitView();
+    });
+  }
+
+  if (tabPlaces) tabPlaces.addEventListener('click', () => switchSplitViewTab('places'));
+  if (tabRoutes) tabRoutes.addEventListener('click', () => switchSplitViewTab('routes'));
+  if (tabZditm) tabZditm.addEventListener('click', () => switchSplitViewTab('zditm'));
+
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      switchSplitViewTab(splitViewActiveTab);
+    });
+  }
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !panel.classList.contains('hidden')) {
+      closeDesktopSplitView();
+    }
+  });
+}
+window.openDesktopSplitView = openDesktopSplitView;
+window.closeDesktopSplitView = closeDesktopSplitView;
+window.switchSplitViewTab = switchSplitViewTab;
+window.initDesktopSplitView = initDesktopSplitView;
+
 // ===== MAP CONTROLS (Leaflet-compatible) =====
 function initMapControls() {
   initGooglePlaceSheetEvents();
+  initDesktopSplitView();
 
   // 'Otwarte teraz' toggle button
   const openNowBtn = document.getElementById('catOpenNowBtn');
@@ -786,6 +958,11 @@ function initMapControls() {
       document.querySelectorAll('.cat-btn[data-cat]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       filterMarkers(btn.dataset.cat);
+      if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+        if (btn.dataset.cat !== 'all') {
+          openDesktopSplitView('places', btn.dataset.cat);
+        }
+      }
     });
   });
 

@@ -1,6 +1,6 @@
-// Service Worker — Szczecin Guide PWA v11 (New POIs 54-57 & Route 10, GIOS AQI 2026-09-14)
+// Service Worker — Szczecin Guide PWA v12 (Sprint 11 — Ambient Capsule HUD, Split-View, POI 67-76, Route 14)
 // Network-first for code, cache-first for tiles, IndexedDB for API data, offline fallback
-const CACHE_VERSION = 'v11';
+const CACHE_VERSION = 'v12';
 const CACHE_NAME = `niebuszewo-guide-${CACHE_VERSION}`;
 const TILE_CACHE = `map-tiles-${CACHE_VERSION}`;
 const API_CACHE = `api-data-${CACHE_VERSION}`;

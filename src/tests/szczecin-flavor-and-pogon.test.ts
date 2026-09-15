@@ -125,9 +125,9 @@ describe('Szczecin Flavor, Pogoń Matchday & Niebuszewo QoL Tests', () => {
     expect(indexHtml).toContain('data-action="klatka"');
   });
 
-  it('caches new scripts in service worker v8/v9/v10/v11', () => {
+  it('caches new scripts in service worker v8/v9/v10/v11/v12', () => {
     const swJs = fs.readFileSync(path.join(rootDir, 'sw.js'), 'utf-8');
-    expect(swJs).toMatch(/const CACHE_VERSION = 'v(8|9|10|11)'/);
+    expect(swJs).toMatch(/const CACHE_VERSION = 'v(8|9|10|11|12)'/);
     expect(swJs).toContain("'/pogon-feature.js'");
     expect(swJs).toContain("'/szczecin-local-flavor.js'");
   });

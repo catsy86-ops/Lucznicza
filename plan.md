@@ -248,29 +248,54 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 - [x] **POI 64: Pracownia Szewsko-Kaletnicza z tradycją od 1978 r.** (ul. Długosza 12).
 - [x] **POI 65: Mistrz Zegarmistrzowski Niebuszewo** (ul. Kołłątaja 22).
 - [x] **POI 66: Tradycyjna Introligatornia & Druk Typograficzny** (ul. Niemcewicza 17).
-- [x] **Trasa 13: „Mistrzowie Dawnego Fachu — Szlak Rzemieślniczy”** (walk, 1.9 km, 26 min).
+---
+
+#### ✅ SPRINT 11: Rewolucja UI & Live Neighborhood Intelligence (v1.7.0) [UKOŃCZONE 100%]
+- [x] **11.1. Etap 1: Reorganizacja UI & Likwidacja Clutteru (Ambient Status Capsule & Desktop Split-View)**:
+  - **Ambient Status Capsule (Pływająca Kapsuła HUD)**: Skonsolidowano rozproszone widżety pogody, jakości powietrza AQI i zegara w spójny, elegancki przycisk pigułkowy (34px) z rozwijanym panelem glassmorphism (Odra IMGW, GIOŚ, wiatr, wilgotność, ciśnienie).
+  - **Desktop Split-View Master-Detail Dock**: Dedykowany, 420px boczny dok mapy dla ekranów >=1024px z zakładkami (Miejsca, Trasy, Odjazdy ZDiTM na żywo), zsynchronizowany z mapą (`panBy([-180, 0])`) i filtrami kategorii.
+- [x] **11.2. Etap 2: Nowe Funkcje QoL (Inteligentny Kontekst & Asystenci Dzielnicy)**:
+  - **Smart Contextual Engine (`contextual-engine.ts`)**: Silnik analizujący 5 okresów doby (`morning`, `midday`, `afternoon`, `evening`, `night`) z dynamicznym sortowaniem kategorii i poradami Gryfusa.
+  - **Rondo Giedroycia Zator-Meter (`giedroyc-meter.ts`)**: Analizator płynności newralgicznego węzła komunikacyjnego (stany: 🟢 Płynnie, 🟡 Spowolniony ruch, 🔴 Zator) z uwzględnieniem godzin szczytu i opóźnień ZDiTM.
+  - **Pogoń Szczecin Matchday Companion (`matchday-companion.ts`)**: Asystent dnia meczowego Dumy Pomorza z odliczaniem live, trasami dojazdu na stadion z Niebuszewa i przyśpiewkami.
+- [x] **11.3. Etap 3: Nowe Punkty PoI (67–76) i Nowa Trasa 14**:
+  - **10 Nowych Miejsc PoI**:
+    67. Dawna Fabryka Samochodów Stoewer / Gryf (`edu`, ul. Krasińskiego 10/11)
+    68. Podziemny Schron Kolejowy pod Stacją SKM Niebuszewo (`edu`, ul. Orzeszkowej)
+    69. Zabytkowa Pompa Wodna z Gryfem / Sedina (`service`, ul. Kołłątaja / Kadłubka)
+    70. Polana Sportowa & Ścieżka Kalisteniczna w Dolinie Osówki (`sport`)
+    71. Miasteczko Ruchu Drogowego i Tor Rowerowy SP 47 (`edu`, ul. Jagiellońska / Unisławy)
+    72. Sąsiedzka Jadłodzielnia & Zniczodzielnia Niebuszewo (`service`, ul. Kołłątaja)
+    73. Targowisko Manhattan — Pawilon Ryb Bałtyckich & Wędzarstwa (`food`, pl. Kilińskiego)
+    74. Tor Agility & Park Psiego Niebuszewa (`park`, ul. Kadłubka / Asnyka)
+    75. Kultowy Bar Mleczny „Turysta” (`food`, ul. Kołłątaja 28)
+    76. Punkt Widokowy na Wzgórzu Warszewskim (`park`, ul. Duńska / Warcisława)
+  - **Trasa 14**: *„Śladami Pionierów Przemysłu i Podziemi”* (walk, 3.2 km, 42 min).
+- [x] **11.4. Etap 4: Integracja HUD & Testy Produkcyjne (168/168 zdanych)**:
+  - Wzbogacono rozwijany panel Ambient Capsule o kafelki kontekstowe, Zator-Meter i Dzień Meczowy.
+  - Osiągnięto **168 zdanych testów w 28 zestawach testowych Vitest** (100% pass rate).
+  - Pomyślna kompilacja produkcyjna `npm run build` (`tsc && vite build`).
 
 ---
 
-## 🚦 Tabela Gotowości Komponentów (Status Monitor v1.6.0)
+## 🚦 Tabela Gotowości Komponentów (Status Monitor v1.7.0)
 
 | Komponent | Stan | Działanie | Zależności od zewnętrznych kluczy |
 |---|---|---|---|
 | **Podkład Mapy (OSM)** | 🟢 Gotowy | Płynne ładowanie | **100% Darmowy (0 API Keys)** |
 | **Satelita HD (Esri)** | 🟢 Gotowy | Fotomapa wysokiej rozdzielczości | **100% Darmowy (0 API Keys)** |
-| **Maska Spotlight Niebuszewa** | 🟢 Gotowy | Odwrócony poligon wyciemniający tło | **GeoJSON / Leaflet** |
-| **Świetlny Kontur Granic** | 🟢 Gotowy | Barwy Pogoni Szczecin (#002D62 / #FFD700) | SVG / Leaflet Path |
-| **Presety Kamery Mapy** | 🟢 Gotowy | Szybki focus na kluczowe punkty osiedla | FlyTo Animacje |
-| **Desktop Split-View Dock** | 🟢 Gotowy | Boczny dok miejsca (380px) z offsetem | Czysty CSS/JS |
-| **Spotlight Command Palette** | 🟢 Gotowy | Globalne wyszukiwanie (`Ctrl+K` / `/`) | Czysty JS / A11y |
-| **Piny i Markery POI (66 POI)** | 🟢 Gotowy | Styl Google Pins, animacja hover | Brak |
-| **Trasy Osiedlowe (13 Tras)** | 🟢 Gotowy | GPX, wysokości, czasy marszu | XML / Blob API |
+| **Ambient Status Capsule HUD** | 🟢 Gotowy | Pogoda, AQI, Odra IMGW, Zator-Meter, Czas | **Open-Meteo, GIOŚ, IMGW** |
+| **Desktop Split-View Dock** | 🟢 Gotowy | Dok 420px (Miejsca, Trasy, Odjazdy ZDiTM) | Czysty CSS/JS |
+| **Smart Contextual Engine** | 🟢 Gotowy | Kontekst 5 pór dnia, porady Gryfusa | TypeScript / ESM |
+| **Rondo Giedroycia Zator-Meter**| 🟢 Gotowy | Analiza korków i zatorów u stóp osiedla | ZDiTM delays / Peak hours |
+| **Matchday Live Companion** | 🟢 Gotowy | Odliczanie meczowe, dojazd z Niebuszewa | TypeScript / ESM |
+| **Piny i Markery POI (76 POI)** | 🟢 Gotowy | 76 autentycznych punktów Niebuszewa | Brak |
+| **Trasy Osiedlowe (14 Tras)** | 🟢 Gotowy | GPX, profile wysokości, czasy, punkty | XML / Blob API |
 | **Stacja GIOŚ Szczecin (AQI)** | 🟢 Gotowy | Oficjalny monitoring powietrza 24/7 | GIOŚ API / Open-Meteo |
 | **Mobile Bottom Sheet** | 🟢 Gotowy | 3 stany wysuwania (Peek/Half/Full) | Czysty CSS/JS |
 | **Centralny Store** | 🟢 Gotowy | Reaktywny Pub/Sub, typowany TS | TypeScript |
 | **Przewodnik Głosowy (Audio)**| 🟢 Gotowy | Opowieści Gryfusa (Web Speech API) | Web Speech API |
 | **PWA Cache v11** | 🟢 Gotowy | Service Worker v11, offline-ready | Service Worker API |
-| **Automatyczne Testy UI MCP** | 🟢 Gotowy | **Zamykanie modali i arkuszy (Puppeteer)** | Puppeteer MCP |
-| **Testy jednostkowe** | 🟢 Gotowy | **123/123 testów przechodzi (Vitest)** | Vitest |
+| **Testy jednostkowe** | 🟢 Gotowy | **168/168 testów przechodzi (Vitest)** | Vitest |
 | **Dostępność (A11y)** | 🟢 Gotowy | **100/100 (0 naruszeń WCAG 2.1 AA)** | Lighthouse / Axe-Core |
-| **Wydanie Produkcyjne** | 🟢 Gotowy | **Wersja v1.6.0** (`dist/`) | Vite + TypeScript |
+| **Wydanie Produkcyjne** | 🟢 Gotowy | **Wersja v1.7.0** (`dist/`) | Vite + TypeScript |

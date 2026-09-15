@@ -109,6 +109,9 @@ function initLive() {
     fetchAqi();
   });
   document.getElementById('refreshTransport').addEventListener('click', generateTransportDepartures);
+
+  // Initialize Ambient Status Capsule (Unified HUD)
+  initAmbientStatusCapsule();
 }
 
 // ===== CLOCK =====
@@ -118,13 +121,18 @@ function startClock() {
     const h = String(now.getHours()).padStart(2, '0');
     const m = String(now.getMinutes()).padStart(2, '0');
     const s = String(now.getSeconds()).padStart(2, '0');
-    document.getElementById('clockTime').textContent = `${h}:${m}:${s}`;
+    const clockTimeEl = document.getElementById('clockTime');
+    if (clockTimeEl) clockTimeEl.textContent = `${h}:${m}:${s}`;
+
+    const ascTimeEl = document.getElementById('ascTime');
+    if (ascTimeEl) ascTimeEl.textContent = `${h}:${m}`;
 
     const day = now.getDate();
     const month = MONTHS_PL[now.getMonth()];
     const year = now.getFullYear();
     const dayName = DAYS_PL[now.getDay()];
-    document.getElementById('clockDate').textContent = `${dayName}, ${day} ${month} ${year}`;
+    const clockDateEl = document.getElementById('clockDate');
+    if (clockDateEl) clockDateEl.textContent = `${dayName}, ${day} ${month} ${year}`;
   }
   tick();
   live.clockInterval = setInterval(tick, 1000);
@@ -237,8 +245,24 @@ function renderWeatherWidget(c) {
   }
 
   const now = new Date();
-  document.getElementById('wUpdated').textContent =
-    `Aktualizacja: ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('wUpdated').textContent = `Aktualizacja: ${timeStr}`;
+
+  // Sync into Ambient Status Capsule
+  const ascWeatherTemp = document.getElementById('ascWeatherTemp');
+  if (ascWeatherTemp) ascWeatherTemp.textContent = `${Math.round(c.temperature_2m)}°C`;
+  const ascWeatherIcon = document.getElementById('ascWeatherIcon');
+  if (ascWeatherIcon) ascWeatherIcon.textContent = c.is_day ? wmo.icon : '🌙';
+  const ascFeels = document.getElementById('ascFeels');
+  if (ascFeels) ascFeels.textContent = `${Math.round(c.apparent_temperature)}°C`;
+  const ascWind = document.getElementById('ascWind');
+  if (ascWind) ascWind.textContent = `${Math.round(c.wind_speed_10m)} km/h ${windDir}`;
+  const ascHumidity = document.getElementById('ascHumidity');
+  if (ascHumidity) ascHumidity.textContent = `${c.relative_humidity_2m}%`;
+  const ascPressure = document.getElementById('ascPressure');
+  if (ascPressure) ascPressure.textContent = `${Math.round(c.surface_pressure)} hPa`;
+  const ascUpdated = document.getElementById('ascUpdated');
+  if (ascUpdated) ascUpdated.textContent = `Aktualizacja: ${timeStr}`;
 }
 
 function renderWeatherFull(c) {
@@ -431,12 +455,26 @@ function renderAqiWidget(c) {
   const info = getAqiInfo(c.european_aqi);
   const pct  = Math.min((c.european_aqi / 100) * 100, 100);
 
-  document.getElementById('aqiValue').textContent = c.european_aqi;
-  document.getElementById('aqiValue').style.color = info.color;
-  document.getElementById('aqiDesc').textContent = info.label;
-  document.getElementById('aqiFill').style.width = `${pct}%`;
-  document.getElementById('aqiFill').style.background = info.color;
-  document.getElementById('aqiWidget').classList.remove('hidden');
+  const aqiValEl = document.getElementById('aqiValue');
+  if (aqiValEl) {
+    aqiValEl.textContent = c.european_aqi;
+    aqiValEl.style.color = info.color;
+  }
+  const aqiDescEl = document.getElementById('aqiDesc');
+  if (aqiDescEl) aqiDescEl.textContent = info.label;
+  const aqiFillEl = document.getElementById('aqiFill');
+  if (aqiFillEl) {
+    aqiFillEl.style.width = `${pct}%`;
+    aqiFillEl.style.background = info.color;
+  }
+  const aqiWidget = document.getElementById('aqiWidget');
+  if (aqiWidget) aqiWidget.classList.remove('hidden');
+
+  // Sync into Ambient Status Capsule
+  const ascAqiText = document.getElementById('ascAqiText');
+  if (ascAqiText) ascAqiText.textContent = `AQI ${c.european_aqi} · ${info.label}`;
+  const ascAqiDot = document.getElementById('ascAqiDot');
+  if (ascAqiDot) ascAqiDot.style.background = info.color;
 }
 
 function renderAqiFull(c) {
@@ -1219,3 +1257,166 @@ function renderActivityForecast() {
 // Hook into weather fetch — call activity forecast after weather renders
 // NOTE: do NOT redefine renderWeatherFull here (function hoisting causes infinite recursion)
 // The activity forecast is called from within the original renderWeatherFull below.
+
+// ===== AMBIENT STATUS CAPSULE CONTROLLER =====
+function updateContextualAndGiedroycHUD() {
+  const app = window.__SZCZECIN_APP__;
+  const now = new Date();
+
+  // 1. Contextual Engine
+  const ctxIcon = document.getElementById('ascContextIcon');
+  const ctxGreeting = document.getElementById('ascContextGreeting');
+  const ctxTip = document.getElementById('ascContextTip');
+
+  if (app && app.contextualEngine) {
+    const config = app.contextualEngine.getContextualConfig(now);
+    if (ctxIcon) ctxIcon.textContent = config.icon;
+    if (ctxGreeting) ctxGreeting.textContent = config.greeting;
+    if (ctxTip) ctxTip.textContent = `Porada Gryfusa: ${config.gryfusTip}`;
+  } else {
+    const hour = now.getHours();
+    let greeting = 'Dzień dobry na Niebuszewie!';
+    let tip = 'Ciepłe pieczywo w Piekarni Niemierzyn i szybki tramwaj do centrum z Pętli Kołłątaja.';
+    let icon = '🌅';
+    if (hour >= 10 && hour < 15) {
+      greeting = 'Dobrego dnia sąsiedzie!';
+      tip = 'Pora obiadowa! Klasyczny Bar Turysta przy Kołłątaja lub spacer po Parku Kadziaka.';
+      icon = '☀️';
+    } else if (hour >= 15 && hour < 19) {
+      greeting = 'Popołudnie na dzielnicy';
+      tip = 'Godziny powrotów: sprawdź Zator-Meter Ronda Giedroycia i wybierz Park Kadziaka.';
+      icon = '🌇';
+    } else if (hour >= 19 && hour < 23) {
+      greeting = 'Dobry wieczór na Łuczniczej!';
+      tip = 'Pub Klatka pod 39 zaprasza na zimne piwo i sąsiedzkie debaty.';
+      icon = '🌙';
+    } else if (hour >= 23 || hour < 6) {
+      greeting = 'Cisza nocna na Niebuszewie';
+      tip = 'Dyżurująca apteka 24h przy Wyzwolenia / Kołłątaja. Uważaj na stado dzików!';
+      icon = '🌌';
+    }
+    if (ctxIcon) ctxIcon.textContent = icon;
+    if (ctxGreeting) ctxGreeting.textContent = greeting;
+    if (ctxTip) ctxTip.textContent = `Porada Gryfusa: ${tip}`;
+  }
+
+  // 2. Rondo Giedroycia Zator-Meter
+  const giedroycIcon = document.getElementById('ascGiedroycIcon');
+  const giedroycStatus = document.getElementById('ascGiedroycStatus');
+  const giedroycDesc = document.getElementById('ascGiedroycDesc');
+
+  if (giedroycStatus) {
+    if (app && app.giedroycMeter) {
+      const status = app.giedroycMeter.calculateGiedroycStatus(0, now);
+      if (giedroycIcon) giedroycIcon.textContent = status.badgeEmoji;
+      giedroycStatus.textContent = `${status.badgeEmoji} ${status.label}`;
+      giedroycStatus.style.color = status.color;
+      if (giedroycDesc) giedroycDesc.textContent = status.summary;
+    } else {
+      const hour = now.getHours();
+      const isPeak = (hour >= 7 && hour <= 9) || (hour >= 15 && hour <= 17);
+      if (isPeak) {
+        if (giedroycIcon) giedroycIcon.textContent = '🔴';
+        giedroycStatus.textContent = '🔴 Spowolniony ruch';
+        giedroycStatus.style.color = '#EF4444';
+        if (giedroycDesc) giedroycDesc.textContent = 'Umiarkowane spowolnienie przy wjeździe z al. Wyzwolenia.';
+      } else {
+        if (giedroycIcon) giedroycIcon.textContent = '🟢';
+        giedroycStatus.textContent = '🟢 Płynnie';
+        giedroycStatus.style.color = '#10B981';
+        if (giedroycDesc) giedroycDesc.textContent = 'Przejazd przez Staszica i Kołłątaja bez zatorów.';
+      }
+    }
+  }
+
+  // 3. Matchday Companion
+  const matchdayBadge = document.getElementById('ascMatchdayBadge');
+  const matchdayDesc = document.getElementById('ascMatchdayDesc');
+
+  if (app && app.matchdayCompanion) {
+    const countdown = app.matchdayCompanion.calculateMatchCountdown(app.matchdayCompanion.NEXT_MATCH, now);
+    if (countdown.isLiveNow) {
+      if (matchdayBadge) matchdayBadge.textContent = 'TRWA MECZ!';
+      if (matchdayDesc) matchdayDesc.textContent = 'Pogoń gra na Twardowskiego! Doping na żywo!';
+    } else if (countdown.isToday) {
+      if (matchdayBadge) matchdayBadge.textContent = `DZIŚ o ${app.matchdayCompanion.NEXT_MATCH.timeStr}`;
+      if (matchdayDesc) matchdayDesc.textContent = `Mecz domowy z ${app.matchdayCompanion.NEXT_MATCH.opponent}!`;
+    } else if (countdown.days > 0) {
+      if (matchdayBadge) matchdayBadge.textContent = `za ${countdown.days} dni (${app.matchdayCompanion.NEXT_MATCH.dateStr.slice(5)})`;
+      if (matchdayDesc) matchdayDesc.textContent = `Mecz z ${app.matchdayCompanion.NEXT_MATCH.opponent} (${app.matchdayCompanion.NEXT_MATCH.competition})`;
+    }
+  }
+}
+
+// ===== AMBIENT STATUS CAPSULE CONTROLLER =====
+function initAmbientStatusCapsule() {
+  const pillBtn = document.getElementById('ascPillBtn');
+  const dropdown = document.getElementById('ascDropdown');
+  const closeBtn = document.getElementById('ascCloseBtn');
+  const refreshBtn = document.getElementById('ascRefreshBtn');
+
+  if (!pillBtn || !dropdown) return;
+
+  function toggleDropdown(e) {
+    if (e) e.stopPropagation();
+    const isHidden = dropdown.classList.contains('hidden');
+    dropdown.classList.toggle('hidden', !isHidden);
+    pillBtn.setAttribute('aria-expanded', String(isHidden));
+    if (isHidden) {
+      updateContextualAndGiedroycHUD();
+    }
+  }
+
+  pillBtn.addEventListener('click', toggleDropdown);
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.add('hidden');
+      pillBtn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = '⏳ Pobieranie...';
+      live.lastWeatherFetch = 0;
+      live.lastAqiFetch = 0;
+      try {
+        await Promise.allSettled([fetchWeather(), fetchAqi(), fetchImgw()]);
+        updateContextualAndGiedroycHUD();
+        if (typeof showToast === 'function') {
+          showToast('🌤️ Zaktualizowano pogodę i jakość powietrza');
+        }
+      } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = '🔄 Odśwież';
+      }
+    });
+  }
+
+  // Close on click outside
+  document.addEventListener('click', (e) => {
+    if (!dropdown.classList.contains('hidden') && !dropdown.contains(e.target) && !pillBtn.contains(e.target)) {
+      dropdown.classList.add('hidden');
+      pillBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !dropdown.classList.contains('hidden')) {
+      dropdown.classList.add('hidden');
+      pillBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Initial update
+  updateContextualAndGiedroycHUD();
+}
+window.initAmbientStatusCapsule = initAmbientStatusCapsule;
+window.updateContextualAndGiedroycHUD = updateContextualAndGiedroycHUD;
+
+

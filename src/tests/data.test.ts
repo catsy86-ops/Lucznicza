@@ -9,7 +9,7 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
   });
 
   it('contains all POI places with required schema and coordinates', () => {
-    expect(PLACES.length).toBe(66);
+    expect(PLACES.length).toBe(76);
     for (const place of PLACES) {
       expect(place.id).toBeDefined();
       expect(place.name.length).toBeGreaterThan(0);
@@ -46,10 +46,22 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     const szewc = PLACES.find(p => p.name.includes('Szewsko-Kaletnicza'));
     expect(szewc).toBeDefined();
     expect(szewc?.cat).toBe('service');
+
+    const stoewer = PLACES.find(p => p.name.includes('Stoewer'));
+    expect(stoewer).toBeDefined();
+    expect(stoewer?.cat).toBe('edu');
+
+    const schron = PLACES.find(p => p.name.includes('Schron'));
+    expect(schron).toBeDefined();
+    expect(schron?.cat).toBe('edu');
+
+    const pompa = PLACES.find(p => p.name.includes('Pompa Wodna'));
+    expect(pompa).toBeDefined();
+    expect(pompa?.cat).toBe('service');
   });
 
   it('contains walking routes with stops and coordinates path', () => {
-    expect(ROUTES.length).toBe(13);
+    expect(ROUTES.length).toBe(14);
     for (const route of ROUTES) {
       expect(route.id).toBeGreaterThanOrEqual(1);
       expect(route.name.length).toBeGreaterThan(0);
@@ -76,6 +88,11 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     const szlakRzemioslo = ROUTES.find(r => r.name.includes('Mistrzowie Dawnego Fachu'));
     expect(szlakRzemioslo).toBeDefined();
     expect(szlakRzemioslo?.id).toBe(13);
+
+    const szlakPodziemi = ROUTES.find(r => r.name.includes('Pionierów Przemysłu'));
+    expect(szlakPodziemi).toBeDefined();
+    expect(szlakPodziemi?.id).toBe(14);
+    expect(szlakPodziemi?.emoji).toBe('🏭');
   });
 
   it('contains verified community events', () => {

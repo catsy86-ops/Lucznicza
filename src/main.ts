@@ -16,6 +16,9 @@ import { gpxExporter } from './services/gpx-exporter';
 import { favoritesSync } from './services/favorites-sync';
 import { accessibilityFilter } from './services/accessibility-filter';
 import { niebuszewoBoundary } from './services/niebuszewo-boundary';
+import { getContextualConfig, getTimeOfDay, sortCategoriesByContext } from './services/contextual-engine';
+import { calculateGiedroycStatus, extractAverageDelayFromDepartures } from './services/giedroyc-meter';
+import { calculateMatchCountdown, getMatchdayTransitRoute, NEXT_MATCH } from './services/matchday-companion';
 
 export * from './types';
 export * from './store';
@@ -33,6 +36,9 @@ export * from './services/gpx-exporter';
 export * from './services/favorites-sync';
 export * from './services/accessibility-filter';
 export * from './services/niebuszewo-boundary';
+export * from './services/contextual-engine';
+export * from './services/giedroyc-meter';
+export * from './services/matchday-companion';
 
 // Expose on global window object for interoperability with legacy components and console debugging
 if (typeof window !== 'undefined') {
@@ -55,7 +61,21 @@ if (typeof window !== 'undefined') {
     favoritesSync,
     accessibilityFilter,
     niebuszewoBoundary,
-    version: '1.3.0'
+    contextualEngine: {
+      getContextualConfig,
+      getTimeOfDay,
+      sortCategoriesByContext
+    },
+    giedroycMeter: {
+      calculateGiedroycStatus,
+      extractAverageDelayFromDepartures
+    },
+    matchdayCompanion: {
+      calculateMatchCountdown,
+      getMatchdayTransitRoute,
+      NEXT_MATCH
+    },
+    version: '1.6.0'
   };
 
   // Sync real-time transport arrivals on load
@@ -63,3 +83,4 @@ if (typeof window !== 'undefined') {
     console.warn('[ZDiTM] Background sync notice:', err);
   });
 }
+
