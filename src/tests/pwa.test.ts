@@ -28,9 +28,12 @@ describe('PWA & Service Worker Configuration', () => {
     expect(fs.existsSync(swPath)).toBe(true);
 
     const swContent = fs.readFileSync(swPath, 'utf8');
+    expect(swContent).toContain("const CACHE_VERSION = 'v13';");
     expect(swContent).toContain("self.addEventListener('install'");
     expect(swContent).toContain("self.addEventListener('activate'");
     expect(swContent).toContain("self.addEventListener('fetch'");
+    expect(swContent).toContain("self.addEventListener('sync'");
+    expect(swContent).toContain('sync-outbox');
     expect(swContent).toContain('tileStrategy');
     expect(swContent).toContain('apiStrategy');
     expect(swContent).toContain('networkFirstStrategy');

@@ -1,6 +1,6 @@
-// Service Worker — Szczecin Guide PWA v12 (Sprint 11 — Ambient Capsule HUD, Split-View, POI 67-76, Route 14)
+// Service Worker — Szczecin Guide PWA v13 (Sprint 13 — Background Sync, Offline Outbox, POI 77-82, Routes 15-16)
 // Network-first for code, cache-first for tiles, IndexedDB for API data, offline fallback
-const CACHE_VERSION = 'v12';
+const CACHE_VERSION = 'v13';
 const CACHE_NAME = `niebuszewo-guide-${CACHE_VERSION}`;
 const TILE_CACHE = `map-tiles-${CACHE_VERSION}`;
 const API_CACHE = `api-data-${CACHE_VERSION}`;
@@ -246,10 +246,20 @@ function offlineFallback() {
   );
 }
 
-// ===== BACKGROUND SYNC (for future use) =====
+// ===== BACKGROUND SYNC & OFFLINE OUTBOX =====
 self.addEventListener('sync', e => {
-  if (e.tag === 'sync-favorites') {
-    // Future: sync favorites to cloud
+  if (e.tag === 'sync-outbox' || e.tag === 'sync-alerts' || e.tag === 'sync-favorites' || e.tag === 'sync-feedback') {
+    e.waitUntil(
+      self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(clientList => {
+        clientList.forEach(client => {
+          client.postMessage({
+            type: 'OFFLINE_SYNC_COMPLETED',
+            tag: e.tag,
+            timestamp: Date.now()
+          });
+        });
+      })
+    );
   }
 });
 

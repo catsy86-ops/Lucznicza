@@ -963,6 +963,78 @@ const APP_DATA = {
       coords: [14.55620, 53.46350],
       rating: 4.9,
       tags: ['panorama', 'widok', 'warszewo', 'niebuszewo', 'odra', 'zachódsłońca', 'spacer', 'punktwidokowy']
+    },
+    {
+      id: 77, cat: 'edu',
+      name: 'Zabytkowa Zajezdnia Niemierzyn — Hala Warsztatowa i Galeria Historyczna',
+      addr: 'ul. Niemierzyńska 18A, Szczecin',
+      emoji: '🚋',
+      desc: 'Zabytkowa hala dawnej zajezdni tramwajowej z 1907 roku. Prezentacja historycznych szczecińskich tramwajów, warsztatów rzemieślniczych i unikalnych modeli Stoewer.',
+      hours: 'Wt–Ndz 10:00–18:00',
+      phone: '91 459 92 00', website: 'muzeumtechniki.eu',
+      coords: [14.53650, 53.45320],
+      rating: 4.9,
+      tags: ['tramwaje', 'niemierzyn', 'zajezdnia', 'historia', 'muzeum', 'stoewer', 'zabytki']
+    },
+    {
+      id: 78, cat: 'park',
+      name: 'Sąsiedzki Skwer Przyjaciół Żołnierza & Kącik Szachowy',
+      addr: 'ul. Przyjaciół Żołnierza / Pasterska, Szczecin',
+      emoji: '♟️',
+      desc: 'Zaciszny, zielony skwer osiedlowy ze stałymi kamiennymi stolikami do szachów, alejkami spacerowymi i nowymi nasadzeniami platanów.',
+      hours: 'Dostępne całodobowo',
+      phone: null, website: null,
+      coords: [14.55120, 53.45890],
+      rating: 4.6,
+      tags: ['skwer', 'szachy', 'zieleń', 'relaks', 'przyjaciółżołnierza', 'ławki', 'drzewa']
+    },
+    {
+      id: 79, cat: 'food',
+      name: 'Tradycyjna Cukiernia i Pączkarnia Niebuszewo',
+      addr: 'ul. Adama Asnyka 6, Szczecin',
+      emoji: '🍩',
+      desc: 'Tradycyjna pracownia cukiernicza wypiekająca gorące pączki z różą, faworki i domowe drożdżówki według receptur z lat 60. XX wieku.',
+      hours: 'Pon–Pt 7:00–17:00, Sob 8:00–14:00',
+      phone: null, website: null,
+      coords: [14.54580, 53.45110],
+      rating: 4.8,
+      tags: ['pączki', 'cukiernia', 'asnyka', 'słodkości', 'tradycja', 'wypieki', 'kawa']
+    },
+    {
+      id: 80, cat: 'edu',
+      name: 'Stary Browar Niebuszewo (Zabelsdorf Brauerei Heritage)',
+      addr: 'ul. Jana Długosza / Niemcewicza, Szczecin',
+      emoji: '🍺',
+      desc: 'Ślady historycznego browaru Zabelsdorf z XIX wieku. Miejsce o bogatej tradycji piwowarskiej, czerpiące niegdyś czystą wodę z potoku Osówka.',
+      hours: 'Widoczne z zewnątrz całodobowo',
+      phone: null, website: null,
+      coords: [14.54210, 53.45020],
+      rating: 4.5,
+      tags: ['browar', 'zabelsdorf', 'historia', 'osówka', 'długosza', 'niemcewicza', 'architektura']
+    },
+    {
+      id: 81, cat: 'sport',
+      name: 'Stacja Rowerowa Bike_S Pętla Kołłątaja & Warsztat Samoobsługowy',
+      addr: 'Pętla Kołłątaja / ul. Barbary, Szczecin',
+      emoji: '🚲',
+      desc: 'Główny węzeł Szczecińskiego Roweru Miejskiego (Bike_S) na Niebuszewie wraz ze stacją naprawczą ze stojakiem, pompką i zestawem kluczy.',
+      hours: 'Dostępne całodobowo',
+      phone: null, website: 'bikes-srm.pl',
+      coords: [14.54710, 53.44750],
+      rating: 4.7,
+      tags: ['rower', 'bikes', 'pętla', 'kołłątaja', 'serwis', 'sport', 'komunikacja']
+    },
+    {
+      id: 82, cat: 'park',
+      name: 'Dzielnicowy Ogródek Botaniczno-Ziołowy przy SP 35',
+      addr: 'ul. Świętoborzyców 40, Szczecin',
+      emoji: '🌿',
+      desc: 'Edukacyjny ogródek społeczny z ziołami miododajnymi, domkami dla owadów i ścieżką zmysłów stworzony przez młodzież i mieszkańców Niebuszewa.',
+      hours: 'Pon–Pt 8:00–18:00 (teren otwarty)',
+      phone: null, website: null,
+      coords: [14.55820, 53.45780],
+      rating: 4.8,
+      tags: ['ogródek', 'zioła', 'edukacja', 'owady', 'przyroda', 'sp35', 'świętoborzyców']
     }
   ],
 
@@ -1448,6 +1520,78 @@ const APP_DATA = {
         [14.54880, 53.45560],
         [14.54120, 53.45280],
         [14.54710, 53.44850]
+      ]
+    },
+    {
+      id: 15,
+      name: 'Kulinarno-Rzemieślniczy Spacer Smaków Niebuszewa',
+      emoji: '🥟',
+      type: 'walk',
+      color: '#e74c3c',
+      distance: '2.5 km',
+      distanceNum: 2.5,
+      time: '35 min',
+      timeMin: 35,
+      difficulty: 'Łatwa',
+      difficultyLevel: 1,
+      calories: 145,
+      terrain: 'Chodnik miejski',
+      bestTime: 'Przedpołudnie lub wczesny obiad',
+      tags: ['smaki', 'kuchnia', 'turysta', 'pączki', 'piekarnia', 'manhattan', 'rzemiosło'],
+      desc: 'Wyjątkowy szlak gastronomiczno-sąsiedzki łączący kultowy Bar Turysta, tradycyjną pączkarnię na Asnyka, rzemieślniczą piekarnię Niemierzyn i targowisko Manhattan.',
+      highlights: [
+        'Bar Mleczny Turysta',
+        'Pączkarnia na Asnyka',
+        'Piekarnia Niemierzyn',
+        'Pawilon Rybny Manhattan'
+      ],
+      stops: [
+        { name: 'Start: Bar Mleczny Turysta', addr: 'ul. Kołłątaja 30', emoji: '🥟' },
+        { name: 'Tradycyjna Pączkarnia', addr: 'ul. Asnyka 6', emoji: '🍩' },
+        { name: 'Piekarnia Niemierzyn', addr: 'ul. Niemierzyńska 24', emoji: '🥖' },
+        { name: 'Meta: Targowisko Manhattan', addr: 'pl. Kilińskiego', emoji: '🐟' }
+      ],
+      coords: [
+        [14.54520, 53.44810],
+        [14.54580, 53.45110],
+        [14.53850, 53.45250],
+        [14.54850, 53.44980]
+      ]
+    },
+    {
+      id: 16,
+      name: 'Zielona Pętla Wzgórz i Doliny Osówki',
+      emoji: '🌲',
+      type: 'run',
+      color: '#27ae60',
+      distance: '5.0 km',
+      distanceNum: 5.0,
+      time: '32 min bieg / 65 min spacer',
+      timeMin: 32,
+      difficulty: 'Średnia',
+      difficultyLevel: 2,
+      calories: 340,
+      terrain: 'Ścieżki parkowe i szutrowe',
+      bestTime: 'Poranek lub złota godzina',
+      tags: ['przyroda', 'bieganie', 'osówka', 'kadziak', 'panorama', 'warszewo', 'skwer', 'park'],
+      desc: 'Malownicza pętla kondycyjna łącząca Park Kadziaka, meandry potoku Osówka, punkt widokowy na Wzgórzu Warszewskim oraz zielony skwer szachowy.',
+      highlights: [
+        'Park Stefana Kadziaka',
+        'Kładka nad Osówką',
+        'Wzgórze Warszewskie (Widok)',
+        'Skwer Przyjaciół Żołnierza'
+      ],
+      stops: [
+        { name: 'Start: Park Kadziaka', addr: 'ul. Łucznicza', emoji: '🌳' },
+        { name: 'Kładka Potoku Osówka', addr: 'Dolina Osówki', emoji: '💧' },
+        { name: 'Wzgórze Warszewskie', addr: 'ul. Rostocka / Przyjaciół Żołnierza', emoji: '🌅' },
+        { name: 'Meta: Skwer Szachowy', addr: 'ul. Pasterska', emoji: '♟️' }
+      ],
+      coords: [
+        [14.55100, 53.45450],
+        [14.54320, 53.45800],
+        [14.55620, 53.46350],
+        [14.55120, 53.45890]
       ]
     }
   ],

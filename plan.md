@@ -293,9 +293,30 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
   - Zmodernizowano logikę profilu użytkownika, statystyk eksploracji i odznak do w pełni typowanego modułu TypeScript z odpornym fallbackiem in-memory.
   - Całkowity stan testów: **181/181 zdanych testów w 31 zestawach Vitest** (100% pass rate).
 
+#### ✅ SPRINT 13: Rozbudowa POI & Tras, Offline Outbox & Gra Miejska GPS (v1.8.0) [UKOŃCZONE 100%]
+- [x] **13.1. Krok 1: Dalsza Rozbudowa Bazy Punktów i Tras (POI 77–82, Trasy 15–16)**:
+  - Dodano 6 nowych, autentycznych punktów POI Niebuszewa:
+    77. *Zabytkowa Zajezdnia Niemierzyn — Hala Warsztatowa i Galeria Historyczna* (`edu`, ul. Niemierzyńska 18A)
+    78. *Sąsiedzki Skwer Przyjaciół Żołnierza & Kącik Szachowy* (`park`, ul. Pasterska)
+    79. *Tradycyjna Cukiernia i Pączkarnia Niebuszewo* (`food`, ul. Asnyka 6)
+    80. *Stary Browar Niebuszewo (Zabelsdorf Brauerei Heritage)* (`edu`, ul. Długosza / Niemcewicza)
+    81. *Stacja Rowerowa Bike_S Pętla Kołłątaja & Warsztat Samoobsługowy* (`sport`, Pętla Kołłątaja)
+    82. *Dzielnicowy Ogródek Botaniczno-Ziołowy przy SP 35* (`park`, ul. Świętoborzyców 40)
+  - Wdrożono 2 nowe trasy:
+    - **Trasa 15**: *„Kulinarno-Rzemieślniczy Spacer Smaków Niebuszewa”* (walk, 2.5 km, 35 min)
+    - **Trasa 16**: *„Zielona Pętla Wzgórz i Doliny Osówki”* (run, 5.0 km, 32 min bieg / 65 min spacer)
+- [x] **13.2. Krok 2: PWA Background Sync & Offline Outbox (`offline-sync.ts`)**:
+  - Zaimplementowano moduł `OfflineSyncService` z automatyczną obsługą kolejki outbox, persystencją w LocalStorage/in-memory oraz zdarzeniami `window.online`.
+  - Zaktualizowano Service Worker `sw.js` do wersji cache `v13` z obsługą zdarzeń `sync` (`sync-outbox`, `sync-alerts`, `sync-favorites`, `sync-feedback`).
+- [x] **13.3. Krok 3: Nowe Funkcje Społecznościowe & Gra Miejska z GPS (`niebuszewo-quest.ts`)**:
+  - Rozbudowano bazę pytań gry miejskiej do 9 interaktywnych zagadek (m.in. Zajezdnia Niemierzyn, Browar Zabelsdorf, Zegar Słoneczny, Bar Turysta).
+  - Wdrożono weryfikację bliskości geograficznej GPS (algorytm Haversine) premiującą bonusowymi punktami (+10 EXP) graczy rozwiązujących zagadki bezpośrednio na miejscu.
+  - Dodano nową odznakę *🏛️ Strażnik Zabytków Niebuszewa* oraz automatyczną synchronizację wyników offline.
+  - Całkowity stan testów: **189/189 zdanych testów w 32 zestawach Vitest** (100% pass rate).
+
 ---
 
-## 🚦 Tabela Gotowości Komponentów (Status Monitor v1.7.0)
+## 🚦 Tabela Gotowości Komponentów (Status Monitor v1.8.0)
 
 | Komponent | Stan | Działanie | Zależności od zewnętrznych kluczy |
 |---|---|---|---|
@@ -309,13 +330,15 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Powiadomienia Web Push** | 🟢 Gotowy | Alerty o meczach, zatorach i dzikach | Web Notification & SW API |
 | **Wielojęzyczność (i18n)** | 🟢 Gotowy | Języki PL, EN, DE z natychmiastowym przełączaniem | TypeScript / ESM |
 | **Profil & Gamifikacja TS** | 🟢 Gotowy | Statystyki eksploracji, odznaki, odwiedzone miejsca | TypeScript / LocalStorage |
-| **Piny i Markery POI (76 POI)** | 🟢 Gotowy | 76 autentycznych punktów Niebuszewa | Brak |
-| **Trasy Osiedlowe (14 Tras)** | 🟢 Gotowy | GPX, profile wysokości, czasy, punkty | XML / Blob API |
+| **Gra Miejska & Questy GPS** | 🟢 Gotowy | 9 zagadek osiedlowych, weryfikacja GPS na miejscu | TypeScript / Geo Haversine |
+| **PWA Background Sync & Outbox**| 🟢 Gotowy | Kolejka offline outbox, Background Sync API | Service Worker API |
+| **Piny i Markery POI (82 POI)** | 🟢 Gotowy | 82 autentyczne punkty Niebuszewa | Brak |
+| **Trasy Osiedlowe (16 Tras)** | 🟢 Gotowy | GPX, profile wysokości, czasy, punkty | XML / Blob API |
 | **Stacja GIOŚ Szczecin (AQI)** | 🟢 Gotowy | Oficjalny monitoring powietrza 24/7 | GIOŚ API / Open-Meteo |
 | **Mobile Bottom Sheet** | 🟢 Gotowy | 3 stany wysuwania (Peek/Half/Full) | Czysty CSS/JS |
 | **Centralny Store** | 🟢 Gotowy | Reaktywny Pub/Sub, typowany TS | TypeScript |
 | **Przewodnik Głosowy (Audio)**| 🟢 Gotowy | Opowieści Gryfusa (Web Speech API) | Web Speech API |
-| **PWA Cache v12** | 🟢 Gotowy | Service Worker v12, offline-ready | Service Worker API |
-| **Testy jednostkowe** | 🟢 Gotowy | **181/181 testów przechodzi (Vitest)** | Vitest |
+| **PWA Cache v13** | 🟢 Gotowy | Service Worker v13, offline-ready | Service Worker API |
+| **Testy jednostkowe** | 🟢 Gotowy | **189/189 testów przechodzi (Vitest)** | Vitest |
 | **Dostępność (A11y)** | 🟢 Gotowy | **100/100 (0 naruszeń WCAG 2.1 AA)** | Lighthouse / Axe-Core |
 | **Wydanie Produkcyjne Live** | 🟢 Gotowy | **https://lucznicza.vercel.app** | Vercel + Vite |

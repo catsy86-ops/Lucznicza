@@ -1085,5 +1085,150 @@ export const ROUTES: WalkingRoute[] = [
         53.44850
       ]
     ]
+  },
+  {
+    "id": 15,
+    "name": "Kulinarno-Rzemieślniczy Spacer Smaków Niebuszewa",
+    "emoji": "🥟",
+    "type": "walk",
+    "color": "#e74c3c",
+    "distance": "2.5 km",
+    "distanceNum": 2.5,
+    "time": "35 min",
+    "timeMin": 35,
+    "difficulty": "Łatwa",
+    "difficultyLevel": 1,
+    "calories": 145,
+    "terrain": "Chodnik miejski",
+    "bestTime": "Przedpołudnie lub wczesny obiad",
+    "tags": [
+      "smaki",
+      "kuchnia",
+      "turysta",
+      "pączki",
+      "piekarnia",
+      "manhattan",
+      "rzemiosło"
+    ],
+    "desc": "Wyjątkowy szlak gastronomiczno-sąsiedzki łączący kultowy Bar Turysta, tradycyjną pączkarnię na Asnyka, rzemieślniczą piekarnię Niemierzyn i targowisko Manhattan.",
+    "highlights": [
+      "Bar Mleczny Turysta",
+      "Pączkarnia na Asnyka",
+      "Piekarnia Niemierzyn",
+      "Pawilon Rybny Manhattan"
+    ],
+    "stops": [
+      {
+        "name": "Start: Bar Mleczny Turysta",
+        "addr": "ul. Kołłątaja 30",
+        "emoji": "🥟"
+      },
+      {
+        "name": "Tradycyjna Pączkarnia",
+        "addr": "ul. Asnyka 6",
+        "emoji": "🍩"
+      },
+      {
+        "name": "Piekarnia Niemierzyn",
+        "addr": "ul. Niemierzyńska 24",
+        "emoji": "🥖"
+      },
+      {
+        "name": "Meta: Targowisko Manhattan",
+        "addr": "pl. Kilińskiego",
+        "emoji": "🐟"
+      }
+    ],
+    "coords": [
+      [
+        14.54520,
+        53.44810
+      ],
+      [
+        14.54580,
+        53.45110
+      ],
+      [
+        14.53850,
+        53.45250
+      ],
+      [
+        14.54850,
+        53.44980
+      ]
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Zielona Pętla Wzgórz i Doliny Osówki",
+    "emoji": "🌲",
+    "type": "run",
+    "color": "#27ae60",
+    "distance": "5.0 km",
+    "distanceNum": 5.0,
+    "time": "32 min bieg / 65 min spacer",
+    "timeMin": 32,
+    "difficulty": "Średnia",
+    "difficultyLevel": 2,
+    "calories": 340,
+    "terrain": "Ścieżki parkowe i szutrowe",
+    "bestTime": "Poranek lub złota godzina",
+    "tags": [
+      "przyroda",
+      "bieganie",
+      "osówka",
+      "kadziak",
+      "panorama",
+      "warszewo",
+      "skwer",
+      "park"
+    ],
+    "desc": "Malownicza pętla kondycyjna łącząca Park Kadziaka, meandry potoku Osówka, punkt widokowy na Wzgórzu Warszewskim oraz zielony skwer szachowy.",
+    "highlights": [
+      "Park Stefana Kadziaka",
+      "Kładka nad Osówką",
+      "Wzgórze Warszewskie (Widok)",
+      "Skwer Przyjaciół Żołnierza"
+    ],
+    "stops": [
+      {
+        "name": "Start: Park Kadziaka",
+        "addr": "ul. Łucznicza",
+        "emoji": "🌳"
+      },
+      {
+        "name": "Kładka Potoku Osówka",
+        "addr": "Dolina Osówki",
+        "emoji": "💧"
+      },
+      {
+        "name": "Wzgórze Warszewskie",
+        "addr": "ul. Rostocka / Przyjaciół Żołnierza",
+        "emoji": "🌅"
+      },
+      {
+        "name": "Meta: Skwer Szachowy",
+        "addr": "ul. Pasterska",
+        "emoji": "♟️"
+      }
+    ],
+    "coords": [
+      [
+        14.55100,
+        53.45450
+      ],
+      [
+        14.54320,
+        53.45800
+      ],
+      [
+        14.55620,
+        53.46350
+      ],
+      [
+        14.55120,
+        53.45890
+      ]
+    ]
   }
 ];

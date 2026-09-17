@@ -1789,5 +1789,155 @@ export const PLACES: PlacePOI[] = [
       "spacer",
       "punktwidokowy"
     ]
+  },
+  {
+    "id": 77,
+    "cat": "edu",
+    "name": "Zabytkowa Zajezdnia Niemierzyn — Hala Warsztatowa i Galeria Historyczna",
+    "addr": "ul. Niemierzyńska 18A, Szczecin",
+    "emoji": "🚋",
+    "desc": "Zabytkowa hala dawnej zajezdni tramwajowej z 1907 roku. Prezentacja historycznych szczecińskich tramwajów, warsztatów rzemieślniczych i unikalnych modeli Stoewer.",
+    "hours": "Wt–Ndz 10:00–18:00",
+    "phone": "91 459 92 00",
+    "website": "muzeumtechniki.eu",
+    "coords": [
+      14.53650,
+      53.45320
+    ],
+    "rating": 4.9,
+    "tags": [
+      "tramwaje",
+      "niemierzyn",
+      "zajezdnia",
+      "historia",
+      "muzeum",
+      "stoewer",
+      "zabytki"
+    ]
+  },
+  {
+    "id": 78,
+    "cat": "park",
+    "name": "Sąsiedzki Skwer Przyjaciół Żołnierza & Kącik Szachowy",
+    "addr": "ul. Przyjaciół Żołnierza / Pasterska, Szczecin",
+    "emoji": "♟️",
+    "desc": "Zaciszny, zielony skwer osiedlowy ze stałymi kamiennymi stolikami do szachów, alejkami spacerowymi i nowymi nasadzeniami platanów.",
+    "hours": "Dostępne całodobowo",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.55120,
+      53.45890
+    ],
+    "rating": 4.6,
+    "tags": [
+      "skwer",
+      "szachy",
+      "zieleń",
+      "relaks",
+      "przyjaciółżołnierza",
+      "ławki",
+      "drzewa"
+    ]
+  },
+  {
+    "id": 79,
+    "cat": "food",
+    "name": "Tradycyjna Cukiernia i Pączkarnia Niebuszewo",
+    "addr": "ul. Adama Asnyka 6, Szczecin",
+    "emoji": "🍩",
+    "desc": "Tradycyjna pracownia cukiernicza wypiekająca gorące pączki z różą, faworki i domowe drożdżówki według receptur z lat 60. XX wieku.",
+    "hours": "Pon–Pt 7:00–17:00, Sob 8:00–14:00",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.54580,
+      53.45110
+    ],
+    "rating": 4.8,
+    "tags": [
+      "pączki",
+      "cukiernia",
+      "asnyka",
+      "słodkości",
+      "tradycja",
+      "wypieki",
+      "kawa"
+    ]
+  },
+  {
+    "id": 80,
+    "cat": "edu",
+    "name": "Stary Browar Niebuszewo (Zabelsdorf Brauerei Heritage)",
+    "addr": "ul. Jana Długosza / Niemcewicza, Szczecin",
+    "emoji": "🍺",
+    "desc": "Ślady historycznego browaru Zabelsdorf z XIX wieku. Miejsce o bogatej tradycji piwowarskiej, czerpiące niegdyś czystą wodę z potoku Osówka.",
+    "hours": "Widoczne z zewnątrz całodobowo",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.54210,
+      53.45020
+    ],
+    "rating": 4.5,
+    "tags": [
+      "browar",
+      "zabelsdorf",
+      "historia",
+      "osówka",
+      "długosza",
+      "niemcewicza",
+      "architektura"
+    ]
+  },
+  {
+    "id": 81,
+    "cat": "sport",
+    "name": "Stacja Rowerowa Bike_S Pętla Kołłątaja & Warsztat Samoobsługowy",
+    "addr": "Pętla Kołłątaja / ul. Barbary, Szczecin",
+    "emoji": "🚲",
+    "desc": "Główny węzeł Szczecińskiego Roweru Miejskiego (Bike_S) na Niebuszewie wraz ze stacją naprawczą ze stojakiem, pompką i zestawem kluczy.",
+    "hours": "Dostępne całodobowo",
+    "phone": null,
+    "website": "bikes-srm.pl",
+    "coords": [
+      14.54710,
+      53.44750
+    ],
+    "rating": 4.7,
+    "tags": [
+      "rower",
+      "bikes",
+      "pętla",
+      "kołłątaja",
+      "serwis",
+      "sport",
+      "komunikacja"
+    ]
+  },
+  {
+    "id": 82,
+    "cat": "park",
+    "name": "Dzielnicowy Ogródek Botaniczno-Ziołowy przy SP 35",
+    "addr": "ul. Świętoborzyców 40, Szczecin",
+    "emoji": "🌿",
+    "desc": "Edukacyjny ogródek społeczny z ziołami miododajnymi, domkami dla owadów i ścieżką zmysłów stworzony przez młodzież i mieszkańców Niebuszewa.",
+    "hours": "Pon–Pt 8:00–18:00 (teren otwarty)",
+    "phone": null,
+    "website": null,
+    "coords": [
+      14.55820,
+      53.45780
+    ],
+    "rating": 4.8,
+    "tags": [
+      "ogródek",
+      "zioła",
+      "edukacja",
+      "owady",
+      "przyroda",
+      "sp35",
+      "świętoborzyców"
+    ]
   }
 ];

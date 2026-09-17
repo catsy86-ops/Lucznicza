@@ -23,6 +23,8 @@ import { calculateMatchCountdown, getMatchdayTransitRoute, NEXT_MATCH } from './
 import { pushNotificationService, PushNotificationService } from './services/push-notifications';
 import { i18nService, I18nService } from './services/i18n';
 import { userProfileService, UserProfileService } from './services/user-profile';
+import { OfflineSyncService } from './services/offline-sync';
+import { niebuszewoQuestService, NiebuszewoQuestService } from './services/niebuszewo-quest';
 
 export * from './types';
 export * from './store';
@@ -46,6 +48,8 @@ export * from './services/matchday-companion';
 export * from './services/push-notifications';
 export * from './services/i18n';
 export * from './services/user-profile';
+export * from './services/offline-sync';
+export * from './services/niebuszewo-quest';
 
 // Expose on global window object for interoperability with legacy components and console debugging
 if (typeof window !== 'undefined') {
@@ -85,7 +89,9 @@ if (typeof window !== 'undefined') {
     pushNotifications: pushNotificationService,
     i18n: i18nService,
     userProfile: userProfileService,
-    version: '1.7.0'
+    offlineSync: OfflineSyncService.getInstance(),
+    niebuszewoQuest: niebuszewoQuestService,
+    version: '1.8.0'
   };
 
   // Sync real-time transport arrivals on load

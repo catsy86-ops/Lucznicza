@@ -9,7 +9,7 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
   });
 
   it('contains all POI places with required schema and coordinates', () => {
-    expect(PLACES.length).toBe(76);
+    expect(PLACES.length).toBe(82);
     for (const place of PLACES) {
       expect(place.id).toBeDefined();
       expect(place.name.length).toBeGreaterThan(0);
@@ -58,10 +58,22 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     const pompa = PLACES.find(p => p.name.includes('Pompa Wodna'));
     expect(pompa).toBeDefined();
     expect(pompa?.cat).toBe('service');
+
+    const zajezdnia = PLACES.find(p => p.name.includes('Hala Warsztatowa'));
+    expect(zajezdnia).toBeDefined();
+    expect(zajezdnia?.cat).toBe('edu');
+
+    const paczkarnia = PLACES.find(p => p.name.includes('Pączkarnia'));
+    expect(paczkarnia).toBeDefined();
+    expect(paczkarnia?.cat).toBe('food');
+
+    const bikeS = PLACES.find(p => p.name.includes('Bike_S'));
+    expect(bikeS).toBeDefined();
+    expect(bikeS?.cat).toBe('sport');
   });
 
   it('contains walking routes with stops and coordinates path', () => {
-    expect(ROUTES.length).toBe(14);
+    expect(ROUTES.length).toBe(16);
     for (const route of ROUTES) {
       expect(route.id).toBeGreaterThanOrEqual(1);
       expect(route.name.length).toBeGreaterThan(0);
@@ -93,6 +105,16 @@ describe('Domain Data Integrity (Niebuszewo / Łucznicza)', () => {
     expect(szlakPodziemi).toBeDefined();
     expect(szlakPodziemi?.id).toBe(14);
     expect(szlakPodziemi?.emoji).toBe('🏭');
+
+    const szlakSmakow = ROUTES.find(r => r.name.includes('Spacer Smaków'));
+    expect(szlakSmakow).toBeDefined();
+    expect(szlakSmakow?.id).toBe(15);
+    expect(szlakSmakow?.emoji).toBe('🥟');
+
+    const szlakZielonaPetla = ROUTES.find(r => r.name.includes('Zielona Pętla'));
+    expect(szlakZielonaPetla).toBeDefined();
+    expect(szlakZielonaPetla?.id).toBe(16);
+    expect(szlakZielonaPetla?.emoji).toBe('🌲');
   });
 
   it('contains verified community events', () => {

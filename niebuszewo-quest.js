@@ -89,6 +89,70 @@ const NiebuszewoQuest = (() => {
       ],
       explanation: 'Łucznicza i sąsiednie zaułki słyną z niepowtarzalnej atmosfery sąsiedzkich murków, gdzie każdy się zna, a lokalny Pub Klatka integruje całe pokolenia.',
       points: 15
+    },
+    {
+      id: 'quest_zajezdnia_niemierzyn',
+      title: 'Zabytkowa Zajezdnia Niemierzyn',
+      poiId: 77,
+      placeName: 'Zajezdnia Sztuki MTiK',
+      emoji: '🚋',
+      question: 'W którym roku wyjechał na trasę pierwszy elektryczny tramwaj ze szczecińskiej zajezdni Niemierzyn?',
+      options: [
+        { text: '1907 rok', correct: true },
+        { text: '1945 rok', correct: false },
+        { text: '1879 rok', correct: false },
+        { text: '1960 rok', correct: false }
+      ],
+      explanation: 'Zajezdnia Niemierzyn została oddana do użytku w 1907 roku i przez blisko sto lat służyła jako główna baza tramwajowa północnego Szczecina, dziś przekształcona w Muzeum Techniki i Komunikacji.',
+      points: 25
+    },
+    {
+      id: 'quest_stary_browar',
+      title: 'Browar Zabelsdorf na Niebuszewie',
+      poiId: 80,
+      placeName: 'Stary Browar / Długosza',
+      emoji: '🍺',
+      question: 'Dlaczego w XIX wieku to właśnie na Niebuszewie powstały słynne browary i fabryki drożdży?',
+      options: [
+        { text: 'Dzięki wyjątkowo czystej wodzie z potoku Osówka i chłodnym piwnicom wzgórz morenowych', correct: true },
+        { text: 'Ze względu na bliskość morskiego portu głębokowodnego', correct: false },
+        { text: 'Z powodu nakazu królewskiego z Berlina', correct: false },
+        { text: 'Bo uprawiano tu wyłącznie chmiel pomorski', correct: false }
+      ],
+      explanation: 'Nurt potoku Osówka dostarczał krystalicznie czystej wody niezbędnej do warzenia piwa, a ukształtowanie wzgórz morenowych pozwalało na budowę głębokich piwnic leżakowych.',
+      points: 20
+    },
+    {
+      id: 'quest_zegar_sloneczny',
+      title: 'Kamienica z Zegarem Słonecznym',
+      poiId: 60,
+      placeName: 'Kołłątaja 31 / Kadłubka',
+      emoji: '☀️',
+      question: 'Co zdobi elewację zabytkowej secesyjnej kamienicy u zbiegu ulic Kołłątaja i Kadłubka?',
+      options: [
+        { text: 'Działający zegar słoneczny z alegorią czasu oraz motywy florystyczne', correct: true },
+        { text: 'Figura rycerza w zbroi', correct: false },
+        { text: 'Kuta kotwica okrętowa', correct: false },
+        { text: 'Mozaika z herbem Berlina', correct: false }
+      ],
+      explanation: 'Kamienica z początku XX wieku posiada unikalny zegar słoneczny wkomponowany w sztukaterię narożną, przypominający przechodniom o upływających godzinach.',
+      points: 20
+    },
+    {
+      id: 'quest_bar_turysta',
+      title: 'Kultowy Bar Mleczny Turysta',
+      poiId: 75,
+      placeName: 'Kołłątaja 30',
+      emoji: '🥟',
+      question: 'Które tradycyjne danie od dziesięcioleci stanowi wizytówkę Baru Turysta i szczecińskich barów mlecznych?',
+      options: [
+        { text: 'Ręcznie lepione pierogi ruskie z okrasą i kompot owocowy', correct: true },
+        { text: 'Sushi z łososia bałtyckiego', correct: false },
+        { text: 'Fondue serowe z grzankami', correct: false },
+        { text: 'Ostrygi w sosie winnym', correct: false }
+      ],
+      explanation: 'Bar Turysta to instytucja sąsiedzka — codzienne świeże pierogi, naleśniki z serem i domowy kompot integrują od pokoleń mieszkańców Niebuszewa i studentów.',
+      points: 15
     }
   ];
 
@@ -168,11 +232,26 @@ const NiebuszewoQuest = (() => {
         window.showToast('⭐ Nowa odznaka: Znawca Zakątków Łuczniczej!');
       }
     }
+    if (correctCount >= 6 && !prog.badges.includes('straznik_zabytkow')) {
+      prog.badges.push('straznik_zabytkow');
+      if (typeof window.showToast === 'function') {
+        window.showToast('🏛️ Nowa odznaka: Strażnik Zabytków Niebuszewa!');
+      }
+    }
     if (correctCount === QUEST_QUESTIONS.length && !prog.badges.includes('mistrz_niebuszewa')) {
       prog.badges.push('mistrz_niebuszewa');
       if (typeof window.showToast === 'function') {
         window.showToast('🏆 Tytuł Honorowy: Mistrz i Kronikarz Niebuszewa!');
       }
+    }
+
+    // Opcjonalna kolejka offline outbox
+    if (window.__SZCZECIN_APP__ && window.__SZCZECIN_APP__.offlineSync) {
+      window.__SZCZECIN_APP__.offlineSync.queueAction('quest_result', {
+        questionId: qId,
+        correct: isCorrect,
+        points: isCorrect ? q.points : 0
+      });
     }
 
     saveProgress(prog);
