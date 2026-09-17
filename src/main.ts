@@ -107,7 +107,7 @@ if (typeof window !== 'undefined') {
     userProfile: userProfileService,
     offlineSync: OfflineSyncService.getInstance(),
     niebuszewoQuest: niebuszewoQuestService,
-    version: '1.8.0'
+    version: '2.0.0'
   };
 
   // Sync real-time transport arrivals on load

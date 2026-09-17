@@ -401,6 +401,20 @@
                 <small>Sąsiedzkie komunikaty z Łuczniczej</small>
               </div>
             </button>
+            <button class="idm-item" data-action="install" id="idmInstallBtn">
+              <span class="idm-icon">📲</span>
+              <div class="idm-text">
+                <strong style="color: #FFD700;">Zainstaluj Aplikację (PWA)</strong>
+                <small>Działa offline na telefonie i pulpicie</small>
+              </div>
+            </button>
+            <button class="idm-item" data-action="onboarding" id="idmOnboardingBtn">
+              <span class="idm-icon">🦅</span>
+              <div class="idm-text">
+                <strong>Wprowadzenie Gryfusa</strong>
+                <small>Samouczek funkcji i wskazówki osiedla</small>
+              </div>
+            </button>
           </div>
         </div>
       </div>
@@ -493,6 +507,22 @@
           <span class="nav-icon">🥟</span>
           <span class="nav-label">Szczecińskie Klasyki</span>
           <span class="nav-badge badge-flavor">KLIMAT</span>
+        </a>
+
+        <!-- GRUPA 4: NARZĘDZIA & WSPARCIE -->
+        <div class="sidebar-group-label">🛠️ NARZĘDZIA & WSPARCIE</div>
+        <a href="#" class="nav-item" id="sidebarInstallBtn" onclick="event.preventDefault(); window.installPWA && window.installPWA();">
+          <span class="nav-icon">📲</span>
+          <span class="nav-label">Zainstaluj Aplikację</span>
+          <span class="nav-badge" style="background: rgba(255,215,0,0.2); color: #FFD700;">PWA</span>
+        </a>
+        <a href="#" class="nav-item" id="sidebarFeedbackBtn" onclick="event.preventDefault(); window.openFeedbackModal ? window.openFeedbackModal() : (window.TesterFeedback && window.TesterFeedback.open());">
+          <span class="nav-icon">➕</span>
+          <span class="nav-label">Zgłoś Miejsce / Uwagę</span>
+        </a>
+        <a href="#" class="nav-item" id="sidebarOnboardingBtn" onclick="event.preventDefault(); window.GryfusOnboarding && window.GryfusOnboarding.start(true);">
+          <span class="nav-icon">🦅</span>
+          <span class="nav-label">Wprowadzenie Gryfusa</span>
         </a>
       </nav>
 
@@ -1574,6 +1604,7 @@
   <script src="route-elevation.js"></script>
   <script src="offline-tour-packager.js"></script>
   <script src="tester-feedback.js"></script>
+  <script src="gryfus-onboarding.js"></script>
   <script src="search.js"></script>
   <script src="place-images.js"></script>
   <script src="user-profile.js"></script>

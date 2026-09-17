@@ -1367,9 +1367,12 @@ const PogonFeature = (() => {
     if (!container) return;
 
     container.innerHTML = `
-      <div style="margin-bottom: 14px;">
+      <div style="margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px;">
         <button class="section-back-btn" onclick="navigateTo('map')" style="display:inline-flex; align-items:center; gap:8px; background:rgba(0,45,98,0.35); border:1.5px solid rgba(255,215,0,0.45); color:#FFD700; padding:8px 16px; border-radius:24px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; min-height:44px; margin-bottom:12px; transition:all 0.2s ease;">
           <span>← Wróć do mapy</span>
+        </button>
+        <button class="section-share-btn" id="pogonShareBtn" onclick="PogonFeature.shareHub()" style="display:inline-flex; align-items:center; gap:8px; background:rgba(153,0,36,0.35); border:1.5px solid rgba(255,215,0,0.45); color:#FFD700; padding:8px 16px; border-radius:24px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; min-height:44px; margin-bottom:12px; transition:all 0.2s ease;" title="Udostępnij Fan Hub Pogoni znajomym">
+          <span>🔗 Udostępnij Fan Hub</span>
         </button>
       </div>
       <div style="margin-bottom: 16px;">
@@ -1445,6 +1448,25 @@ const PogonFeature = (() => {
     setTimeout(init, 0);
   }
 
+  function shareHub() {
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareData = {
+      title: 'Pogoń Szczecin — Strefa Kibica Dumy Pomorza',
+      text: 'Terminarz meczów Pogoni, śpiewnik z dopingiem, quiz i dojazd na Stadion Krygiera w przewodniku Łucznicza!',
+      url: `${baseUrl}#pogon`
+    };
+
+    if (typeof window.shareContent === 'function') {
+      window.shareContent(shareData);
+    } else if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareData.url).then(() => {
+        if (typeof showToast === 'function') showToast('🔗 Skopiowano link do Fan Hubu Pogoni!');
+      });
+    }
+  }
+
   return {
     init,
     render,
@@ -1454,7 +1476,8 @@ const PogonFeature = (() => {
     toggleMatchdayMode,
     playStadiumDrumBeat,
     drawMatchdayRouteOnMap,
-    flyToCoord
+    flyToCoord,
+    shareHub
   };
 })();
 

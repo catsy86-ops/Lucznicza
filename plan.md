@@ -339,10 +339,44 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 
 ---
 
-## 🚦 Tabela Gotowości Komponentów (Status Monitor v1.9.0)
+### SPRINT 15: Quality of Life (QoL) & Wdrożenie Produkcyjne v2.0.0 [UKOŃCZONE 100%]
+- [x] **15.1. Krok 1: Web Share API & Szybkie Udostępnianie (`shareContent`)**:
+  - Zaimplementowano uniwersalny mechanizm `window.shareContent({ title, text, url })` z obsługą natywnego `navigator.share` (oraz ignorowaniem `AbortError`), automatycznym fallbackiem do schowka (`navigator.clipboard.writeText`) i powiadomieniem toast.
+  - Dodano przycisk szybkiego udostępniania bezpośrednio na kartach miejsc POI (`.card-share-btn`) oraz w nagłówkach tras (`.rc2-share`).
+  - Zintegrowano przycisk „🔗 Udostępnij Fan Hub” w nagłówku strefy kibica Pogoni Szczecin (`PogonFeature.shareHub()`).
+  - Rozszerzono obsługę głębokich linków hash (`handleDeepLink`): `#miejsce-X` / `#place-X` oraz `#trasa-X` / `#route-X`.
+- [x] **15.2. Krok 2: Instalator PWA & Przewodnik Safari iOS (`pwa.js`)**:
+  - Przechwytywanie zdarzenia `beforeinstallprompt` i eksport `window.deferredInstallPrompt` oraz globalnej metody `window.installPWA()`.
+  - Wprowadzono czasowe odroczenie banera (7 dni w `pwaDismissedUntil`) zamiast permanentnej blokady.
+  - Zaimplementowano detekcję iOS Safari (`isIosSafari`) i modal z 3-krokową instrukcją instalacji na ekranie głównym iPhone/iPad (*„Udostępnij ➔ Do ekranu początkowego”*).
+  - Dodano opcję instalacji w podręcznym menu wyspy (`islandDropdownMenu`) i bocznym pasku (`sidebar`).
+- [x] **15.3. Krok 3: Zgłaszanie Nowych Miejsc & Uwag ze Statusem Offline (`tester-feedback.js`)**:
+  - Rozszerzono formularz zgłoszeń o kategorię „📍 Nowe miejsce (POI)” z dedykowanymi polami: nazwa miejsca, kategoria, adres/wskazówki i opis.
+  - Zintegrowano zapisywanie zgłoszeń z kolejką offline `OfflineSyncService.getInstance().queueAction('feedback', payload)`.
+  - Dodano kartę CTA na dole listy miejsc (`renderPlaces`): *„Nie widzisz swojego ulubionego miejsca? [ ➕ Zaproponuj nowe miejsce ]”*.
+  - Udostępniono globalne metody `window.openFeedbackModal()` i `window.openPlaceSubmissionModal()`.
+- [x] **15.4. Krok 4: Mini-Onboarding Gryfusa Szczecińskiego (`gryfus-onboarding.js`)**:
+  - Utworzono 3-etapowy, nienachalny przewodnik powitalny dla nowych użytkowników (`niebuszewo_onboarding_done`):
+    - *Etap 1*: Ambient Status HUD (pogoda, czystość powietrza GIOS, tramwaje na żywo)
+    - *Etap 2*: 82 Miejsca i Trasy Rekreacyjne (filtry, status godzin, pobieranie GPX)
+    - *Etap 3*: Duma Pomorza & Gry Miejskie (Fan Hub Pogoni, śpiewnik, Niebuszewo Quest)
+  - Stylowanie w `style.css` z animacją aury, pulsem podświetlenia elementów i pełną responsywnością (`100dvh`, safe-area).
+  - Możliwość ponownego uruchomienia w dowolnym momencie z menu osiedla i bocznego paska.
+- [x] **15.5. Krok 5: Kompleksowe Testy Vitest & Kompilacja Produkcyjna (210/210 zdanych)**:
+  - Utworzono zestaw testów `src/tests/qol-v2-features.test.ts` weryfikujący wszystkie 4 funkcjonalności QoL.
+  - Liczba testów wzrosła do **210 zdanych testów** (100% pass).
+  - Kompilacja `npm run build` (`tsc && vite build`) wykonana w 433ms z kodem wyjścia 0.
+
+---
+
+## 🚦 Tabela Gotowości Komponentów (Status Monitor v2.0.0)
 
 | Komponent | Stan | Działanie | Zależności od zewnętrznych kluczy |
 |---|---|---|---|
+| **Web Share API & Deep Links** | 🟢 Gotowy | Natywne udostępnianie POI, tras i Fan Hubu + fallback schowka | Czysty JS / Clipboard API |
+| **PWA Install & iOS Guide** | 🟢 Gotowy | Baner PWA, obsługa Safari iOS, przycisk w menu | PWA / Web App Manifest |
+| **Zgłaszanie Miejsc & Feedback** | 🟢 Gotowy | Formularz POI, kolejka offline w outboxie | OfflineSyncService |
+| **Gryfus Mini-Onboarding** | 🟢 Gotowy | 3-etapowy przewodnik powitalny z animacją | LocalStorage / Czysty JS |
 | **Pogoń Fan Hub Pro** | 🟢 Gotowy | Soundboard Web Audio, Śpiewnik, Legendy, Terminarz, Quiz | Czysty JS / Web Audio API |
 | **Podkład Mapy (OSM)** | 🟢 Gotowy | Płynne ładowanie | **100% Darmowy (0 API Keys)** |
 | **Satelita HD (Esri)** | 🟢 Gotowy | Fotomapa wysokiej rozdzielczości | **100% Darmowy (0 API Keys)** |
@@ -363,6 +397,6 @@ Aplikacja przeszła fundamentalny zwrot jakościowy:
 | **Centralny Store** | 🟢 Gotowy | Reaktywny Pub/Sub, typowany TS | TypeScript |
 | **Przewodnik Głosowy (Audio)**| 🟢 Gotowy | Opowieści Gryfusa (Web Speech API) | Web Speech API |
 | **PWA Cache v13** | 🟢 Gotowy | Service Worker v13, offline-ready | Service Worker API |
-| **Testy jednostkowe** | 🟢 Gotowy | **191/191 testów przechodzi (Vitest)** | Vitest |
+| **Testy jednostkowe** | 🟢 Gotowy | **210/210 testów przechodzi (Vitest)** | Vitest |
 | **Dostępność (A11y)** | 🟢 Gotowy | **100/100 (0 naruszeń WCAG 2.1 AA)** | Lighthouse / Axe-Core |
 | **Wydanie Produkcyjne Live** | 🟢 Gotowy | **https://lucznicza.vercel.app** | Vercel + Vite |

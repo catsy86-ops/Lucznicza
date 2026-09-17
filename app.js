@@ -74,6 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCommunity();
         updateStatTotal();
         handleDeepLink();
+
+        // Check for first-time visitor mini-onboarding from Gryfus (QoL 4)
+        setTimeout(() => {
+          if (window.GryfusOnboarding && !window.GryfusOnboarding.isDone()) {
+            window.GryfusOnboarding.start();
+          }
+        }, 1200);
       });
     }, 500);
   }, 2200);
@@ -92,8 +99,8 @@ function handleDeepLink() {
     return;
   }
 
-  // Handle place deep link
-  const placeMatch = hash.match(/#miejsce-(\d+)/);
+  // Handle place deep link (#miejsce-X or #place-X)
+  const placeMatch = hash.match(/#(?:miejsce|place)-(\d+)/);
   if (placeMatch) {
     const id = parseInt(placeMatch[1]);
     navigateTo('places');
@@ -101,8 +108,8 @@ function handleDeepLink() {
     return;
   }
 
-  // Handle route deep link
-  const routeMatch = hash.match(/#trasa-(\d+)/);
+  // Handle route deep link (#trasa-X or #route-X)
+  const routeMatch = hash.match(/#(?:trasa|route)-(\d+)/);
   if (routeMatch) {
     const id = parseInt(routeMatch[1]);
     navigateTo('routes');
@@ -111,6 +118,7 @@ function handleDeepLink() {
       const card = document.getElementById(`rcard-${id}`);
       if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 400);
+    return;
   }
 }
 
@@ -1279,6 +1287,16 @@ function executeIslandAction(action) {
         showToast('🧪 Zgłoś uwagę lub błąd w wersji beta');
       }
       break;
+    case 'install':
+      if (typeof window.installPWA === 'function') {
+        window.installPWA();
+      }
+      break;
+    case 'onboarding':
+      if (window.GryfusOnboarding) {
+        window.GryfusOnboarding.start(true);
+      }
+      break;
     case 'notifications':
       const appNotif = window.__SZCZECIN_APP__;
       if (appNotif && appNotif.pushNotifications) {
@@ -2027,6 +2045,25 @@ function renderPlaces(query = '') {
 
   grid.innerHTML = firstBatch.map(p => renderPlaceCard(p)).join('');
 
+  function appendPlaceSubmissionCta() {
+    if (document.getElementById('placesSubmissionCta')) return;
+    const cta = document.createElement('div');
+    cta.id = 'placesSubmissionCta';
+    cta.className = 'places-cta-card';
+    cta.style.cssText = 'grid-column: 1 / -1; background: linear-gradient(135deg, rgba(0,45,98,0.4), rgba(153,0,36,0.3)); border: 1.5px dashed rgba(255,215,0,0.45); border-radius: 18px; padding: 24px 18px; text-align: center; margin: 16px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3);';
+    cta.innerHTML = `
+      <div style="font-size: 36px; margin-bottom: 8px;">📍</div>
+      <h3 style="color: #FFD700; font-size: 17px; font-weight: 850; margin-bottom: 6px;">Nie widzisz swojego ulubionego miejsca?</h3>
+      <p style="color: var(--text2, #cbd5e1); font-size: 13px; max-width: 460px; margin: 0 auto 16px; line-height: 1.5;">
+        Znasz kawiarnię, boisko, pub, piekarnię lub rzemieślnika na Niebuszewie? Zgłoś go społeczności!
+      </p>
+      <button type="button" class="btn-primary" onclick="window.openPlaceSubmissionModal ? window.openPlaceSubmissionModal() : (window.TesterFeedback && TesterFeedback.open('place'))" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 24px; font-weight: 800; cursor: pointer; background: linear-gradient(135deg, #002D62, #990024); border: 1.5px solid #FFD700; color: #FFD700; font-family: inherit;">
+        <span>➕ Zaproponuj nowe miejsce</span>
+      </button>
+    `;
+    grid.appendChild(cta);
+  }
+
   // Lazy load remaining cards when user scrolls near bottom
   if (remaining.length > 0) {
     const sentinel = document.createElement('div');
@@ -2039,15 +2076,17 @@ function renderPlaces(query = '') {
         observer.disconnect();
         sentinel.remove();
         // Render remaining in chunks for smooth scrolling
-        const fragment = document.createDocumentFragment();
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = remaining.map(p => renderPlaceCard(p)).join('');
         while (tempDiv.firstChild) {
           grid.appendChild(tempDiv.firstChild);
         }
+        appendPlaceSubmissionCta();
       }
     }, { rootMargin: '200px' });
     observer.observe(sentinel);
+  } else if (places.length > 0) {
+    appendPlaceSubmissionCta();
   }
 
   // Update count
@@ -2063,6 +2102,11 @@ function renderPlaces(query = '') {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text2)">
       <div style="font-size:48px;margin-bottom:12px">🔍</div>
       <p>${msg}</p>
+      <div style="margin-top:16px">
+        <button type="button" class="btn-primary" onclick="window.openPlaceSubmissionModal ? window.openPlaceSubmissionModal() : (window.TesterFeedback && TesterFeedback.open('place'))" style="padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; background: linear-gradient(135deg, #002D62, #990024); border: 1px solid #FFD700; color: #FFD700;">
+          ➕ Zaproponuj nowe miejsce
+        </button>
+      </div>
     </div>`;
   }
 
@@ -2092,6 +2136,9 @@ function renderPlaceCard(p) {
   return `
     <div class="place-card ${p.featured ? 'is-featured' : ''}" onclick="openPlaceModal(${p.id})">
       ${p.featured ? '<span class="featured-ribbon">⭐ POLECANE</span>' : ''}
+      <button class="card-share-btn" onclick="event.stopPropagation(); sharePlace(${p.id})" title="Udostępnij miejsce" aria-label="Udostępnij ${p.name}">
+        🔗
+      </button>
       <button class="fav-btn ${fav ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(${p.id}, this)" title="Dodaj do ulubionych">
         ${fav ? '❤️' : '🤍'}
       </button>
@@ -2317,9 +2364,14 @@ function renderRouteCard(r, isFav) {
             <div class="rc2-name">${r.name}</div>
           </div>
         </div>
-        <button class="rc2-fav ${isFav ? 'active' : ''}" onclick="toggleRouteCardFav(${r.id}, this)">
-          ${isFav ? '❤️' : '🤍'}
-        </button>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="rc2-share" onclick="event.stopPropagation(); shareRoute(${r.id})" title="Udostępnij trasę" aria-label="Udostępnij trasę ${r.name}">
+            🔗
+          </button>
+          <button class="rc2-fav ${isFav ? 'active' : ''}" onclick="toggleRouteCardFav(${r.id}, this)">
+            ${isFav ? '❤️' : '🤍'}
+          </button>
+        </div>
       </div>
 
       <!-- Quick stats -->
@@ -2500,16 +2552,16 @@ function toggleRouteTimer(routeId) {
 }
 
 function shareRoute(id) {
-  const route = APP_DATA.routes.find(r => r.id === id);
+  const route = (typeof APP_DATA !== 'undefined' ? APP_DATA.routes : []).find(r => r.id === id);
   if (!route) return;
-  const text = `${route.emoji} ${route.name} — ${route.distance}, ${route.time}. Sprawdź w przewodniku Łucznicza & Tarczowa!`;
-  const url = window.location.href.split('#')[0] + '#trasa-' + id;
-  if (navigator.share) {
-    navigator.share({ title: route.name, text, url }).catch(() => {});
-  } else {
-    navigator.clipboard.writeText(url).then(() => showToast('🔗 Link skopiowany!')).catch(() => showToast('🔗 ' + url));
-  }
+  const baseUrl = window.location.origin + window.location.pathname;
+  shareContent({
+    title: `${route.name} — Trasa Szczecin`,
+    text: `${route.emoji || '🚶'} ${route.name} (${route.distance}, ${route.time}). Odkryj tę trasę w przewodniku po Szczecinie!`,
+    url: `${baseUrl}#trasa-${id}`
+  });
 }
+window.shareRoute = shareRoute;
 
 function showRouteOnMap(id) {
   const route = APP_DATA.routes.find(r => r.id === id);
@@ -2997,23 +3049,70 @@ function addReviewPrompt(id) {
   openPlaceModal(id); // refresh modal
 }
 
-// Share place
-function sharePlace(id) {
-  const place = APP_DATA.places.find(p => p.id === id);
-  if (!place) return;
-  const shareData = {
-    title: place.name,
-    text: `${place.name} — ${place.addr}. Sprawdź w przewodniku Łucznicza & Tarczowa!`,
-    url: window.location.href.split('#')[0] + '#miejsce-' + id
-  };
-  if (navigator.share) {
-    navigator.share(shareData).catch(() => {});
+// ===== GLOBAL WEB SHARE API HELPER =====
+function shareContent(options) {
+  if (!options) return Promise.resolve(false);
+  const title = options.title || 'Przewodnik Szczecin — Łucznicza & Niebuszewo';
+  const text = options.text || '';
+  const url = options.url || (typeof window !== 'undefined' ? window.location.href : '');
+
+  if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+    return navigator.share({ title, text, url })
+      .then(() => true)
+      .catch((err) => {
+        if (err && err.name === 'AbortError') {
+          // Native share sheet dismissed by user
+          return false;
+        }
+        return fallbackClipboardShare(url);
+      });
   } else {
-    navigator.clipboard.writeText(shareData.url).then(() => {
-      showToast('🔗 Link skopiowany do schowka');
-    }).catch(() => showToast('🔗 ' + shareData.url));
+    return Promise.resolve(fallbackClipboardShare(url));
   }
 }
+
+function fallbackClipboardShare(url) {
+  if (typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    return navigator.clipboard.writeText(url)
+      .then(() => {
+        showToast('🔗 Skopiowano link do schowka!');
+        return true;
+      })
+      .catch(() => {
+        return promptShareFallback(url);
+      });
+  } else {
+    return promptShareFallback(url);
+  }
+}
+
+function promptShareFallback(url) {
+  try {
+    if (typeof window !== 'undefined' && typeof window.prompt === 'function') {
+      window.prompt('Skopiuj poniższy link:', url);
+    }
+    showToast('🔗 Link gotowy do skopiowania');
+    return true;
+  } catch {
+    showToast('🔗 ' + url);
+    return false;
+  }
+}
+
+window.shareContent = shareContent;
+
+// Share place
+function sharePlace(id) {
+  const place = (typeof APP_DATA !== 'undefined' ? APP_DATA.places : []).find(p => p.id === id);
+  if (!place) return;
+  const baseUrl = window.location.origin + window.location.pathname;
+  shareContent({
+    title: `${place.name} — Przewodnik Szczecin`,
+    text: `${place.emoji || '📍'} ${place.name} (${place.addr}). Zobacz szczegóły w przewodniku po Łuczniczej i Niebuszewie!`,
+    url: `${baseUrl}#miejsce-${id}`
+  });
+}
+window.sharePlace = sharePlace;
 
 // Show QR code for the place (free QR API)
 function showQRCode(id) {

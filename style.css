@@ -3812,6 +3812,23 @@ body:has(#section-map.active) .live-ticker {
   0% { transform: scale(1); } 50% { transform: scale(1.35); } 100% { transform: scale(1); }
 }
 
+/* Quick share button on place card */
+.card-share-btn {
+  position: absolute; top: 8px; right: 48px; z-index: 4;
+  background: rgba(0, 23, 56, 0.6); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 50%; width: 34px; height: 34px;
+  font-size: 14px; cursor: pointer; transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1; color: #FFD700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.card-share-btn:hover {
+  transform: scale(1.15);
+  background: rgba(0, 45, 98, 0.85);
+  border-color: #FFD700;
+}
+
 /* Status badge on header */
 .status-badge {
   position: absolute; bottom: 8px; left: 8px; z-index: 3;
@@ -4343,6 +4360,14 @@ body:has(#section-map.active) .live-ticker {
 }
 .rc2-fav:hover { transform: scale(1.15); background: rgba(0,0,0,0.4); }
 .rc2-fav.active { animation: favPop 0.3s ease; }
+.rc2-share {
+  background: rgba(0,0,0,0.25); border: none; border-radius: 50%;
+  width: 38px; height: 38px; font-size: 16px; cursor: pointer;
+  transition: var(--transition); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+.rc2-share:hover { transform: scale(1.15); background: rgba(0,0,0,0.4); }
 
 /* Quick stats */
 .rc2-stats {
@@ -13084,6 +13109,255 @@ body.zen-map-mode .ambient-status-capsule {
 @media (max-width: 1023px) {
   .desktop-split-panel {
     display: none !important;
+  }
+}
+
+/* ===================================================== */
+/* ===== GRYFUS ONBOARDING CARD (QoL 4) ================ */
+/* ===================================================== */
+.gryfus-onboarding-card {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  max-width: 440px;
+  width: calc(100% - 48px);
+  z-index: 9999;
+  background: rgba(0, 23, 56, 0.96);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(255, 215, 0, 0.45);
+  border-radius: 20px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65), 0 0 24px rgba(255, 215, 0, 0.2);
+  transform: translateY(40px) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gryfus-onboarding-card.visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.goc-inner {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.goc-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+}
+
+.goc-avatar-wrap {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #002D62, #990024);
+  border: 1.5px solid #FFD700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.goc-avatar {
+  font-size: 26px;
+  z-index: 2;
+}
+
+.goc-crest-aura {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.4), transparent 70%);
+  animation: auraPulse 2.5s infinite ease-in-out;
+}
+
+.goc-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.goc-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #FFD700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.goc-title {
+  font-size: 16px;
+  font-weight: 850;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.goc-close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.goc-close-btn:hover {
+  color: #ffffff;
+}
+
+.goc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.goc-text {
+  font-size: 13.5px;
+  color: var(--text2, #cbd5e1);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.goc-text b {
+  color: #f8fafc;
+}
+
+.goc-tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #FFD700;
+}
+
+.goc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.goc-progress {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.goc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transition: all 0.3s ease;
+}
+
+.goc-dot.active {
+  width: 22px;
+  border-radius: 10px;
+  background: #FFD700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
+
+.goc-dot.passed {
+  background: #43e97b;
+}
+
+.goc-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.goc-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 750;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.goc-btn.text {
+  background: none;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 8px 10px;
+}
+
+.goc-btn.text:hover {
+  color: #ffffff;
+}
+
+.goc-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.goc-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.goc-btn.primary {
+  background: linear-gradient(135deg, #002D62, #990024);
+  border: 1px solid #FFD700;
+  color: #FFD700;
+}
+
+.goc-btn.primary:hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 14px rgba(255, 215, 0, 0.35);
+}
+
+.goc-btn.primary.start {
+  background: linear-gradient(135deg, #002D62, #10b981);
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+@keyframes auraPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 0.2; }
+}
+
+.onboarding-highlight-pulse {
+  animation: onboardingGlow 1.8s infinite ease-in-out !important;
+  position: relative;
+  z-index: 500 !important;
+}
+
+@keyframes onboardingGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.6); }
+  50% { box-shadow: 0 0 0 8px rgba(255, 215, 0, 0); }
+}
+
+@media (max-width: 768px) {
+  .gryfus-onboarding-card {
+    bottom: calc(var(--safe-area-bottom, 16px) + 12px);
+    right: 12px;
+    left: 12px;
+    width: calc(100% - 24px);
+    max-width: none;
+    border-radius: 18px;
   }
 }
 
