@@ -18,7 +18,17 @@ import { accessibilityFilter } from './services/accessibility-filter';
 import { niebuszewoBoundary } from './services/niebuszewo-boundary';
 import { getContextualConfig, getTimeOfDay, sortCategoriesByContext } from './services/contextual-engine';
 import { calculateGiedroycStatus, extractAverageDelayFromDepartures } from './services/giedroyc-meter';
-import { calculateMatchCountdown, getMatchdayTransitRoute, NEXT_MATCH } from './services/matchday-companion';
+import {
+  calculateMatchCountdown,
+  getMatchdayTransitRoute,
+  NEXT_MATCH,
+  UPCOMING_FIXTURES,
+  POGON_LEGENDS,
+  POGON_CHANTS,
+  MATCHDAY_TRANSIT_OPTIONS,
+  POGON_QUIZ_QUESTIONS,
+  playWebAudioChantSound
+} from './services/matchday-companion';
 
 import { pushNotificationService, PushNotificationService } from './services/push-notifications';
 import { i18nService, I18nService } from './services/i18n';
@@ -84,7 +94,13 @@ if (typeof window !== 'undefined') {
     matchdayCompanion: {
       calculateMatchCountdown,
       getMatchdayTransitRoute,
-      NEXT_MATCH
+      NEXT_MATCH,
+      UPCOMING_FIXTURES,
+      POGON_LEGENDS,
+      POGON_CHANTS,
+      MATCHDAY_TRANSIT_OPTIONS,
+      POGON_QUIZ_QUESTIONS,
+      playWebAudioChantSound
     },
     pushNotifications: pushNotificationService,
     i18n: i18nService,

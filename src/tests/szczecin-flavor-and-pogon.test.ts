@@ -131,4 +131,41 @@ describe('Szczecin Flavor, Pogoń Matchday & Niebuszewo QoL Tests', () => {
     expect(swJs).toContain("'/pogon-feature.js'");
     expect(swJs).toContain("'/szczecin-local-flavor.js'");
   });
+
+  it('validates Pogoń Fan Hub Pro tabs, soundboard, chants and legends in pogon-feature.js', () => {
+    const pogonJs = fs.readFileSync(path.join(rootDir, 'pogon-feature.js'), 'utf-8');
+
+    expect(pogonJs).toContain('pogon-tab-bar');
+    expect(pogonJs).toContain('soundboard-grid');
+    expect(pogonJs).toContain('chants-grid');
+    expect(pogonJs).toContain('legends-grid');
+    expect(pogonJs).toContain('My Portowcy, Duma Pomorza');
+    expect(pogonJs).toContain('W Grodzie Gryfa');
+    expect(pogonJs).toContain('Florian Krygier');
+    expect(pogonJs).toContain('Marian Kielec');
+    expect(pogonJs).toContain('Leszek Wolski');
+    expect(pogonJs).toContain('Robert Dymkowski');
+    expect(pogonJs).toContain('POGON_QUIZ');
+  });
+
+  it('validates TypeScript matchday-companion.ts fixtures, legends and sound synthesis', async () => {
+    const {
+      UPCOMING_FIXTURES,
+      POGON_LEGENDS,
+      POGON_CHANTS,
+      MATCHDAY_TRANSIT_OPTIONS,
+      POGON_QUIZ_QUESTIONS,
+      playWebAudioChantSound
+    } = await import('../services/matchday-companion');
+
+    expect(UPCOMING_FIXTURES.length).toBeGreaterThanOrEqual(5);
+    expect(POGON_LEGENDS.length).toBe(6);
+    expect(POGON_CHANTS.length).toBe(4);
+    expect(MATCHDAY_TRANSIT_OPTIONS.length).toBe(4);
+    expect(POGON_QUIZ_QUESTIONS.length).toBe(5);
+
+    // Audio synthesis fallback check in node
+    const res = playWebAudioChantSound('drum');
+    expect(typeof res).toBe('boolean');
+  });
 });

@@ -1,7 +1,7 @@
 /**
- * pogon-feature.js — Pogoń Szczecin & Matchday Feature Module
+ * pogon-feature.js — Pogoń Szczecin & Matchday Feature Module (Sprint 13 Fan Hub Pro)
  * Duma Pomorza, Tryb Dnia Meczowego, Nawigator Niebuszewo -> Stadion Krygiera,
- * Syntezator dopingu Web Audio, Gastro-mecz ("Gdzie na giętą"), Skład i Ekstraklasa.
+ * Syntezator dopingu Web Audio, Śpiewnik Kibica, Galeria Legend, Gastro-mecz, Skład i Ekstraklasa.
  */
 'use strict';
 
@@ -35,18 +35,228 @@ const PogonFeature = (() => {
   };
 
   const NEXT_MATCH = {
-    opponent: 'Legia Warszawa',
+    opponent: 'Lech Poznań',
     dateStr: 'Sobota, 17:30',
-    venue: 'Stadion Florian Krygier, Szczecin',
+    venue: 'Stadion Miejski im. Floriana Krygiera, Szczecin',
     home: true,
     ticketsAvailable: true,
-    expectedCrowd: 'Komplet widzów (21 163)'
+    expectedCrowd: 'Komplet widzów (21 163)',
+    round: 'Kolejka 9'
   };
+
+  const UPCOMING_FIXTURES = [
+    {
+      opponent: 'Lech Poznań',
+      dateStr: 'Sobota 19.09, 17:30',
+      venue: 'Stadion Florian Krygier',
+      home: true,
+      round: 'Kolejka 9',
+      status: 'Komplet widzów (21 163)',
+      fanZone: 'Pub Klatka (ul. Łucznicza 39)'
+    },
+    {
+      opponent: 'Legia Warszawa',
+      dateStr: 'Niedziela 27.09, 20:00',
+      venue: 'Stadion Wojska Polskiego, Warszawa',
+      home: false,
+      round: 'Kolejka 10',
+      status: 'Wyjazd Portowców',
+      fanZone: 'Wspólne oglądanie — Pub Klatka'
+    },
+    {
+      opponent: 'Jagiellonia Białystok',
+      dateStr: 'Sobota 03.10, 17:30',
+      venue: 'Stadion Florian Krygier',
+      home: true,
+      round: 'Kolejka 11',
+      status: 'Bilety w sprzedaży',
+      fanZone: 'Strefa Manhattan / Kołłątaja'
+    },
+    {
+      opponent: 'Górnik Zabrze',
+      dateStr: 'Sobota 17.10, 15:00',
+      venue: 'Arena Zabrze',
+      home: false,
+      round: 'Kolejka 12',
+      status: 'Wyjazd',
+      fanZone: 'Pub Klatka'
+    },
+    {
+      opponent: 'Piast Gliwice',
+      dateStr: 'Piątek 23.10, 20:30',
+      venue: 'Stadion Florian Krygier',
+      home: true,
+      round: 'Kolejka 13',
+      status: 'Bilety w sprzedaży',
+      fanZone: 'Łucznicza / Tarczowa'
+    }
+  ];
+
+  const RECENT_RESULTS = [
+    { opponent: 'Cracovia', score: '3 : 1', res: 'W', date: '12.09.2026', scorers: 'Grosicki 24\', Koulouris 58\', Biczachczian 81\'' },
+    { opponent: 'Widzew Łódź', score: '2 : 2', res: 'D', date: '30.08.2026', scorers: 'Koulouris 12\', Paryzek 89\'' },
+    { opponent: 'Śląsk Wrocław', score: '1 : 0', res: 'W', date: '23.08.2026', scorers: 'Grosicki (k.) 74\'' }
+  ];
+
+  const POGON_LEGENDS = [
+    {
+      name: 'Florian Krygier',
+      years: '1907 – 2006',
+      role: 'Ojciec Szczecińskiej Piłki & Patron Stadionu',
+      desc: 'Wychowawca pokoleń piłkarzy, współtwórca MKS Pogoń. Przez dziesięciolecia kształtował tożsamość klubu.',
+      quote: '„Najważniejsza jest pasja, dyscyplina i bezwzględny szacunek do barw klubu.”',
+      emoji: '👑'
+    },
+    {
+      name: 'Marian Kielec',
+      years: '1942 – obecnie',
+      role: 'Legendarny Król Strzelców Ekstraklasy',
+      desc: '113 goli w 301 meczach dla Pogoni. Król strzelców I ligi z 1963 roku i niekwestionowany idol powojennego Szczecina.',
+      quote: '„Gdy wybiegałem na murawę przy Twardowskiego, czułem wsparcie całego Pomorza.”',
+      emoji: '⚽'
+    },
+    {
+      name: 'Leszek Wolski',
+      years: '1953 – obecnie',
+      role: 'Rekordzista Występów & Wicekról Bramkowy',
+      desc: '348 meczów ligowych, 88 bramek. Niezrównany mistrz rzutów wolnych i ikona wierności granatowo-bordowym barwom.',
+      quote: '„Dla Pogoni oddało się całe serce i młodość. Warto było w stu procentach.”',
+      emoji: '⚡'
+    },
+    {
+      name: 'Robert Dymkowski',
+      years: '1970 – obecnie',
+      role: 'Ikona Ataku Lat 90. („Dymek”)',
+      desc: '253 mecze i 72 bramki dla Portowców. Spryt i instynkt w polu karnym dawały bezcenne zwycięstwa w Ekstraklasie.',
+      quote: '„Stadion przy Twardowskiego był twierdzą, gdzie każdy rywal drżał przed dopingiem.”',
+      emoji: '🔥'
+    },
+    {
+      name: 'Radosław Majdan',
+      years: '1972 – obecnie',
+      role: 'Wychowanek & Kapitan Między Słupkami',
+      desc: '225 meczów w bramce Dumy Pomorza, Reprezentant Polski. Prowadził drużynę do wicemistrzostwa Polski w 2001 roku.',
+      quote: '„Zaczynałem na szczecińskich podwórkach, a gra dla Pogoni to było spełnienie marzeń.”',
+      emoji: '🧤'
+    },
+    {
+      name: 'Kamil Grosicki',
+      years: '1988 – obecnie',
+      role: 'Wychowanek z Niebuszewa & Kapitan Lider',
+      desc: 'Ponad 90 meczów w Reprezentacji Polski. Wychował się na Niebuszewie, by po sukcesach w Europie powrócić i prowadzić Pogoń.',
+      quote: '„Szczecin to mój dom, Niebuszewo to moje korzenie, a Pogoń to całe moje życie!”',
+      emoji: '🦅'
+    }
+  ];
+
+  const POGON_CHANTS = [
+    {
+      id: 'my-portowcy',
+      title: 'My Portowcy, Duma Pomorza',
+      tag: 'Hymn Trybun',
+      lyrics: [
+        'My Portowcy, Duma Pomorza!',
+        'Za Pogoń, za MKS!',
+        'Pójdziemy aż na kraj świata,',
+        'Bo Szczecin w naszych sercach jest!'
+      ],
+      tip: 'Śpiewane z uniesionymi szalikami przez cały stadion.'
+    },
+    {
+      id: 'w-grodzie-gryfa',
+      title: 'W Grodzie Gryfa',
+      tag: 'Rytmiczny Młyn',
+      lyrics: [
+        'W grodzie Gryfa narodziła się,',
+        'Nasza miłość — Pogoń MKS!',
+        'Granatowo-bordowa krew,',
+        'Zwycięstwo dziś nasz jedyny cel!'
+      ],
+      tip: 'Rytm klaskania z przyspieszeniem tempa bębna.'
+    },
+    {
+      id: 'gdy-na-boisko',
+      title: 'Gdy na Boisko Pogoń Wybiega',
+      tag: 'Prezentacja Składu',
+      lyrics: [
+        'Gdy na boisko Pogoń wybiega,',
+        'Cały stadion wstaje z miejsc!',
+        'Głos tysięcy gardeł niesie:',
+        'Pogoń wygra dzisiaj mecz!'
+      ],
+      tip: 'Ogłuszający doping w momencie wyjścia z tunelu.'
+    },
+    {
+      id: 'czy-wygrywasz',
+      title: 'Czy Wygrywasz, Czy Nie',
+      tag: 'Wierność Barwom',
+      lyrics: [
+        'Czy wygrywasz, czy nie,',
+        'Zawsze ja kocham Cię!',
+        'W moim sercu jest Pogoń,',
+        'I na dobre, i na złe!'
+      ],
+      tip: 'Kołysanie w ramionach na trybunach.'
+    }
+  ];
+
+  const POGON_QUIZ = [
+    {
+      id: 'pquiz_1',
+      question: 'W którym roku został założony klub Pogoń Szczecin?',
+      options: [
+        { text: '1948 rok', correct: true },
+        { text: '1945 rok', correct: false },
+        { text: '1952 rok', correct: false }
+      ],
+      explanation: 'Pogoń założono 21 kwietnia 1948 roku (początkowo jako Klub Sportowy Sztorm).'
+    },
+    {
+      id: 'pquiz_2',
+      question: 'Jakie są oficjalne barwy Pogoni Szczecin?',
+      options: [
+        { text: 'Granatowo-bordowe', correct: true },
+        { text: 'Niebiesko-białe', correct: false },
+        { text: 'Czerwono-czarne', correct: false }
+      ],
+      explanation: 'Barwy granatowo-bordowe nawiązują do tradycji Pogoni Lwów i herbu Miasta Szczecin.'
+    },
+    {
+      id: 'pquiz_3',
+      question: 'Ilu widzów mieści zmodernizowany Stadion Miejski im. Floriana Krygiera?',
+      options: [
+        { text: '21 163 miejsc', correct: true },
+        { text: '16 500 miejsc', correct: false },
+        { text: '25 000 miejsc', correct: false }
+      ],
+      explanation: 'Nowy stadion po gruntownej przebudowie oddano w pełni z 21 163 zadaszonymi miejscami.'
+    },
+    {
+      id: 'pquiz_4',
+      question: 'Który legendarny piłkarz jest rekordzistą bramek dla Pogoni w Ekstraklasie (113 goli)?',
+      options: [
+        { text: 'Marian Kielec', correct: true },
+        { text: 'Robert Dymkowski', correct: false },
+        { text: 'Leszek Wolski', correct: false }
+      ],
+      explanation: 'Marian Kielec to najskuteczniejszy strzelec w dziejach klubu, król strzelców z 1963 roku.'
+    },
+    {
+      id: 'pquiz_5',
+      question: 'Który obecny kapitan Pogoni wychował się na szczecińskim Niebuszewie?',
+      options: [
+        { text: 'Kamil Grosicki', correct: true },
+        { text: 'Valentin Cojocaru', correct: false },
+        { text: 'Mariusz Malec', correct: false }
+      ],
+      explanation: 'Kamil Grosicki spędził dzieciństwo na Niebuszewie (rejon ul. Pasterskiej i Rostockiej).'
+    }
+  ];
 
   // Tabela Ekstraklasy
   const STANDINGS = [
     { pos: 1, team: 'Jagiellonia Białystok', played: 32, w: 20, d: 7, l: 5, gf: 64, ga: 32, pts: 67, trend: '📈' },
-    { pos: 2, team: 'Raków Częstochowa',    played: 32, w: 19, d: 8, l: 5, gf: 58, ga: 30, pts: 65, trend: '📈' },
+    { pos: 2, team: 'Raków Częstochowa',     played: 32, w: 19, d: 8, l: 5, gf: 58, ga: 28, pts: 65, trend: '📈' },
     { pos: 3, team: 'Pogoń Szczecin',       played: 32, w: 18, d: 8, l: 6, gf: 54, ga: 31, pts: 62, trend: '🔥', highlight: true },
     { pos: 4, team: 'Lech Poznań',          played: 32, w: 16, d: 7, l: 9, gf: 52, ga: 38, pts: 55, trend: '➡️' },
     { pos: 5, team: 'Legia Warszawa',       played: 32, w: 15, d: 8, l: 9, gf: 50, ga: 40, pts: 53, trend: '📉' },
@@ -121,7 +331,8 @@ const PogonFeature = (() => {
     }
   ];
 
-  // ── Syntezator Web Audio API: Stadionowy Beat Pogoni ──────
+  let currentTab = 'matchday'; // 'matchday' | 'chants' | 'legends' | 'transit' | 'quiz'
+  let quizProgress = { score: 0, answered: {} };
   let audioCtx = null;
   let isPlayingChant = false;
 
@@ -137,72 +348,111 @@ const PogonFeature = (() => {
   }
 
   function playStadiumDrumBeat() {
+    playSound('drum');
+  }
+
+  function playSound(type) {
+    if (window.__SZCZECIN_APP__?.matchdayCompanion?.playWebAudioChantSound) {
+      const played = window.__SZCZECIN_APP__.matchdayCompanion.playWebAudioChantSound(type);
+      if (played) {
+        showSoundToast(type);
+        return;
+      }
+    }
+
     const ctx = getAudioContext();
     if (!ctx) return;
 
-    if (isPlayingChant) {
-      if (typeof showToast === 'function') showToast('🥁 Doping już wybrzmiewa na stadionie!');
-      return;
-    }
-    isPlayingChant = true;
-
-    // Pattern klaskania / bębna Dumy Pomorza:
-    // [Bum, Bum, Bum-Bum-Bum, POGOŃ SZCZECIN!]
-    const pattern = [
-      { time: 0.0, freq: 85, dur: 0.18, type: 'drum' },
-      { time: 0.45, freq: 85, dur: 0.18, type: 'drum' },
-      { time: 0.90, freq: 85, dur: 0.18, type: 'drum' },
-      { time: 1.15, freq: 85, dur: 0.18, type: 'drum' },
-      { time: 1.40, freq: 95, dur: 0.25, type: 'drum' },
-      // Fanfara akordu Dumy Pomorza:
-      { time: 1.90, freq: 261.6, dur: 0.35, type: 'horn' },
-      { time: 2.10, freq: 329.6, dur: 0.35, type: 'horn' },
-      { time: 2.30, freq: 392.0, dur: 0.55, type: 'horn' },
-      { time: 2.50, freq: 523.2, dur: 0.75, type: 'horn' },
-    ];
-
     const now = ctx.currentTime;
 
-    pattern.forEach(step => {
+    if (type === 'drum') {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-
-      if (step.type === 'drum') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(step.freq, now + step.time);
-        osc.frequency.exponentialRampToValueAtTime(35, now + step.time + step.dur);
-        gain.gain.setValueAtTime(0.7, now + step.time);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + step.time + step.dur);
-      } else {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(step.freq, now + step.time);
-        gain.gain.setValueAtTime(0.3, now + step.time);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + step.time + step.dur);
-      }
-
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(95, now);
+      osc.frequency.exponentialRampToValueAtTime(36, now + 0.25);
+      gain.gain.setValueAtTime(0.85, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
       osc.connect(gain);
       gain.connect(ctx.destination);
-      osc.start(now + step.time);
-      osc.stop(now + step.time + step.dur + 0.05);
-    });
-
-    if (typeof showToast === 'function') {
-      showToast('🥁 ⚽ MY PORTOWCY! — Rozbrzmiewa stadionowy doping Pogoni!');
+      osc.start(now);
+      osc.stop(now + 0.25);
+    } else if (type === 'siren') {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.linearRampToValueAtTime(195, now + 0.6);
+      osc.frequency.linearRampToValueAtTime(160, now + 1.2);
+      gain.gain.setValueAtTime(0.45, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.4);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 1.4);
+    } else if (type === 'fanfare') {
+      [261.6, 329.6, 392.0, 523.2].forEach((f, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(f, now + idx * 0.14);
+        gain.gain.setValueAtTime(0.25, now + idx * 0.14);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.14);
+        osc.stop(now + idx * 0.14 + 0.35);
+      });
+    } else if (type === 'whistle') {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(2900, now);
+      osc.frequency.setValueAtTime(3200, now + 0.08);
+      osc.frequency.setValueAtTime(2900, now + 0.16);
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    } else {
+      // applause
+      const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.6, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.frequency.setValueAtTime(1200, now);
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start(now);
+      noise.stop(now + 0.6);
     }
 
-    // Odblokuj odznakę "12. Zawodnik Pogoni"
+    showSoundToast(type);
+
+    // Odblokuj odznakę kibica
     if (window.__SZCZECIN_APP__?.explorerBadges) {
-      const res = window.__SZCZECIN_APP__.explorerBadges.unlockBadge('badge-matchday-pogon');
-      if (res.success && typeof showToast === 'function') {
-        setTimeout(() => {
-          showToast(`🏆 Odblokowano nową odznakę: ⚽ ${res.badge.title} (+${res.badge.points} pkt)!`);
-        }, 3200);
-      }
+      window.__SZCZECIN_APP__.explorerBadges.unlockBadge('badge-matchday-pogon');
     }
+  }
 
-    setTimeout(() => {
-      isPlayingChant = false;
-    }, 3500);
+  function showSoundToast(type) {
+    if (typeof showToast !== 'function') return;
+    const names = {
+      drum: '🥁 Ryk bębna młynowego Pogoni!',
+      siren: '🚨 Portowa syrena okrętowa — Gol dla MKS!',
+      applause: '👏 Burza braw na Stadionie Krygiera!',
+      fanfare: '🎺 Marsz Portowców!',
+      whistle: '📢 Gwizdek sędziego — Gramy!'
+    };
+    showToast(names[type] || '⚽ Doping Dumy Pomorza!');
   }
 
   // ── Przełącznik Trybu Dnia Meczowego ─────────────────────
@@ -218,33 +468,30 @@ const PogonFeature = (() => {
     }
 
     if (newTheme === 'pogon') {
-      playStadiumDrumBeat();
       if (typeof showToast === 'function') {
-        showToast('⚓ AKTYWOWANO TRYB DNIA MECZOWEGO! Granatowo-bordowe barwy Dumy Pomorza.');
+        showToast('⚓ Aktywowano barwy granatowo-bordowe Pogoni Szczecin!');
       }
+      playStadiumDrumBeat();
     } else {
       if (typeof showToast === 'function') {
-        showToast('🌙 Powrócono do standardowego trybu nocnego.');
+        showToast('🛡️ Przywrócono standardowy motyw dzielnicy.');
       }
     }
     render();
   }
 
-  // ── Rysowanie Trasy Meczowej na Mapie ─────────────────────
   let matchdayRouteLayer = null;
 
   function drawMatchdayRouteOnMap(startKey = 'kollataja') {
     const map = window.state?.map;
     if (!map) {
-      if (typeof showToast === 'function') showToast('❌ Mapa nie jest jeszcze zainicjalizowana');
+      if (typeof showToast === 'function') showToast('⚠️ Mapa nie jest jeszcze zainicjalizowana.');
       return;
     }
 
-    // Punkty trasy tranzytowej: Kołłątaja -> Brama Portowa -> Plac Kościuszki -> Stadion
     const coordsMap = {
-      lucznicza: [
-        [53.45405, 14.54752], // Pub Klatka / Łucznicza 39
-        [53.4510, 14.5485],
+      klatka: [
+        [53.45405, 14.54752], // Pub Klatka (ul. Łucznicza)
         [53.4475, 14.5518],   // Pętla Kołłątaja
         [53.4385, 14.5535],   // Plac Rodła
         [53.4248, 14.5528],   // Brama Portowa
@@ -278,10 +525,8 @@ const PogonFeature = (() => {
         map.removeLayer(matchdayRouteLayer);
       }
 
-      // Granatowo-bordowa świecąca polilinia
       matchdayRouteLayer = L.layerGroup().addTo(map);
 
-      // Otoczka złota
       const casing = L.polyline(routeCoords, {
         color: '#FFD700',
         weight: 9,
@@ -290,15 +535,13 @@ const PogonFeature = (() => {
         lineJoin: 'round'
       }).addTo(matchdayRouteLayer);
 
-      // Wnętrze granatowo-bordowe
-      const core = L.polyline(routeCoords, {
+      L.polyline(routeCoords, {
         color: '#002D62',
         weight: 5,
         opacity: 1,
         dashArray: '8, 6'
       }).addTo(matchdayRouteLayer);
 
-      // Marker Startu
       const startCoord = routeCoords[0];
       const startIcon = L.divIcon({
         html: `<div style="background:#002D62; border:2.5px solid #FFD700; color:#fff; border-radius:50%; width:38px; height:38px; display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 4px 12px rgba(0,45,98,0.6);">🚩</div>`,
@@ -306,9 +549,8 @@ const PogonFeature = (() => {
       });
       L.marker(startCoord, { icon: startIcon })
         .addTo(matchdayRouteLayer)
-        .bindPopup(`<strong>Zbiórka na Niebuszewie</strong><br>Stąd ruszamy tramwajem linii 2 na Twardowskiego!`);
+        .bindPopup(`<strong>Zbiórka na Niebuszewie</strong><br>Stąd ruszamy tramwajem na Twardowskiego!`);
 
-      // Marker Stadionu
       const endCoord = routeCoords[routeCoords.length - 1];
       const stadiumIcon = L.divIcon({
         html: `<div style="background:#8B0000; border:3px solid #FFD700; color:#fff; border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 6px 16px rgba(139,0,0,0.7); animation:badge-pulse 1.8s infinite;">🏟️</div>`,
@@ -325,7 +567,6 @@ const PogonFeature = (() => {
         showToast('🗺️ Wyznaczono granatowo-bordową trasę meczową na Stadion Krygiera!');
       }
 
-      // Odblokuj odznakę
       if (window.__SZCZECIN_APP__?.explorerBadges) {
         window.__SZCZECIN_APP__.explorerBadges.unlockBadge('badge-matchday-pogon');
       }
@@ -335,12 +576,48 @@ const PogonFeature = (() => {
   // ── Style CSS sekcji ─────────────────────────────────────
   const CSS_STYLES = `
     #section-pogon {
-      background: linear-gradient(180deg, rgba(0, 45, 98, 0.05) 0%, rgba(139, 0, 0, 0.05) 100%);
+      background: linear-gradient(180deg, rgba(0, 45, 98, 0.08) 0%, rgba(139, 0, 0, 0.08) 100%);
     }
     #section-pogon .section-content {
-      padding-bottom: 50px;
-      max-width: 960px;
+      padding-bottom: 60px;
+      max-width: 980px;
       margin: 0 auto;
+    }
+    .pogon-tab-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 2px 14px 2px;
+      margin-bottom: 20px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .pogon-tab-bar::-webkit-scrollbar { display: none; }
+    .pogon-tab-btn {
+      background: rgba(0, 45, 98, 0.35);
+      border: 1.5px solid rgba(255, 215, 0, 0.3);
+      color: #94a3b8;
+      padding: 9px 16px;
+      border-radius: 22px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.22s ease;
+      font-family: inherit;
+    }
+    .pogon-tab-btn:hover {
+      border-color: #FFD700;
+      color: #fff;
+    }
+    .pogon-tab-btn.active {
+      background: linear-gradient(135deg, #002D62 0%, #7A0026 100%);
+      border-color: #FFD700;
+      color: #FFD700;
+      box-shadow: 0 4px 14px rgba(0, 45, 98, 0.45);
     }
     .pogon-matchday-banner {
       background: linear-gradient(135deg, #002D62 0%, #001838 50%, #7A0026 100%);
@@ -389,9 +666,8 @@ const PogonFeature = (() => {
     .pmb-match {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 16px;
-      margin: 16px 0;
+      margin-bottom: 12px;
       position: relative;
       z-index: 1;
     }
@@ -469,6 +745,100 @@ const PogonFeature = (() => {
       gap: 10px;
       margin-bottom: 12px;
     }
+    .soundboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .soundboard-btn {
+      background: linear-gradient(135deg, rgba(0,45,98,0.4) 0%, rgba(122,0,38,0.4) 100%);
+      border: 1.5px solid rgba(255,215,0,0.4);
+      color: #fff;
+      padding: 14px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .soundboard-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      border-color: #FFD700;
+      box-shadow: 0 6px 18px rgba(0,45,98,0.6);
+    }
+    .soundboard-icon { font-size: 24px; }
+    .chants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .chant-card {
+      background: var(--surface2, rgba(255,255,255,0.04));
+      border: 1px solid var(--border, rgba(255,255,255,0.1));
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .chant-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .chant-title { font-size: 15px; font-weight: 800; color: #FFD700; }
+    .chant-tag { font-size: 10px; background: #002D62; color: #FFD700; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+    .chant-lyrics { font-size: 13px; line-height: 1.6; color: var(--text1, #fff); font-style: italic; margin-bottom: 10px; }
+    .chant-tip { font-size: 11px; color: var(--text2, #94a3b8); border-left: 2.5px solid #7A0026; padding-left: 8px; }
+    .legends-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .legend-card {
+      background: var(--surface2, rgba(255,255,255,0.04));
+      border: 1.5px solid rgba(255,215,0,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .legend-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .legend-name { font-size: 16px; font-weight: 800; color: #FFD700; }
+    .legend-role { font-size: 11px; color: var(--text2, #94a3b8); margin-bottom: 8px; }
+    .legend-desc { font-size: 12px; line-height: 1.45; color: var(--text1, #fff); margin-bottom: 10px; }
+    .legend-quote { font-size: 11px; font-style: italic; color: #FFD700; background: rgba(0,45,98,0.3); padding: 8px; border-radius: 8px; }
+    .fixtures-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .fixtures-table th { padding: 8px; border-bottom: 2px solid #7A0026; color: #FFD700; text-align: left; }
+    .fixtures-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .quiz-box {
+      background: var(--surface2, rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,215,0,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .quiz-q-title { font-size: 14px; font-weight: 800; color: #FFD700; margin-bottom: 10px; }
+    .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-opt-btn {
+      background: rgba(0,45,98,0.25);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-opt-btn:hover:not([disabled]) { border-color: #FFD700; background: rgba(0,45,98,0.5); }
+    .quiz-opt-btn.correct { background: rgba(16,185,129,0.35); border-color: #10b981; color: #10b981; font-weight: 800; }
+    .quiz-opt-btn.wrong { background: rgba(239,68,68,0.35); border-color: #ef4444; color: #ef4444; }
+    .quiz-expl { font-size: 11px; margin-top: 8px; padding: 6px 10px; background: rgba(0,0,0,0.3); border-radius: 6px; color: #94a3b8; }
     .mnc-routes-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -493,18 +863,8 @@ const PogonFeature = (() => {
       margin-bottom: 6px;
       border: 1px solid rgba(255,215,0,0.3);
     }
-    .mnc-route-name {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text1, #fff);
-      margin-bottom: 4px;
-    }
-    .mnc-route-desc {
-      font-size: 12px;
-      color: var(--text2, #94a3b8);
-      line-height: 1.45;
-      margin-bottom: 10px;
-    }
+    .mnc-route-name { font-size: 14px; font-weight: 700; color: var(--text1, #fff); margin-bottom: 4px; }
+    .mnc-route-desc { font-size: 12px; color: var(--text2, #94a3b8); line-height: 1.45; margin-bottom: 10px; }
     .mnc-map-draw-btn {
       background: #002D62;
       color: #FFD700;
@@ -517,10 +877,7 @@ const PogonFeature = (() => {
       width: 100%;
       transition: all 0.2s;
     }
-    .mnc-map-draw-btn:hover {
-      background: #7A0026;
-      color: #fff;
-    }
+    .mnc-map-draw-btn:hover { background: #7A0026; color: #fff; }
     .pogon-gastro-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -536,44 +893,12 @@ const PogonFeature = (() => {
       flex-direction: column;
       justify-content: space-between;
     }
-    .gastro-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .gastro-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--text1, #fff);
-    }
-    .gastro-badge {
-      font-size: 10px;
-      background: #7A0026;
-      color: #FFD700;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-    .gastro-addr {
-      font-size: 11px;
-      color: var(--text2, #94a3b8);
-      margin-bottom: 6px;
-    }
-    .gastro-spec {
-      font-size: 12px;
-      color: #FFD700;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .gastro-desc {
-      font-size: 12px;
-      color: var(--text2, #94a3b8);
-      line-height: 1.4;
-      margin-bottom: 12px;
-    }
+    .gastro-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+    .gastro-title { font-size: 14px; font-weight: 800; color: var(--text1, #fff); }
+    .gastro-badge { font-size: 10px; background: #7A0026; color: #FFD700; padding: 2px 8px; border-radius: 10px; font-weight: 700; white-space: nowrap; }
+    .gastro-addr { font-size: 11px; color: var(--text2, #94a3b8); margin-bottom: 6px; }
+    .gastro-spec { font-size: 12px; color: #FFD700; font-weight: 600; margin-bottom: 8px; }
+    .gastro-desc { font-size: 12px; color: var(--text2, #94a3b8); line-height: 1.4; margin-bottom: 12px; }
     .gastro-map-btn {
       background: transparent;
       border: 1px solid var(--border, rgba(255,255,255,0.2));
@@ -585,10 +910,7 @@ const PogonFeature = (() => {
       cursor: pointer;
       transition: all 0.2s;
     }
-    .gastro-map-btn:hover {
-      border-color: #FFD700;
-      color: #FFD700;
-    }
+    .gastro-map-btn:hover { border-color: #FFD700; color: #FFD700; }
   `;
 
   function injectStyles() {
@@ -619,10 +941,13 @@ const PogonFeature = (() => {
         </div>
         <div class="pmb-actions">
           <button class="pmb-btn-primary" onclick="PogonFeature.toggleMatchdayMode()">
-            ${isPogonTheme ? '🛡️ Wyłącz Tryb Meczowy' : '⚓ Włącz Tryb Dnia Meczowego (Barwy Klubu)'}
+            ${isPogonTheme ? '🛡️ Wyłącz Barwy Klubowe' : '⚓ Włącz Tryb Dnia Meczowego (Barwy Klubu)'}
           </button>
-          <button class="pmb-btn-secondary" onclick="PogonFeature.playStadiumDrumBeat()">
+          <button class="pmb-btn-secondary" onclick="PogonFeature.playSound('drum')">
             🥁 Ryk Portowców (Audio)
+          </button>
+          <button class="pmb-btn-secondary" onclick="PogonFeature.playSound('siren')">
+            🚨 Syrena Portowa
           </button>
           <button class="pmb-btn-secondary" onclick="PogonFeature.drawMatchdayRouteOnMap('kollataja')">
             🗺️ Rysuj Trasę Meczową na Mapie
@@ -630,6 +955,224 @@ const PogonFeature = (() => {
         </div>
       </div>
     `;
+  }
+
+  // ── Render Fixtures & Results ─────────────────────────────
+  function renderUpcomingFixtures() {
+    return `
+      <div class="matchday-nav-card">
+        <div class="mnc-title">
+          <span>📅</span>
+          <span>Terminarz Meczów Pogoni — Najbliższe 5 Kolejek</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="fixtures-table">
+            <thead>
+              <tr>
+                <th>Runda</th>
+                <th>Rywal</th>
+                <th>Data & Godzina</th>
+                <th>Miejsce</th>
+                <th>Status / Zbiórka</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${UPCOMING_FIXTURES.map((f, i) => `
+                <tr style="${i === 0 ? 'background:rgba(0,45,98,0.25); font-weight:800; border-left:4px solid #FFD700;' : ''}">
+                  <td style="color:#FFD700;">${f.round}</td>
+                  <td>${f.home ? '⚓ ' : '✈️ '}${f.opponent}</td>
+                  <td>${f.dateStr}</td>
+                  <td style="font-size:12px; color:#94a3b8;">${f.venue}</td>
+                  <td><span style="background:${f.home ? '#002D62' : '#7A0026'}; color:#FFD700; padding:2px 8px; border-radius:8px; font-size:11px;">${f.status}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:20px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08);">
+          <div style="font-size:14px; font-weight:800; color:#FFD700; margin-bottom:10px;">
+            ⚽ Ostatnie Wyniki Dumy Pomorza
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+            ${RECENT_RESULTS.map(r => `
+              <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                  <strong style="font-size:13px;">vs ${r.opponent}</strong>
+                  <span style="background:${r.res === 'W' ? '#10b981' : '#f59e0b'}; color:#fff; font-size:11px; font-weight:800; padding:1px 6px; border-radius:6px;">${r.score}</span>
+                </div>
+                <div style="font-size:11px; color:#94a3b8;">${r.date} · Strzelcy: ${r.scorers}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Render Chants & Soundboard ───────────────────────────
+  function renderPogonChantsAndSoundboard() {
+    return `
+      <div class="matchday-nav-card">
+        <div class="mnc-title">
+          <span>🥁</span>
+          <span>Interaktywny Soundboard Kibica & Doping Web Audio</span>
+        </div>
+        <p style="font-size:13px; color:var(--text2, #94a3b8); margin-bottom:14px;">
+          Poczuj atmosferę stadionu przy Twardowskiego! Kliknij, aby odegrać autentyczne stadionowe dźwięki w syntezatorze audio:
+        </p>
+
+        <div class="soundboard-grid">
+          <button class="soundboard-btn" onclick="PogonFeature.playSound('drum')">
+            <span class="soundboard-icon">🥁</span>
+            <span>Bęben Młyna</span>
+          </button>
+          <button class="soundboard-btn" onclick="PogonFeature.playSound('siren')">
+            <span class="soundboard-icon">🚨</span>
+            <span>Syrena Portowa</span>
+          </button>
+          <button class="soundboard-btn" onclick="PogonFeature.playSound('applause')">
+            <span class="soundboard-icon">👏</span>
+            <span>Wiwaty & Klaskanie</span>
+          </button>
+          <button class="soundboard-btn" onclick="PogonFeature.playSound('fanfare')">
+            <span class="soundboard-icon">🎺</span>
+            <span>Fanfara Zwycięstwa</span>
+          </button>
+          <button class="soundboard-btn" onclick="PogonFeature.playSound('whistle')">
+            <span class="soundboard-icon">📢</span>
+            <span>Gwizdek Sędziego</span>
+          </button>
+        </div>
+
+        <div class="mnc-title" style="margin-top:24px;">
+          <span>📜</span>
+          <span>Oficjalny Śpiewnik Dumy Pomorza</span>
+        </div>
+
+        <div class="chants-grid">
+          ${POGON_CHANTS.map(c => `
+            <div class="chant-card">
+              <div class="chant-header">
+                <span class="chant-title">${c.title}</span>
+                <span class="chant-tag">${c.tag}</span>
+              </div>
+              <div class="chant-lyrics">
+                ${c.lyrics.map(l => `<div>${l}</div>`).join('')}
+              </div>
+              <div class="chant-tip">
+                💡 ${c.tip}
+              </div>
+              <div style="margin-top:12px;">
+                <button class="mnc-map-draw-btn" onclick="PogonFeature.playSound('drum')">
+                  🥁 Śpiewaj z bębnem młynowym
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Render Legends ───────────────────────────────────────
+  function renderPogonLegends() {
+    return `
+      <div class="matchday-nav-card">
+        <div class="mnc-title">
+          <span>👑</span>
+          <span>Galeria Legend & Panteon Dumy Pomorza</span>
+        </div>
+        <p style="font-size:13px; color:var(--text2, #94a3b8); margin-bottom:16px;">
+          Poznaj wielkie postacie, które przez dziesięciolecia budowały chwałę szczecińskiego klubu od 1948 roku.
+        </p>
+
+        <div class="legends-grid">
+          ${POGON_LEGENDS.map(leg => `
+            <div class="legend-card">
+              <div>
+                <div class="legend-top">
+                  <span style="font-size:24px;">${leg.emoji}</span>
+                  <div>
+                    <div class="legend-name">${leg.name}</div>
+                    <div style="font-size:11px; color:#FFD700;">${leg.years}</div>
+                  </div>
+                </div>
+                <div class="legend-role">⭐ ${leg.role}</div>
+                <div class="legend-desc">${leg.desc}</div>
+              </div>
+              <div class="legend-quote">${leg.quote}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Render Quiz ──────────────────────────────────────────
+  function renderPogonQuiz() {
+    return `
+      <div class="matchday-nav-card">
+        <div class="mnc-title">
+          <span>🧠</span>
+          <span>Quiz Kibica Dumy Pomorza — Sprawdź Swoją Wiedzę</span>
+        </div>
+        <p style="font-size:13px; color:var(--text2, #94a3b8); margin-bottom:16px;">
+          Odpowiedz na 5 pytań o historię Pogoni i odblokuj odznakę Portowca!
+        </p>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,45,98,0.3); border:1px solid rgba(255,215,0,0.3); padding:10px 16px; border-radius:10px; margin-bottom:16px;">
+          <span>Twój wynik: <strong>${quizProgress.score} / ${POGON_QUIZ.length}</strong></span>
+          <span style="color:#FFD700; font-weight:800;">${quizProgress.score === POGON_QUIZ.length ? '🏆 Mistrz Wiedzy o Pogoni!' : '⚓ Graj dalej!'}</span>
+        </div>
+
+        ${POGON_QUIZ.map((q, idx) => {
+          const ans = quizProgress.answered[q.id];
+          return `
+            <div class="quiz-box">
+              <div class="quiz-q-title">#${idx + 1}. ${q.question}</div>
+              <div class="quiz-options">
+                ${q.options.map((opt, oIdx) => {
+                  let btnClass = 'quiz-opt-btn';
+                  if (ans !== undefined) {
+                    if (opt.correct) btnClass += ' correct';
+                    else if (ans === oIdx) btnClass += ' wrong';
+                  }
+                  return `
+                    <button class="${btnClass}" ${ans !== undefined ? 'disabled' : ''} onclick="PogonFeature.answerQuiz('${q.id}', ${oIdx})">
+                      ${opt.text}
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+              ${ans !== undefined ? `
+                <div class="quiz-expl">💡 ${q.explanation}</div>
+              ` : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  function answerQuiz(qId, selectedIdx) {
+    const q = POGON_QUIZ.find(item => item.id === qId);
+    if (!q || quizProgress.answered[qId] !== undefined) return;
+
+    quizProgress.answered[qId] = selectedIdx;
+    if (q.options[selectedIdx].correct) {
+      quizProgress.score++;
+      if (typeof showToast === 'function') showToast('🎯 Prawidłowa odpowiedź! Duma Pomorza!');
+      playSound('applause');
+    } else {
+      if (typeof showToast === 'function') showToast('❌ Nie tym razem, ale doceniamy wiedzę!');
+    }
+
+    if (quizProgress.score >= 3 && window.__SZCZECIN_APP__?.explorerBadges) {
+      window.__SZCZECIN_APP__.explorerBadges.unlockBadge('badge-matchday-pogon');
+    }
+
+    render();
   }
 
   // ── Render Matchday Navigator Card ───────────────────────
@@ -649,7 +1192,7 @@ const PogonFeature = (() => {
             <span class="mnc-route-tag">🚋 Tramwaj ZDiTM · 21 min</span>
             <div class="mnc-route-name">Start: Pętla Kołłątaja</div>
             <div class="mnc-route-desc">
-              Tramwaj linii <strong>2</strong> z Pętli Kołłątaja do Bramy Portowej, przesiadka w linię <strong>7</strong> lub <strong>5</strong> pod bramy stadionu.
+              Tramwaj linii <strong>2</strong> w kierunku Dworca Niebuszewo / Basen Górniczy, przesiadka na Bramie Portowej w linię <strong>7</strong> bezpośrednio pod stadion (przystanek Karłowicza).
             </div>
             <button class="mnc-map-draw-btn" onclick="PogonFeature.drawMatchdayRouteOnMap('kollataja')">
               🗺️ Pokaż tę trasę na mapie
@@ -657,24 +1200,35 @@ const PogonFeature = (() => {
           </div>
 
           <div class="mnc-route-box">
-            <span class="mnc-route-tag">🚶 Marsz Kibiców · 55 min · 4.8 km</span>
-            <div class="mnc-route-name">Start: Łucznicza 39 (Pub Klatka)</div>
+            <span class="mnc-route-tag">🍻 Baza Osiedlowa · 24 min</span>
+            <div class="mnc-route-name">Start: Pub Klatka (ul. Łucznicza 39)</div>
             <div class="mnc-route-desc">
-              Malownicza zbiórka pod 39, przemarsz przez Park Kadziaka, Jasne Błonia, al. Wojska Polskiego wprost na Pogodno pod wejście główne.
+              Przedmeczowa zbiórka na osiedlu, spacer alejkami do ul. Kołłątaja, a stamtąd przejazd tramwajem 2 z grupą kibiców z Niebuszewa.
             </div>
-            <button class="mnc-map-draw-btn" onclick="PogonFeature.drawMatchdayRouteOnMap('lucznicza')">
-              🗺️ Pokaż spacer na mapie
+            <button class="mnc-map-draw-btn" onclick="PogonFeature.drawMatchdayRouteOnMap('klatka')">
+              🗺️ Pokaż tę trasę na mapie
             </button>
           </div>
 
           <div class="mnc-route-box">
-            <span class="mnc-route-tag">🚉 SKM + Tramwaj · 24 min</span>
-            <div class="mnc-route-name">Start: Dworzec SKM Niebuszewo</div>
+            <span class="mnc-route-tag">🚆 Kolej Miejska SKM · 18 min</span>
+            <div class="mnc-route-name">Start: Dworzec SKM Szczecin Niebuszewo</div>
             <div class="mnc-route-desc">
-              Połączenie SKM w stronę centrum lub autobus 87 do al. Wojska Polskiego, idealne dla mieszkańców wschodniej części dzielnicy.
+              Dojazd koleją miejską do Szczecina Głównego lub Turzyna, a stamtąd krótki spacer przez Pogodno wprost pod bramy stadionu.
             </div>
             <button class="mnc-map-draw-btn" onclick="PogonFeature.drawMatchdayRouteOnMap('dworzec')">
               🗺️ Pokaż tę trasę na mapie
+            </button>
+          </div>
+
+          <div class="mnc-route-box">
+            <span class="mnc-route-tag">🚴 Rower Bike_S · 17 min</span>
+            <div class="mnc-route-name">Start: Stacja Bike_S Kołłątaja (POI 81)</div>
+            <div class="mnc-route-desc">
+              Przejazd przez Park Kasprowicza wzdłuż al. Fałata i ul. Mickiewicza na oficjalny parking rowerowy pod stadionem.
+            </div>
+            <button class="mnc-map-draw-btn" onclick="PogonFeature.flyToCoord(53.4475, 14.5471, 'Stacja Bike_S Kołłątaja')">
+              📍 Pokaż stację Bike_S
             </button>
           </div>
         </div>
@@ -682,28 +1236,32 @@ const PogonFeature = (() => {
     `;
   }
 
-  // ── Render Gastro Matchday ("Gdzie na giętą") ────────────
+  // ── Render Gastro Matchday ("Gdzie na giętą") ───────────
   function renderGastroMatchday() {
     return `
-      <div style="margin-bottom: 28px;">
-        <div class="pogon-section-title" style="font-size:16px; font-weight:800; color:#FFD700; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+      <div class="matchday-nav-card">
+        <div class="mnc-title">
           <span>🌭</span>
-          <span>Gastro-Mecz: Gdzie na giętą, piwo i frytburgera?</span>
+          <span>Gastro-Przewodnik Meczowy: Gdzie na Giętą, Rybę i Pasztecika?</span>
         </div>
+        <p style="font-size:13px; color:var(--text2, #94a3b8); margin-bottom:8px;">
+          Tradycje kulinarne szczecińskich kibiców — od kultowej giętej z rusztu pod stadionem po paszteciki i przedmeczowe spotkania na Niebuszewie.
+        </p>
+
         <div class="pogon-gastro-grid">
           ${GASTRO_MATCHDAY.map(g => `
             <div class="gastro-card">
               <div>
                 <div class="gastro-header">
-                  <span class="gastro-title">${g.name}</span>
+                  <div class="gastro-title">${g.name}</div>
                   <span class="gastro-badge">${g.badge}</span>
                 </div>
                 <div class="gastro-addr">📍 ${g.addr}</div>
                 <div class="gastro-spec">⭐ ${g.specialty}</div>
-                <p class="gastro-desc">${g.desc}</p>
+                <div class="gastro-desc">${g.desc}</div>
               </div>
               <button class="gastro-map-btn" onclick="PogonFeature.flyToCoord(${g.coords[0]}, ${g.coords[1]}, '${g.name}')">
-                🗺️ Namierz na mapie
+                🎯 Pokaż na mapie
               </button>
             </div>
           `).join('')}
@@ -712,35 +1270,37 @@ const PogonFeature = (() => {
     `;
   }
 
-  // ── Render Squad & Stats ─────────────────────────────────
+  // ── Render Squad Table ───────────────────────────────────
   function renderSquadTable() {
     return `
-      <div class="matchday-nav-card" style="margin-bottom: 24px;">
+      <div class="matchday-nav-card">
         <div class="mnc-title">
-          <span>👥</span>
+          <span>🛡️</span>
           <span>Kadra Dumy Pomorza — Sezon ${SEASON.year}</span>
         </div>
         <div style="overflow-x:auto;">
           <table style="width:100%; border-collapse:collapse; font-size:13px; text-align:left;">
             <thead>
               <tr style="border-bottom:2px solid #002D62; color:#FFD700;">
-                <th style="padding:8px;">#</th>
+                <th style="padding:8px;">Nr</th>
                 <th style="padding:8px;">Zawodnik</th>
-                <th style="padding:8px;">Poz</th>
-                <th style="padding:8px;">Wiek</th>
-                <th style="padding:8px;">Gole</th>
-                <th style="padding:8px;">Asysty</th>
+                <th style="padding:8px;">Pozycja</th>
+                <th style="padding:8px;">Kraj</th>
+                <th style="padding:8px; text-align:right;">Gole / Asysty</th>
               </tr>
             </thead>
             <tbody>
               ${SQUAD.map(p => `
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
                   <td style="padding:8px; font-weight:800; color:#FFD700;">${p.no}</td>
-                  <td style="padding:8px; font-weight:700;">${p.name} ${p.captain ? '👑 (C)' : ''}</td>
-                  <td style="padding:8px; opacity:0.8;">${p.pos}</td>
-                  <td style="padding:8px; opacity:0.8;">${p.age}</td>
-                  <td style="padding:8px; color:#10b981; font-weight:700;">${p.goals || (p.cleanSheets ? p.cleanSheets + ' czystych kont' : '—')}</td>
-                  <td style="padding:8px; color:#38bdf8;">${p.assists || '—'}</td>
+                  <td style="padding:8px; font-weight:700;">
+                    ${p.name} ${p.captain ? '👑 <span style="font-size:10px; color:#FFD700;">(K)</span>' : ''}
+                  </td>
+                  <td style="padding:8px; color:#94a3b8;">${p.pos}</td>
+                  <td style="padding:8px;">${p.nat}</td>
+                  <td style="padding:8px; text-align:right; font-weight:700;">
+                    ${p.goals !== undefined ? `${p.goals} ⚽ / ${p.assists || 0} 👟` : `${p.cleanSheets || 0} 🧤 czyste konta`}
+                  </td>
                 </tr>
               `).join('')}
             </tbody>
@@ -796,6 +1356,11 @@ const PogonFeature = (() => {
     }, 300);
   }
 
+  function setTab(tabName) {
+    currentTab = tabName;
+    render();
+  }
+
   // ── Render ───────────────────────────────────────────────
   function render() {
     const container = document.querySelector('#section-pogon .section-content');
@@ -807,21 +1372,57 @@ const PogonFeature = (() => {
           <span>← Wróć do mapy</span>
         </button>
       </div>
-      <div style="margin-bottom: 20px;">
+      <div style="margin-bottom: 16px;">
         <h2 style="font-size:24px; font-weight:900; color:#FFD700; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
           <span>⚓</span>
-          <span>Pogoń Szczecin & Dzień Meczowy</span>
+          <span>Pogoń Szczecin — Strefa Kibica Dumy Pomorza</span>
         </h2>
         <p style="font-size:13px; color:var(--text2, #94a3b8);">
-          Duma Pomorza — strefa kibica Niebuszewa, dojazd na stadion, gastro-przewodnik i doping.
+          Oficjalne centrum kibica Niebuszewa — terminarz, śpiewnik z dopingiem, panteon legend, dojazd na stadion i gastro.
         </p>
       </div>
 
-      ${renderMatchdayBanner()}
-      ${renderMatchdayNavigator()}
-      ${renderGastroMatchday()}
-      ${renderSquadTable()}
-      ${renderStandingsTable()}
+      <div class="pogon-tab-bar">
+        <button class="pogon-tab-btn ${currentTab === 'matchday' ? 'active' : ''}" onclick="PogonFeature.setTab('matchday')">
+          <span>🏟️ Mecz & Terminarz</span>
+        </button>
+        <button class="pogon-tab-btn ${currentTab === 'chants' ? 'active' : ''}" onclick="PogonFeature.setTab('chants')">
+          <span>🥁 Śpiewnik & Soundboard</span>
+        </button>
+        <button class="pogon-tab-btn ${currentTab === 'legends' ? 'active' : ''}" onclick="PogonFeature.setTab('legends')">
+          <span>👑 Legendy Klubu</span>
+        </button>
+        <button class="pogon-tab-btn ${currentTab === 'transit' ? 'active' : ''}" onclick="PogonFeature.setTab('transit')">
+          <span>🚋 Dojazd & Gastro</span>
+        </button>
+        <button class="pogon-tab-btn ${currentTab === 'quiz' ? 'active' : ''}" onclick="PogonFeature.setTab('quiz')">
+          <span>🧠 Quiz Kibica</span>
+        </button>
+      </div>
+
+      ${currentTab === 'matchday' ? `
+        ${renderMatchdayBanner()}
+        ${renderUpcomingFixtures()}
+        ${renderSquadTable()}
+        ${renderStandingsTable()}
+      ` : ''}
+
+      ${currentTab === 'chants' ? `
+        ${renderPogonChantsAndSoundboard()}
+      ` : ''}
+
+      ${currentTab === 'legends' ? `
+        ${renderPogonLegends()}
+      ` : ''}
+
+      ${currentTab === 'transit' ? `
+        ${renderMatchdayNavigator()}
+        ${renderGastroMatchday()}
+      ` : ''}
+
+      ${currentTab === 'quiz' ? `
+        ${renderPogonQuiz()}
+      ` : ''}
     `;
   }
 
@@ -847,6 +1448,9 @@ const PogonFeature = (() => {
   return {
     init,
     render,
+    setTab,
+    playSound,
+    answerQuiz,
     toggleMatchdayMode,
     playStadiumDrumBeat,
     drawMatchdayRouteOnMap,
